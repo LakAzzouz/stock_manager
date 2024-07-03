@@ -1,11 +1,12 @@
 import { Product, ProductType } from "../../entities/Product";
-import { ProductRepository } from "../../repositories.ts/ProductRepository";
+import { ProductRepository } from "../../repositories/ProductRepository";
 import { Size } from "../../valuesObject.ts/SizeProduct";
 import { Usecases } from "../Usecase";
 
 type CreateProductInput = {
   name: string;
   productType: ProductType;
+  image?: string;
   price: number;
   size: number;
 };
@@ -19,6 +20,7 @@ export class CreateProduct implements Usecases<CreateProductInput, Promise<Produ
     const product = Product.create({
       name: input.name,
       productType: input.productType,
+      image: input.image,
       price: input.price,
       size: sizeLimit,
     });

@@ -1,5 +1,5 @@
 import { Store } from "../../entities/Store";
-import { StoreRepository } from "../../repositories.ts/StoreRepository";
+import { StoreRepository } from "../../repositories/StoreRepository";
 import { Usecases } from "../Usecase";
 
 type GetStoreByIdInput = {

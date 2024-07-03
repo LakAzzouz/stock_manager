@@ -20,6 +20,7 @@ export type ProductProperties = {
   productType: ProductType;
   price: number;
   size: number;
+  image?: string;
   createdAt: Date;
   updatedAt?: Date;
 };
@@ -31,11 +32,12 @@ export class Product {
     this.props = productProperties;
   }
 
-  static create(props: {name: string, productType: ProductType, price: number, size: number}): Product {
+  static create(props: {name: string, productType: ProductType, image?: string, price: number, size: number}): Product {
     const product = new Product({
       id: v4(),
       name: props.name,
       productType: props.productType,
+      image: props.image,
       price: props.price,
       size: props.size,
       createdAt: new Date(),

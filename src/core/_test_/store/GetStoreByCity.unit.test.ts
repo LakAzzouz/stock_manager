@@ -1,8 +1,8 @@
 import { Store } from "../../entities/Store";
 import { StoreErrors } from "../../errors/StoreErrors";
-import { StoreRepository } from "../../repositories.ts/StoreRepository";
+import { StoreRepository } from "../../repositories/StoreRepository";
 import { GetStoreByCity } from "../../usecases/Store/GetStoreByCity";
-import { InMemoryStoreRepository } from "../adapters/repositories/InMemoryStoreRepository";
+import { InMemoryStoreRepository } from "../adapters/InMemoryStoreRepository";
 import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - get store by city", () => {

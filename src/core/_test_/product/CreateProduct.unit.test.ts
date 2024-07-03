@@ -1,8 +1,8 @@
 import { Product, ProductType } from "../../entities/Product";
 import { ProductErrors } from "../../errors/ProductErrors";
-import { ProductRepository } from "../../repositories.ts/ProductRepository";
+import { ProductRepository } from "../../repositories/ProductRepository";
 import { CreateProduct } from "../../usecases/Product/CreateProduct";
-import { InMemoryProductRepository } from "../adapters/repositories/InMemoryProductRepository";
+import { InMemoryProductRepository } from "../adapters/InMemoryProductRepository";
 
 describe("Unit - Create product", () => {
   let productRepository: ProductRepository;
@@ -11,6 +11,7 @@ describe("Unit - Create product", () => {
   const shoesName = "Air Jordan";
   const size = 43;
   const price = 50;
+  const image = `123456_${shoesName}`
 
   beforeAll(async () => {
     productRepository = new InMemoryProductRepository(productDb);
@@ -25,6 +26,7 @@ describe("Unit - Create product", () => {
     const result = await createProduct.execute({
       name: shoesName,
       productType: ProductType.SHOES,
+      image,
       price,
       size,
     });
@@ -32,6 +34,7 @@ describe("Unit - Create product", () => {
     expect(result.props.id).toBeDefined();
     expect(result.props.name).toEqual(shoesName);
     expect(result.props.productType).toEqual(ProductType.SHOES);
+    expect(result.props.image).toEqual(image)
     expect(result.props.size).toEqual(size);
     expect(result.props.price).toEqual(price);
     expect(result.props.createdAt).toBeDefined();
@@ -44,7 +47,7 @@ describe("Unit - Create product", () => {
       price,
       size,
     });
-
+    
     expect(productDb.get(product.props.id)).toEqual(product)
   })
 

@@ -1,7 +1,7 @@
 import { Store } from "../../entities/Store";
-import { StoreRepository } from "../../repositories.ts/StoreRepository";
+import { StoreRepository } from "../../repositories/StoreRepository";
 import { UpdateStore } from "../../usecases/Store/UpdateStore";
-import { InMemoryStoreRepository } from "../adapters/repositories/InMemoryStoreRepository";
+import { InMemoryStoreRepository } from "../adapters/InMemoryStoreRepository";
 import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - update store", () => {

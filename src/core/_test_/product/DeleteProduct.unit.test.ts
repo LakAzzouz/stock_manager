@@ -1,8 +1,8 @@
 import { Product, ProductType } from "../../entities/Product";
 import { ProductErrors } from "../../errors/ProductErrors";
-import { ProductRepository } from "../../repositories.ts/ProductRepository";
+import { ProductRepository } from "../../repositories/ProductRepository";
 import { DeleteProduct } from "../../usecases/Product/DeleteProduct";
-import { InMemoryProductRepository } from "../adapters/repositories/InMemoryProductRepository";
+import { InMemoryProductRepository } from "../adapters/InMemoryProductRepository";
 import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - Delete product", () => {
@@ -38,11 +38,9 @@ describe("Unit - Delete product", () => {
 
     productDb.set(product.props.id, product);
 
-    deleteProduct.execute({
+    const result = deleteProduct.execute({
       id: "wrong_id",
     });
-
-    const result = productDb.get(product.props.id);
 
     await expect(result).rejects.toThrow(ProductErrors.NotFound)
   });

@@ -1,5 +1,5 @@
 import { Order } from "../../entities/Order";
-import { OrderRepository } from "../../repositories.ts/OrderRepository";
+import { OrderRepository } from "../../repositories/OrderRepository";
 import { Usecases } from "../Usecase";
 
 type GetOrderByIdInput = {

@@ -1,7 +1,7 @@
-import { Product, ProductType } from "../../entities/Product";
-import { ProductRepository } from "../../repositories.ts/ProductRepository";
+import { Product } from "../../entities/Product";
+import { ProductRepository } from "../../repositories/ProductRepository";
 import { UpdateProduct } from "../../usecases/Product/UpdateProduct";
-import { InMemoryProductRepository } from "../adapters/repositories/InMemoryProductRepository";
+import { InMemoryProductRepository } from "../adapters/InMemoryProductRepository";
 import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - update product", () => {

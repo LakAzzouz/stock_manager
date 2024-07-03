@@ -1,0 +1,13 @@
+import { Store } from "../entities/Store";
+
+export interface StoreRepository {
+  save(store: Store): Promise<void>;
+
+  getById(id: string): Promise<Store>;
+
+  getByCity(city: string): Promise<Store>;
+
+  getAllIds(): Promise<string[]>;
+
+  delete(id: string): Promise<void>
+}

@@ -1,25 +1,34 @@
 import { Order } from "../../entities/Order";
-import { OrderRepository } from "../../repositories.ts/OrderRepository";
-import { PriceOrder } from "../../valuesObject.ts/TotalPrice";
+import { OrderRepository } from "../../repositories/OrderRepository";
+import { ProductRepository } from "../../repositories/ProductRepository";
+import { ProductInfo } from "../../valuesObject.ts/ProductInfo";
 import { Usecases } from "../Usecase";
 
 type CreateOrderInput = {
-  productIds: string[];
-  totalPrice: number;
+  locationId: string,
+  productInfos: ProductInfo[];
 };
 
 export class CreateOrder implements Usecases<CreateOrderInput, Promise<Order>> {
-  constructor(private readonly _orderRepository: OrderRepository) {}
+  constructor(
+    private readonly _orderRepository: OrderRepository,
+    private readonly _productRepository: ProductRepository
+  ) {}
 
   async execute(input: CreateOrderInput): Promise<Order> {
-    const totalPrice = PriceOrder.totalPrice(input.totalPrice);
+    const { locationId, productInfos } = input;
+
+    const totalPrice = await this._productRepository.getTotalPriceByProductIds(
+      productInfos
+    );
 
     const order = Order.create({
-      productIds: input.productIds,
-      totalPrice: totalPrice,
+      productInfos,
+      locationId,
+      totalPrice,
     });
 
-    this._orderRepository.save(order);
+    await this._orderRepository.save(order);
 
     return order;
   }

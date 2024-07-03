@@ -1,7 +1,7 @@
 import { Store } from "../../entities/Store";
-import { StoreRepository } from "../../repositories.ts/StoreRepository";
+import { StoreRepository } from "../../repositories/StoreRepository";
 import { CreateStore } from "../../usecases/Store/CreateStore";
-import { InMemoryStoreRepository } from "../adapters/repositories/InMemoryStoreRepository";
+import { InMemoryStoreRepository } from "../adapters/InMemoryStoreRepository";
 
 describe("Unit - Create store", () => {
   let storeRepository: StoreRepository;
@@ -11,6 +11,7 @@ describe("Unit - Create store", () => {
   const city = "Paris";
   const turnover = 3000;
   const priceReduction = 0;
+  const frequentation = 10000;
 
   beforeAll(async () => {
     storeRepository = new InMemoryStoreRepository(storeDb);
@@ -21,8 +22,7 @@ describe("Unit - Create store", () => {
     storeDb.clear();
   });
 
-  it("Should return a store", async () => {
-    const frequentation = 10000;
+  it("Should create a store", async () => {
     const result = await createStore.execute({
       name: storeName,
       city,

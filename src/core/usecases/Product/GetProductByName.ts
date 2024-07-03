@@ -1,5 +1,5 @@
 import { Product } from "../../entities/Product";
-import { ProductRepository } from "../../repositories.ts/ProductRepository";
+import { ProductRepository } from "../../repositories/ProductRepository";
 import { Usecases } from "../Usecase";
 
 type GetProductByNameInput = {
