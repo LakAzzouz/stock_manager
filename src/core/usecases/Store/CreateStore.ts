@@ -20,7 +20,7 @@ export class CreateStore implements Usecases<CreateStoreInput, Promise<Store>> {
       frequentation: input.frequentation,
     });
 
-    await this._storeRepository.save(store)
+    await this._storeRepository.save(store);
 
     return store;
   }

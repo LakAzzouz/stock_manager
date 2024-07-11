@@ -9,7 +9,7 @@ export class DeleteWarehouse implements Usecases<DeleteWarehouseInput, Promise<v
   constructor(private readonly _warehouseRepository: WarehouseRepository) {}
 
   async execute(input: DeleteWarehouseInput): Promise<void> {
-    await this._warehouseRepository.delete(input.id)
+    await this._warehouseRepository.delete(input.id);
 
     return;
   }

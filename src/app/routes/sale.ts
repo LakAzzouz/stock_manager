@@ -1,9 +1,9 @@
 import express from "express";
 import { CreateSale } from "../../core/usecases/Sale/CreateSale";
-import { InMemorySaleRepository } from "../../core/_test_/adapters/InMemorySaleRepository";
+import { InMemorySaleRepository } from "../../core/adapters/repositories/InMemorySaleRepository";
 import { Sale } from "../../core/entities/Sale";
 import { Product } from "../../core/entities/Product";
-import { InMemoryProductRepository } from "../../core/_test_/adapters/InMemoryProductRepository";
+import { InMemoryProductRepository } from "../../core/adapters/repositories/InMemoryProductRepository";
 import { GetSaleById } from "../../core/usecases/Sale/GetSaleById";
 import { UpdateSale } from "../../core/usecases/Sale/UpdateSale";
 import { DeleteSale } from "../../core/usecases/Sale/DeleteSale";

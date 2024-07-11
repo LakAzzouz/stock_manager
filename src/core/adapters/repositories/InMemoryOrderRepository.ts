@@ -13,10 +13,10 @@ export class InMemoryOrderRepository implements OrderRepository {
     this.map.set(order.props.id, order);
   }
 
-  async getById(id: string): Promise<Order> {
+  async getById(id: string): Promise<Order | null> {
     const order = this.map.get(id);
     if (!order) {
-      throw new OrderErrors.NotFound();
+      return null
     }
     return order;
   }

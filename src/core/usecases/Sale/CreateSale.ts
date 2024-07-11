@@ -1,7 +1,7 @@
 import { Sale } from "../../entities/Sale";
 import { ProductRepository } from "../../repositories/ProductRepository";
 import { SaleRepository } from "../../repositories/SaleRepository";
-import { ProductInfo } from "../../valuesObject.ts/ProductInfo";
+import { ProductInfo } from "../../types/ProductInfo";
 import { Usecases } from "../Usecase";
 
 type CreateSaleInput = {

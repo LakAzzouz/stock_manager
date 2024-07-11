@@ -25,7 +25,7 @@ export class SqlSaleMapper implements Mapper<SaleModel, Sale> {
       product_infos: data.props.productInfos.map((elm) => {
         return {
           product_id: elm.productId,
-          quantity: elm.quantity,
+          quantity: elm.quantity
         };
       }),
       total_price: data.props.totalPrice,

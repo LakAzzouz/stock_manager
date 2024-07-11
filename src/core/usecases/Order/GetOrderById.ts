@@ -1,4 +1,5 @@
 import { Order } from "../../entities/Order";
+import { OrderErrors } from "../../errors/OrderErrors";
 import { OrderRepository } from "../../repositories/OrderRepository";
 import { Usecases } from "../Usecase";
 
@@ -12,7 +13,11 @@ export class GetOrderById
   constructor(private readonly _orderRepository: OrderRepository) {}
 
   async execute(input: GetOrderByIdInput): Promise<Order> {
-    const order = this._orderRepository.getById(input.id);
+    const order = await this._orderRepository.getById(input.id);
+    
+    if (!order) {
+      throw new OrderErrors.NotFound();
+    }
 
     return order;
   }

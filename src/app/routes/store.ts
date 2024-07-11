@@ -1,12 +1,13 @@
 import express from "express";
 import { CreateStore } from "../../core/usecases/Store/CreateStore";
-import { InMemoryStoreRepository } from "../../core/_test_/adapters/InMemoryStoreRepository";
+import { InMemoryStoreRepository } from "../../core/adapters/repositories/InMemoryStoreRepository";
 import { Store } from "../../core/entities/Store";
 import { GetStoreById } from "../../core/usecases/Store/GetStoreById";
 import { GetStoreByCity } from "../../core/usecases/Store/GetStoreByCity";
 import { UpdateStore } from "../../core/usecases/Store/UpdateStore";
 import { DeleteStore } from "../../core/usecases/Store/DeleteStore";
 import { StoreCreateCommand, StoreUpdateCommand } from "../validation/storeCommands";
+import multer from 'multer';
 
 export const storeRouter = express.Router();
 
@@ -19,8 +20,6 @@ const getStoreById = new GetStoreById(storeRepository);
 const getStoreByCity = new GetStoreByCity(storeRepository);
 const updateStore = new UpdateStore(storeRepository);
 const deleteStore = new DeleteStore(storeRepository);
-
-import multer from 'multer';
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -35,7 +34,8 @@ const upload = multer({ storage: storage });
 
 storeRouter.post("/", upload.single("store"), async (req: express.Request, res: express.Response) => {
   try {
-    const { name, city, turnover, frequentation } = StoreCreateCommand.validateStoreCreate(req.body);
+    const body = JSON.parse(req.body.body);
+    const { name, city, turnover, frequentation } = StoreCreateCommand.validateStoreCreate(body);
 
     const store = await createStore.execute({
       name,

@@ -1,4 +1,5 @@
 import { Product } from "../../entities/Product";
+import { ProductErrors } from "../../errors/ProductErrors";
 import { ProductRepository } from "../../repositories/ProductRepository";
 import { Usecases } from "../Usecase";
 
@@ -10,8 +11,12 @@ export class GetProductById implements Usecases<GetProductByIdInput, Promise<Pro
   constructor(private readonly _productRepository: ProductRepository) {}
 
   async execute(input: GetProductByIdInput): Promise<Product> {
-    const product = this._productRepository.getById(input.id)
+    const product = await this._productRepository.getById(input.id);
+    
+    if(!product) {
+      throw new ProductErrors.NotFound();
+    }
 
-    return product
+    return product;
   }
 }

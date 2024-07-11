@@ -1,7 +1,7 @@
 import { Stock } from "../../entities/Stock";
 import { StockErrors } from "../../errors/StockErrors";
 import { StockRepository } from "../../repositories/StockRepository";
-import { ProductInfo } from "../../valuesObject.ts/ProductInfo";
+import { StockData } from "../../types/StockData";
 
 export class InMemoryStockRepository implements StockRepository {
   map: Map<string, Stock>;
@@ -9,12 +9,12 @@ export class InMemoryStockRepository implements StockRepository {
   constructor(map: Map<string, Stock>) {
     this.map = map;
   }
-
+  
   async save(stock: Stock): Promise<void> {
     this.map.set(stock.props.id, stock);
   }
 
-  async getById(id: string): Promise<Stock> {
+  async getById(id: string): Promise<Stock | null> {
     const stock = this.map.get(id);
     if (!stock) {
       throw new StockErrors.NotFound();
@@ -24,10 +24,29 @@ export class InMemoryStockRepository implements StockRepository {
 
   async ensureThatDoesNotExistByProductId(productId: string): Promise<void> {
     const stocks = Array.from(this.map.values());
-    const stock = stocks.find((stock) => stock.props.productId === productId);
-    if (stock) {
+    const stockExists = stocks.some((stock) =>
+      stock.props.stockDatas.some(
+        (stockData) => stockData.productId === productId
+      )
+    );
+    if (stockExists) {
       throw new StockErrors.AlReadyExists();
     }
+  }
+
+  async addStockDataToAllLocations(stockData: StockData): Promise<void> {
+    const stocks = Array.from(this.map.values());
+    for (const stock of stocks) {
+      stock.props.stockDatas.push(stockData);
+      this.map.set(stock.props.id, stock);
+    }
+    return;
+  }
+
+  async getAllIds(): Promise<string[] | null> {
+    const stocks = Array.from(this.map.values());
+    const stockIds = stocks.map((elm) => elm.props.id);
+    return stockIds
   }
 
   async delete(id: string): Promise<void> {
@@ -36,10 +55,4 @@ export class InMemoryStockRepository implements StockRepository {
       throw new StockErrors.NotFound();
     }
   }
-
-  
-
-  // async updateByOrder(productInfo: ProductInfo[]): Promise<Stock> {
-  //   const stocks = 
-  // }
 }

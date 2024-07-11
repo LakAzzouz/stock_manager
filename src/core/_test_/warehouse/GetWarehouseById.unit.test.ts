@@ -2,7 +2,7 @@ import { Warehouse } from "../../entities/Warehouse";
 import { WarehouseErrors } from "../../errors/WarehouseErrors";
 import { WarehouseRepository } from "../../repositories/WarehouseRepository";
 import { GetWarehouseById } from "../../usecases/Warehouse/GetWarehouseById";
-import { InMemoryWarehouseRepository } from "../adapters/InMemoryWarehouseRepository";
+import { InMemoryWarehouseRepository } from "../../adapters/repositories/InMemoryWarehouseRepository";
 import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - get warehouse by id", () => {

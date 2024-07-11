@@ -6,8 +6,16 @@ export class SqlStockMapper implements Mapper<StockModel, Stock> {
   toDomain(raw: StockModel): Stock {
     const stock = new Stock({
       id: raw.id,
-      productId: raw.product_id,
-      stockByLocation: raw.stock_by_location,
+      locationId: raw.location_id,
+      type: raw.type,
+      stockDatas: raw.stock_datas.map((elm) => {
+        return {
+          productId: elm.product_id,
+          quantity: elm.quantity,
+          threshold: elm.threshold,
+          stockId: elm.stock_id
+        };
+      }),
       createdAt: raw.created_at,
       updatedAt: raw.updated_at,
     });
@@ -17,8 +25,16 @@ export class SqlStockMapper implements Mapper<StockModel, Stock> {
   fromDomain(data: Stock): StockModel {
     const stockModel: StockModel = {
       id: data.props.id,
-      product_id: data.props.productId,
-      stock_by_location: data.props.stockByLocation,
+      location_id: data.props.locationId,
+      type: data.props.type,
+      stock_datas: data.props.stockDatas.map((elm) => {
+        return {
+          product_id: elm.productId,
+          quantity: elm.quantity,
+          threshold: elm.threshold,
+          stock_id: elm.stockId
+        };
+      }),
       created_at: data.props.createdAt,
       updated_at: data.props.updatedAt,
     };

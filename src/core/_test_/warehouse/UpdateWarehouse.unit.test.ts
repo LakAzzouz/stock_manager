@@ -1,7 +1,7 @@
 import { Warehouse } from "../../entities/Warehouse";
 import { WarehouseRepository } from "../../repositories/WarehouseRepository";
 import { UpdateWarehouse } from "../../usecases/Warehouse/UpdateWarehouse";
-import { InMemoryWarehouseRepository } from "../adapters/InMemoryWarehouseRepository";
+import { InMemoryWarehouseRepository } from "../../adapters/repositories/InMemoryWarehouseRepository";
 import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - update warehouse", () => {

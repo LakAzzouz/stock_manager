@@ -2,7 +2,7 @@ import { Stock } from "../../entities/Stock";
 import { StockErrors } from "../../errors/StockErrors";
 import { StockRepository } from "../../repositories/StockRepository";
 import { DeleteStock } from "../../usecases/Stock/DeleteStock";
-import { InMemoryStockRepository } from "../adapters/InMemoryStockRepository";
+import { InMemoryStockRepository } from "../../adapters/repositories/InMemoryStockRepository";
 import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - delete stock", () => {

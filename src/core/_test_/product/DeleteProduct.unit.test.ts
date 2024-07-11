@@ -2,7 +2,7 @@ import { Product, ProductType } from "../../entities/Product";
 import { ProductErrors } from "../../errors/ProductErrors";
 import { ProductRepository } from "../../repositories/ProductRepository";
 import { DeleteProduct } from "../../usecases/Product/DeleteProduct";
-import { InMemoryProductRepository } from "../adapters/InMemoryProductRepository";
+import { InMemoryProductRepository } from "../../adapters/repositories/InMemoryProductRepository";
 import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - Delete product", () => {

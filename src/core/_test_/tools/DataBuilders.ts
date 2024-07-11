@@ -4,11 +4,13 @@ import { Product, ProductType } from "../../entities/Product";
 import { Store } from "../../entities/Store";
 import { Order } from "../../entities/Order";
 import { Warehouse } from "../../entities/Warehouse";
-import { ProductInfo } from "../../valuesObject.ts/ProductInfo";
+import { ProductInfo } from "../../types/ProductInfo";
 import { Sale } from "../../entities/Sale";
 import { Stock } from "../../entities/Stock";
-import { Location, StockData } from "../../types/StockData";
+import { StockData } from "../../types/StockData";
 import { OrderStatus } from "../../types/OrderStatus";
+import { User } from "../../entities/User";
+import { Location } from "../../types/LocationType";
 
 type GenerateProduct = {
   id?: string;
@@ -63,11 +65,25 @@ type GenerateSale = {
 
 type GenerateStock = {
   id?: string;
-  productId?: string;
-  stockByLocation?: StockData[];
+  locationId?: string;
+  type?: Location;
+  stockDatas?: StockData[];
   createdAt?: Date,
   updatedAt?: Date
 };
+
+type GenerateUser = {
+  id?: string;
+  username?: string;
+  email?: string;
+  password?: string;
+  birthDate?: Date;
+  isVerified?: boolean;
+  resetPasswordCode?: string;
+  verifyEmailCode?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
 
 export class DataBuilders {
   static generateProduct(props?: GenerateProduct): Product {
@@ -79,7 +95,7 @@ export class DataBuilders {
       price: props?.price ? props.price : faker.number.int({ min: 100, max: 500 }),
       size: props?.size ? props.size : faker.number.int({ min: 35, max: 49 }),
       createdAt: props?.createdAt ? props.createdAt : new Date(1719152430000),
-      updatedAt: props?.updatedAt ? props.updatedAt : new Date(1719152430000),
+      updatedAt: props?.updatedAt ? props.updatedAt : new Date(1719152430000)
     });
   }
 
@@ -92,7 +108,7 @@ export class DataBuilders {
       frequentation: props?.frequentation ? props.frequentation : 3500,
       priceReduction: props?.priceReduction ? props.priceReduction : 0,
       createdAt: props?.createdAt ? props.createdAt : new Date(1719152430000),
-      updatedAt: props?.updatedAt ? props.updatedAt : new Date(1719152430000),
+      updatedAt: props?.updatedAt ? props.updatedAt : new Date(1719152430000)
     });
   }
 
@@ -106,7 +122,7 @@ export class DataBuilders {
       orderDate: props?.orderDate ? props.orderDate : new Date(1719152430000),
       expectedArrivalDate: props?.expectedDateOfArrival ? props.expectedDateOfArrival : new Date(1719152430000),
       dateOfArrival: props?.dateOfArrival ? props.dateOfArrival : new Date(1719152430000),
-      updatedAt: props?.updatedAt ? props.updatedAt : new Date(1719152430000),
+      updatedAt: props?.updatedAt ? props.updatedAt : new Date(1719152430000)
     });
   }
 
@@ -117,7 +133,7 @@ export class DataBuilders {
       managerId: props?.managerId ? props.managerId : v4(),
       numberOfEmployees: props?.numberOfEmployees ? props.numberOfEmployees : 20,
       createdAt: props?.createdAt ? props.createdAt : new Date(1719152430000),
-      updatedAt: props?.updatedAt ? props.updatedAt : new Date(1719152430000),
+      updatedAt: props?.updatedAt ? props.updatedAt : new Date(1719152430000)
     });
   }
 
@@ -127,17 +143,33 @@ export class DataBuilders {
       productInfos: props?.productInfos ? props.productInfos : [{productId: v4(), quantity: faker.number.int({min: 1, max: 15})}],
       totalPrice: props?.totalPrice ? props.totalPrice : 100,
       saleDate: props?.saleDate ? props.saleDate : new Date(1719152430000),
-      updatedAt: props?.updatedAt ? props.updatedAt : new Date(1719152430000),
+      updatedAt: props?.updatedAt ? props.updatedAt : new Date(1719152430000)
     })
   }
 
   static generateStock(props?: GenerateStock): Stock {
     return new Stock({
       id: props?.id ? props.id : v4(),
-      productId: props?.productId ? props.productId : v4(),
-      stockByLocation: props?.stockByLocation ? props.stockByLocation : [{type: Location.STORE, locationId: v4(), quantity: faker.number.int(), threshold: faker.number.int()}],
+      locationId: props?.locationId ? props.locationId : v4(),
+      type: props?.type ? props.type : Location.STORE || Location.WAREHOUSE,
+      stockDatas: props?.stockDatas ? props.stockDatas : [{productId: v4(), quantity: faker.number.int({min: 10000, max: 50000}), threshold: faker.number.int({min: 1000, max: 5000}), stockId: props?.id ? props.id : v4()}],
       createdAt: props?.createdAt ? props.createdAt : new Date(1719152430000),
-      updatedAt: props?.updatedAt ? props.updatedAt : new Date(1719152430000),
+      updatedAt: props?.updatedAt ? props.updatedAt : new Date(1719152430000)
+    })
+  }
+
+  static generateUser(props?: GenerateUser): User {
+    return new User ({
+      id: props?.id ? props.id : v4(),
+      username: props?.username ? props.username : faker.internet.userName(),
+      email: props?.email ? props.email : faker.internet.email(),
+      password: props?.password ? props.password : faker.internet.password(),
+      birthDate: props?.birthDate ? props.birthDate : faker.date.birthdate(),
+      isVerified: props?.isVerified ? props.isVerified : false,
+      resetPasswordCode: props?.resetPasswordCode ? props.resetPasswordCode : "",
+      verifyEmailCode: props?.verifyEmailCode ? props.verifyEmailCode : "",
+      createdAt: props?.createdAt ? props.createdAt : new Date(1719152430000),
+      updatedAt: props?.updatedAt ? props.updatedAt : new Date(1719152430000)
     })
   }
 }

@@ -1,91 +1,73 @@
 import { Stock } from "../../entities/Stock";
 import { StockRepository } from "../../repositories/StockRepository";
-import { InMemoryStockRepository } from "../adapters/InMemoryStockRepository";
-import { Location, Threshold } from "../../types/StockData";
-import { CreateStock } from "../../usecases/Stock/CreateStock";
-import { StoreRepository } from "../../repositories/StoreRepository";
-import { WarehouseRepository } from "../../repositories/WarehouseRepository";
-import { Store } from "../../entities/Store";
-import { Warehouse } from "../../entities/Warehouse";
-import { InMemoryStoreRepository } from "../adapters/InMemoryStoreRepository";
-import { InMemoryWarehouseRepository } from "../adapters/InMemoryWarehouseRepository";
-import { DataBuilders } from "../tools/DataBuilders";
+import { InMemoryStockRepository } from "../../adapters/repositories/InMemoryStockRepository";
+import { CreateStockData } from "../../usecases/Stock/CreateStockData";
+import { Location } from "../../types/LocationType";
+import { StockDataRepository } from "../../repositories/StockDataRepository";
+import { StockData } from "../../types/StockData";
+import { InMemoryStockDataRepository } from "../../adapters/repositories/InMemoryStockDataRepository";
 import { StockErrors } from "../../errors/StockErrors";
 
 describe("Unit - create stock", () => {
   let stockRepository: StockRepository;
-  let storeRepository: StoreRepository;
-  let warehouseRepository: WarehouseRepository;
-  let createStock: CreateStock;
+  let stockDataRepository: StockDataRepository;
+  let createStock: CreateStockData;
   const stockDb = new Map<string, Stock>();
-  const storeDb = new Map<string, Store>();
-  const warehouseDb = new Map<string, Warehouse>();
-  const store = DataBuilders.generateStore({});
+  const stockDataDb = new Map<string, StockData>();
   const productId = "product_id";
-  const locationId = "location_id";
-  const quantity = 20;
-  const stockByLocation = [
-    {
-      type: Location,
-      locationId,
-      quantity,
-      threshold: Threshold,
-    },
-  ];
+  const stockId = "stock_id";
+  const quantity = 0;
+  let stock: Stock
+  let stock2: Stock
 
   beforeAll(async () => {
     stockRepository = new InMemoryStockRepository(stockDb);
-    storeRepository = new InMemoryStoreRepository(storeDb);
-    warehouseRepository = new InMemoryWarehouseRepository(warehouseDb);
-    createStock = new CreateStock(
-      stockRepository,
-      storeRepository,
-      warehouseRepository
-    );
+    stockDataRepository = new InMemoryStockDataRepository(stockDataDb);
+    createStock = new CreateStockData(stockRepository, stockDataRepository);
+    stock = new Stock ({
+      id: "id1",
+      locationId: "location_id1",
+      type: Location.STORE,
+      stockDatas: [{
+        productId, 
+        quantity,
+        stockId
+      }],
+      createdAt: new Date()
+    })
+    stock2 = new Stock ({
+      id: "id2",
+      locationId: "location_id2",
+      type: Location.WAREHOUSE,
+      stockDatas: [{
+        productId, 
+        quantity,
+        stockId
+      }],
+      createdAt: new Date()
+    })
   });
 
   afterEach(async () => {
-    storeDb.clear();
     stockDb.clear();
-    warehouseDb.clear();
   });
 
   it("Should create stock", async () => {
-    storeDb.set(store.props.id, store);
+    stockDb.set(stock.props.id, stock);
+    stockDb.set(stock2.props.id, stock2);
 
     const result = await createStock.execute({
-      productId,
-    });
+      productId
+    })
 
-    const stockStored = stockDb.get(result.props.id)
+    const stockUpdated = stockDb.get(stock.props.id)
+    const stockUpdated2 = stockDb.get(stock2.props.id)
 
-    expect(result.props.id).toBeDefined();
-    expect(result.props.productId).toEqual(productId);
-    expect(result.props.stockByLocation).toHaveLength(1);
-    expect(result.props.stockByLocation[0].type).toEqual(Location.STORE);
-    expect(result.props.createdAt).toBeDefined();
-    expect(stockStored).toBeTruthy()
-  });
-
-  it("Should not create stock without store and warehouse", async () => {
-    const result = createStock.execute({
-      productId,
-    });
-
-    await expect(result).rejects.toThrow(StockErrors.NeedStoreOrWarehouseId);
-  });
-
-  it("Should throw an error because already exist with the product", async () => {
-    const stock = DataBuilders.generateStock({
-      productId,
-    });
-
-    stockDb.set(stock.props.id, stock);
-
-    const result = createStock.execute({
-      productId,
-    });
-
-    await expect(result).rejects.toThrow(StockErrors.AlReadyExists);
+    if(!stockUpdated || !stockUpdated2) {
+      throw new StockErrors.NotFound()
+    }
+    
+    expect(stockUpdated.props.stockDatas).toHaveLength(1);
+    expect(stockUpdated2.props.stockDatas).toHaveLength(1)
   });
 });

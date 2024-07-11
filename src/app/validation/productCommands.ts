@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const productCreateSchema = z.object({
   name: z.string(),
-  productType: z.any().refine((val) => val.toLowerCase() === "shoes" || val.toLowerCase() === "tee-shirt",
+  productType: z.any().refine((val) =>val.toLowerCase() === "shoes" || val.toLowerCase() === "tee-shirt",
       {
         message: "Need shoes or tee-shirt",
       }
@@ -24,7 +24,7 @@ export class ProductCreateCommand {
 }
 
 export const productUpdateSchema = z.object({
-  newPrice: z.number()
+  newPrice: z.number(),
 });
 
 type ProductUpdateSchema = z.infer<typeof productUpdateSchema>;

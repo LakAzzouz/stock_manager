@@ -2,7 +2,7 @@ import { Sale } from "../../entities/Sale";
 import { SaleErrors } from "../../errors/SaleErrors";
 import { SaleRepository } from "../../repositories/SaleRepository";
 import { GetSaleById } from "../../usecases/Sale/GetSaleById";
-import { InMemorySaleRepository } from "../adapters/InMemorySaleRepository";
+import { InMemorySaleRepository } from "../../adapters/repositories/InMemorySaleRepository";
 import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - get sale by id", () => {

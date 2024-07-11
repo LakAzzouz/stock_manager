@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 export const warehouseCreateSchema = z.object({
-    city: z.string(), 
-    numberOfEmployees: z.number()
+  city: z.string(),
+  numberOfEmployees: z.number(),
 });
 
 type WarehouseCreateSchema = z.infer<typeof warehouseCreateSchema>;
@@ -18,7 +18,7 @@ export class WarehouseCreateCommand {
 }
 
 export const warehouseUpdateSchema = z.object({
-    newNumberOfEmployees: z.number()
+  newNumberOfEmployees: z.number(),
 });
 
 type WarehouseUpdateSchema = z.infer<typeof warehouseUpdateSchema>;

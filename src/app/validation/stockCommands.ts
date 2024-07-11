@@ -1,8 +1,9 @@
 import { z } from "zod";
 
 export const stockInitiateSchema = z.object({
-  productId: z.string(),
-  stockByLocation: z.any(),
+  locationId: z.string(),
+  stockDatas: z.any(),
+  type: z.any(),
 });
 
 type StockInitiateSchema = z.infer<typeof stockInitiateSchema>;

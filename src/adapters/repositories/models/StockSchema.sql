@@ -1,8 +1,9 @@
 USE stock_manager;
 
 CREATE TABLE stocks (
-    `id` VARCHAR(16) PRIMARY KEY NOT NULL,
-    product_id VARCHAR(16) NOT NULL,
+    `id` VARCHAR(36) PRIMARY KEY NOT NULL,
+    location_id VARCHAR(36) NOT NULL,
+    `type` VARCHAR(16),
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 )

@@ -1,12 +1,14 @@
 import { Product, ProductType } from "../../entities/Product";
 import { ProductErrors } from "../../errors/ProductErrors";
+import { MediaGateway } from "../../gateways/MediaGateway";
 import { ProductRepository } from "../../repositories/ProductRepository";
 import { CreateProduct } from "../../usecases/Product/CreateProduct";
-import { InMemoryProductRepository } from "../adapters/InMemoryProductRepository";
+import { InMemoryProductRepository } from "../../adapters/repositories/InMemoryProductRepository";
 
 describe("Unit - Create product", () => {
   let productRepository: ProductRepository;
   let createProduct: CreateProduct;
+  let mediaGateway: MediaGateway;
   const productDb = new Map<string, Product>();
   const shoesName = "Air Jordan";
   const size = 43;
@@ -15,7 +17,7 @@ describe("Unit - Create product", () => {
 
   beforeAll(async () => {
     productRepository = new InMemoryProductRepository(productDb);
-    createProduct = new CreateProduct(productRepository);
+    createProduct = new CreateProduct(productRepository, mediaGateway);
   });
 
   afterEach(async () => {
@@ -26,7 +28,6 @@ describe("Unit - Create product", () => {
     const result = await createProduct.execute({
       name: shoesName,
       productType: ProductType.SHOES,
-      image,
       price,
       size,
     });
@@ -34,7 +35,6 @@ describe("Unit - Create product", () => {
     expect(result.props.id).toBeDefined();
     expect(result.props.name).toEqual(shoesName);
     expect(result.props.productType).toEqual(ProductType.SHOES);
-    expect(result.props.image).toEqual(image)
     expect(result.props.size).toEqual(size);
     expect(result.props.price).toEqual(price);
     expect(result.props.createdAt).toBeDefined();

@@ -1,6 +1,5 @@
 import express from "express";
 import { CreateProduct } from "../../core/usecases/Product/CreateProduct";
-import { InMemoryProductRepository } from "../../core/_test_/adapters/InMemoryProductRepository";
 import { Product } from "../../core/entities/Product";
 import { GetProductById } from "../../core/usecases/Product/GetProductById";
 import { GetProductByName } from "../../core/usecases/Product/GetProductByName";
@@ -9,44 +8,41 @@ import { DeleteProduct } from "../../core/usecases/Product/DeleteProduct";
 import { ProductCreateCommand, ProductUpdateCommand } from "../validation/productCommands";
 import { SqlProductRepository } from "../../adapters/repositories/SQL/SqlProductRepository";
 import { SqlProductMapper } from "../../adapters/repositories/mappers/SqlProductMapper";
-import { db } from "../config/dbConfig";
 import multer from 'multer';
+import { InMemoryProductRepository } from "../../core/adapters/repositories/InMemoryProductRepository";
+import { initFirebase } from "../config/InitFirebase";
+import { FirebaseStorageGateway } from "../../adapters/gateways/FirebaseStorageGateway";
+import { db } from "../config/dbConfig";
 
 export const productRouter = express.Router();
 
 export const productDb = new Map<string, Product>();
 
-const productRepository = new InMemoryProductRepository(productDb);
-const sqlProduct = new SqlProductRepository(db, new SqlProductMapper)
+const sqlProductRepository = new SqlProductRepository(db, new SqlProductMapper)
+const productRepository = new InMemoryProductRepository(productDb)
+const firebase = initFirebase()
+const firebaseGateway = new FirebaseStorageGateway(firebase);
 
-const createProduct = new CreateProduct(productRepository);
-const getProductById = new GetProductById(productRepository);
-const getProductByName = new GetProductByName(productRepository);
-const updateProduct = new UpdateProduct(productRepository);
-const deleteProduct = new DeleteProduct(productRepository);
+const createProduct = new CreateProduct(sqlProductRepository, firebaseGateway);
+const getProductById = new GetProductById(sqlProductRepository);
+const getProductByName = new GetProductByName(sqlProductRepository);
+const updateProduct = new UpdateProduct(sqlProductRepository);
+const deleteProduct = new DeleteProduct(sqlProductRepository);
 
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname.split(" ").join("_")}`);
-  },
-});
-
-const upload = multer({ storage: storage });
+const storage = multer.memoryStorage();
+export const upload = multer({ storage: storage });
 
 productRouter.post("/", upload.single("file"), async (req: express.Request, res: express.Response) => {
     try {
       const body = JSON.parse(req.body.body)
-
       const { name, productType, price, size } = ProductCreateCommand.validateProductCreate(body);
 
       const product = await createProduct.execute({
         name,
         productType,
-        image: req.file?.filename,
+        file: req.file?.buffer,
+        fileName: req.file?.originalname,
+        mimetype: "jpg",
         price,
         size,
       });
@@ -58,7 +54,7 @@ productRouter.post("/", upload.single("file"), async (req: express.Request, res:
         price,
         size,
         createdAt: product.props.createdAt,
-        image: req.file?.filename ? "Image is uploaded" : "Image not found" //ternaire c'est un if mais seulement dans un objet 
+        image: product.props.image
       };
 
       res.status(201).send(result);
@@ -139,7 +135,7 @@ productRouter.patch("/:id", async (req: express.Request, res: express.Response) 
         price: newPrice,
         size: product.props.size,
         createdAt: product.props.createdAt,
-        updateAt: product.props.updatedAt
+        updateAt: product.props.updatedAt,
       };
 
       res.status(200).send(result);

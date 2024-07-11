@@ -1,13 +1,14 @@
 import { v4 } from "uuid";
-import { Location, StockData, Threshold } from "../types/StockData";
-import { StockErrors } from "../errors/StockErrors";
+import { StockData } from "../types/StockData";
+import { Location } from "../types/LocationType";
 
 export type StockProperties = {
   id: string;
-  productId: string; //locationId
-  stockByLocation: StockData[]; 
+  locationId: string; 
+  type: Location;
+  stockDatas: StockData[]; 
   createdAt: Date;
-  updatedAt?: Date
+  updatedAt?: Date;
 };
 
 export class Stock {
@@ -17,56 +18,32 @@ export class Stock {
     this.props = stockProperties;
   }
 
-  static initiate(props: {productId: string, stockByLocation: StockData[]}): Stock {
+  static initiate(props: {locationId: string, type: Location, stockDatas: StockData[]}): Stock {
     const stock = new Stock({
       id: v4(),
-      productId: props.productId,
-      stockByLocation: props.stockByLocation,
+      locationId: props.locationId,
+      type: props.type,
+      stockDatas: props.stockDatas,
       createdAt: new Date()
     });
     return stock;
   }
 
-  static create(props: {productId: string, storeIds: string[], warehouseIds: string[]}): Stock {
-    const {productId, storeIds, warehouseIds} = props
-    const stockDatas = this.createStockData({
-      storeIds,
-      warehouseIds
-    })
-    const stock = new Stock({
-      id: v4(),
-      productId,
-      stockByLocation: stockDatas,
-      createdAt: new Date()
-    })
-    return stock
-  }
+  static createStockDatas(props: {productId: string, stockIds: string[]}): StockData[] {
+    const {productId, stockIds} = props
 
-  private static createStockData(props: {storeIds: string[], warehouseIds: string[]}): StockData[] {
-    const {storeIds, warehouseIds} = props;
-    const storeStockDatas: StockData[] = storeIds.map((storeId) => {
-      return {
-        type: Location.STORE,
-        locationId: storeId,
-        quantity: 0,
-        threshold: Threshold.STORE
-      }
-    })
-    const warehouseStockDatas: StockData[] = warehouseIds.map((warehouseId) => {
-      return {
-        type: Location.WAREHOUSE,
-        locationId: warehouseId,
-        quantity: 0,
-        threshold: Threshold.WAREHOUSE
-      }
-    })
+    let stockDatas: StockData[] = []
 
-    const stockDatas = [...storeStockDatas, ...warehouseStockDatas]
-    if(stockDatas.length === 0) {
-      throw new StockErrors.NeedStoreOrWarehouseId()
+    for (const stockId of stockIds) {
+      const stockData: StockData = ({
+        productId,
+        quantity: 0,
+        stockId
+      })
+
+      stockDatas.push(stockData);
     }
-
+    
     return stockDatas
   }
-  
 }

@@ -13,7 +13,7 @@ export class InMemoryStoreRepository implements StoreRepository {
     this.map.set(store.props.id, store);
   }
 
-  async getById(id: string): Promise<Store> {
+  async getById(id: string): Promise<Store | null> {
     const store = this.map.get(id);
     if (!store) {
       throw new StoreErrors.NotFound();
@@ -21,15 +21,16 @@ export class InMemoryStoreRepository implements StoreRepository {
     return store;
   }
 
-  async getByCity(city: string): Promise<Store> {
-    const store = this.map.get(city);
+  async getByCity(city: string): Promise<Store | null> {
+    const arr = Array.from(this.map.values());
+    const store = arr.find((elm) => elm.props.city === city);
     if (!store) {
       throw new StoreErrors.NotFound();
     }
     return store;
   }
 
-  async getAllIds(): Promise<string[]> {
+  async getAllIds(): Promise<string[] | null> {
     const allStores = Array.from(this.map.values())
     const AllStoresIds = allStores.map((elm) => elm.props.id)
     return AllStoresIds

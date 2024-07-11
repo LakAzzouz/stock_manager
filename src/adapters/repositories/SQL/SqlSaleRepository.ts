@@ -26,13 +26,12 @@ export class SqlSaleRepository implements SaleRepository {
           updated_at: saleModel.updated_at ? saleModel.updated_at : null,
         }
       );
-
       await tx.raw(
         `INSERT INTO product_infos (product_id, quantity, sale_id)
         VALUES (:productId, :quantity, :saleId)`,
         {
-          productId: productId,
-          quantity: quantity,
+          productId,
+          quantity,
           saleId: saleModel.id,
         }
       );

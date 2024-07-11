@@ -1,4 +1,5 @@
 import { Warehouse } from "../../entities/Warehouse";
+import { WarehouseErrors } from "../../errors/WarehouseErrors";
 import { WarehouseRepository } from "../../repositories/WarehouseRepository";
 import { Usecases } from "../Usecase";
 
@@ -12,6 +13,10 @@ export class GetWarehouseById implements Usecases<GetWarehouseByIdInput, Promise
   async execute(input: GetWarehouseByIdInput): Promise<Warehouse> {
     const warehouse = await this._warehouseRepository.getById(input.id);
 
-    return warehouse
+    if(!warehouse) {
+      throw new WarehouseErrors.NotFound();
+    }
+
+    return warehouse;
   }
 }

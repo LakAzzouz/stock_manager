@@ -1,4 +1,3 @@
-
 export interface SaleModel {
   id: string;
   product_infos: SaleModelInfo[];
@@ -9,5 +8,5 @@ export interface SaleModel {
 
 export interface SaleModelInfo {
   product_id: string;
-  quantity: number
+  quantity: number;
 }

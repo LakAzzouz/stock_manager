@@ -1,4 +1,5 @@
 import { Order } from "../../entities/Order";
+import { OrderErrors } from "../../errors/OrderErrors";
 import { OrderRepository } from "../../repositories/OrderRepository";
 import { StockRepository } from "../../repositories/StockRepository";
 import { Usecases } from "../Usecase";
@@ -10,15 +11,19 @@ type ValidateOrderInput = {
 export class ValidateOrder implements Usecases<ValidateOrderInput, Promise<Order>>{
   constructor(
     private readonly _orderRepository: OrderRepository,
-    private readonly _stockRepository: StockRepository) {}
+  ) {}
 
   async execute(input: ValidateOrderInput): Promise<Order> {
-    const order = await this._orderRepository.getById(input.id)
+    const order = await this._orderRepository.getById(input.id);
 
-    order.validate()
-  
-    await this._orderRepository.save(order)
-    
-    return order
+    if (!order) {
+      throw new OrderErrors.NotFound();
+    }
+
+    order.validate();
+
+    await this._orderRepository.save(order);
+
+    return order;
   }
 }

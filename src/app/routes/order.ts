@@ -1,8 +1,8 @@
 import express from "express";
 import { Order } from "../../core/entities/Order";
 import { CreateOrder } from "../../core/usecases/Order/CreateOrder";
-import { InMemoryOrderRepository } from "../../core/_test_/adapters/InMemoryOrderRepository";
-import { InMemoryProductRepository } from "../../core/_test_/adapters/InMemoryProductRepository";
+import { InMemoryOrderRepository } from "../../core/adapters/repositories/InMemoryOrderRepository";
+import { InMemoryProductRepository } from "../../core/adapters/repositories/InMemoryProductRepository";
 import { Product } from "../../core/entities/Product";
 import { GetOrderById } from "../../core/usecases/Order/GetOrderById";
 import { UpdateOrder } from "../../core/usecases/Order/UpdateOrder";

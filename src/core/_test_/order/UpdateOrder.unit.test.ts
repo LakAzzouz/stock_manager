@@ -1,7 +1,7 @@
 import { Order } from "../../entities/Order";
 import { OrderRepository } from "../../repositories/OrderRepository";
 import { UpdateOrder } from "../../usecases/Order/UpdateOrder";
-import { InMemoryOrderRepository } from "../adapters/InMemoryOrderRepository";
+import { InMemoryOrderRepository } from "../../adapters/repositories/InMemoryOrderRepository";
 import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - update order", () => {

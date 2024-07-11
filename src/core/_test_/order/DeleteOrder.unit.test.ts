@@ -2,7 +2,7 @@ import { Order } from "../../entities/Order";
 import { OrderErrors } from "../../errors/OrderErrors";
 import { OrderRepository } from "../../repositories/OrderRepository";
 import { DeleteOrder } from "../../usecases/Order/DeleteOrder";
-import { InMemoryOrderRepository } from "../adapters/InMemoryOrderRepository";
+import { InMemoryOrderRepository } from "../../adapters/repositories/InMemoryOrderRepository";
 import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - delete order", () => {

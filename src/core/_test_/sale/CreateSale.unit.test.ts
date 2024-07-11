@@ -5,8 +5,8 @@ import { SaleErrors } from "../../errors/SaleErrors";
 import { ProductRepository } from "../../repositories/ProductRepository";
 import { SaleRepository } from "../../repositories/SaleRepository";
 import { CreateSale } from "../../usecases/Sale/CreateSale";
-import { InMemoryProductRepository } from "../adapters/InMemoryProductRepository";
-import { InMemorySaleRepository } from "../adapters/InMemorySaleRepository";
+import { InMemoryProductRepository } from "../../adapters/repositories/InMemoryProductRepository";
+import { InMemorySaleRepository } from "../../adapters/repositories/InMemorySaleRepository";
 import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - create sale", () => {

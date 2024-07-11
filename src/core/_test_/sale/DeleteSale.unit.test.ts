@@ -2,7 +2,7 @@ import { Sale } from "../../entities/Sale";
 import { SaleErrors } from "../../errors/SaleErrors";
 import { SaleRepository } from "../../repositories/SaleRepository";
 import { DeleteSale } from "../../usecases/Sale/DeleteSale";
-import { InMemorySaleRepository } from "../adapters/InMemorySaleRepository";
+import { InMemorySaleRepository } from "../../adapters/repositories/InMemorySaleRepository";
 import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - delete sale", () => {

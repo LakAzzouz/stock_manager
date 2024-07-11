@@ -2,7 +2,7 @@ import { Knex } from "knex";
 import { ProductRepository } from "../../../core/repositories/ProductRepository";
 import { SqlProductMapper } from "../mappers/SqlProductMapper";
 import { Product } from "../../../core/entities/Product";
-import { ProductInfo } from "../../../core/valuesObject.ts/ProductInfo";
+import { ProductInfo } from "../../../core/types/ProductInfo";
 
 export class SqlProductRepository implements ProductRepository {
   constructor(

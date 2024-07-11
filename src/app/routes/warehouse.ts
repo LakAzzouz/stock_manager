@@ -1,6 +1,6 @@
 import express from "express";
 import { CreateWarehouse } from "../../core/usecases/Warehouse/CreateWarehouse";
-import { InMemoryWarehouseRepository } from "../../core/_test_/adapters/InMemoryWarehouseRepository";
+import { InMemoryWarehouseRepository } from "../../core/adapters/repositories/InMemoryWarehouseRepository";
 import { Warehouse } from "../../core/entities/Warehouse";
 import { GetWarehouseById } from "../../core/usecases/Warehouse/GetWarehouseById";
 import { GetWarehouseByManagerId } from "../../core/usecases/Warehouse/GetWarehouseByManagerId";

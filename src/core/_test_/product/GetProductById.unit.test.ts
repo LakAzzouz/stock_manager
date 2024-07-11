@@ -1,7 +1,7 @@
 import { Product, ProductType } from "../../entities/Product";
 import { ProductRepository } from "../../repositories/ProductRepository";
 import { GetProductById } from "../../usecases/Product/GetProductById";
-import { InMemoryProductRepository } from "../adapters/InMemoryProductRepository";
+import { InMemoryProductRepository } from "../../adapters/repositories/InMemoryProductRepository";
 import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - Get product by id", () => {

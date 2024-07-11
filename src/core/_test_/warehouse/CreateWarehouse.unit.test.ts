@@ -1,7 +1,7 @@
 import { Warehouse } from "../../entities/Warehouse";
 import { WarehouseRepository } from "../../repositories/WarehouseRepository";
 import { CreateWarehouse } from "../../usecases/Warehouse/CreateWarehouse";
-import { InMemoryWarehouseRepository } from "../adapters/InMemoryWarehouseRepository";
+import { InMemoryWarehouseRepository } from "../../adapters/repositories/InMemoryWarehouseRepository";
 
 describe("Unit - create warehouse", () => {
   let warehouseRepository: WarehouseRepository;

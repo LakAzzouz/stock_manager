@@ -2,7 +2,7 @@ import { Order } from "../../entities/Order";
 import { OrderErrors } from "../../errors/OrderErrors";
 import { OrderRepository } from "../../repositories/OrderRepository";
 import { GetOrderById } from "../../usecases/Order/GetOrderById";
-import { InMemoryOrderRepository } from "../adapters/InMemoryOrderRepository";
+import { InMemoryOrderRepository } from "../../adapters/repositories/InMemoryOrderRepository";
 import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - get order by id", () => {

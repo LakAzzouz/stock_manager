@@ -13,7 +13,7 @@ export class InMemoryWarehouseRepository implements WarehouseRepository {
     this.map.set(warehouse.props.id, warehouse);
   }
 
-  async getById(id: string): Promise<Warehouse> {
+  async getById(id: string): Promise<Warehouse | null> {
     const warehouse = this.map.get(id);
     if (!warehouse) {
       throw new WarehouseErrors.NotFound();
@@ -21,18 +21,19 @@ export class InMemoryWarehouseRepository implements WarehouseRepository {
     return warehouse;
   }
 
-  async getByManagerId(managerId: string): Promise<Warehouse> {
-    const warehouse = this.map.get(managerId);
+  async getByManagerId(managerId: string): Promise<Warehouse | null> {
+    const arr = Array.from(this.map.values());
+    const warehouse = arr.find((elm) => elm.props.managerId === managerId);
     if (!warehouse) {
       throw new WarehouseErrors.NotFound();
     }
     return warehouse;
   }
 
-  async getAllIds(): Promise<string[]> {
-    const allWarehouses = Array.from(this.map.values())
-    const allWarehousesIds = allWarehouses.map((elm) => elm.props.id)
-    return allWarehousesIds
+  async getAllIds(): Promise<string[] | null> {
+    const allWarehouses = Array.from(this.map.values());
+    const allWarehousesIds = allWarehouses.map((elm) => elm.props.id);
+    return allWarehousesIds;
   }
 
   async delete(id: string): Promise<void> {

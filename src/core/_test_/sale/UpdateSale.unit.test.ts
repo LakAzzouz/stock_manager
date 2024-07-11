@@ -1,7 +1,7 @@
 import { Sale } from "../../entities/Sale";
 import { SaleRepository } from "../../repositories/SaleRepository";
 import { UpdateSale } from "../../usecases/Sale/UpdateSale";
-import { InMemorySaleRepository } from "../adapters/InMemorySaleRepository";
+import { InMemorySaleRepository } from "../../adapters/repositories/InMemorySaleRepository";
 import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - update Sale", () => {

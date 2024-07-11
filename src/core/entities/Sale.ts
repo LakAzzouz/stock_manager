@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import { ProductInfo } from "../valuesObject.ts/ProductInfo";
+import { ProductInfo } from "../types/ProductInfo";
 
 export type SaleProperties = {
   id: string;

@@ -1,4 +1,5 @@
 import { Sale } from "../../entities/Sale";
+import { SaleErrors } from "../../errors/SaleErrors";
 import { SaleRepository } from "../../repositories/SaleRepository";
 import { Usecases } from "../Usecase";
 
@@ -11,6 +12,10 @@ export class GetSaleById implements Usecases<GetSaleByIdInput, Promise<Sale>> {
 
   async execute(input: GetSaleByIdInput): Promise<Sale> {
     const sale = await this._saleRepository.getById(input.id);
+
+    if(!sale) {
+      throw new SaleErrors.NotFound();
+    }
 
     return sale;
   }

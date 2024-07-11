@@ -1,7 +1,7 @@
 import { Product } from "../../entities/Product";
 import { ProductErrors } from "../../errors/ProductErrors";
 import { ProductRepository } from "../../repositories/ProductRepository";
-import { ProductInfo } from "../../valuesObject.ts/ProductInfo";
+import { ProductInfo } from "../../types/ProductInfo";
 
 export class InMemoryProductRepository implements ProductRepository {
   map: Map<string, Product>;
@@ -14,7 +14,7 @@ export class InMemoryProductRepository implements ProductRepository {
     this.map.set(product.props.id, product);
   }
 
-  async getById(id: string): Promise<Product> {
+  async getById(id: string): Promise<Product | null> {
     const product = this.map.get(id);
     if (!product) {
       throw new ProductErrors.NotFound();
@@ -22,8 +22,9 @@ export class InMemoryProductRepository implements ProductRepository {
     return product;
   }
 
-  async getByName(name: string): Promise<Product> {
-    const product = this.map.get(name);
+  async getByName(name: string): Promise<Product | null> {
+    const arr = Array.from(this.map.values());
+    const product = arr.find((elm) => elm.props.name === name)
     if (!product) {
       throw new ProductErrors.NotFound();
     }

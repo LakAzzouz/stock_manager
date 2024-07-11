@@ -1,7 +1,7 @@
 import { Store } from "../../entities/Store";
 import { StoreRepository } from "../../repositories/StoreRepository";
 import { CreateStore } from "../../usecases/Store/CreateStore";
-import { InMemoryStoreRepository } from "../adapters/InMemoryStoreRepository";
+import { InMemoryStoreRepository } from "../../adapters/repositories/InMemoryStoreRepository";
 
 describe("Unit - Create store", () => {
   let storeRepository: StoreRepository;

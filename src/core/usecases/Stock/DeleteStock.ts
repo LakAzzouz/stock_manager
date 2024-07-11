@@ -10,6 +10,7 @@ export class DeleteStock implements Usecases<DeleteStockInput, Promise<void>> {
 
   async execute(input: DeleteStockInput): Promise<void> {
     await this._stockRepository.delete(input.id);
+    
     return;
   }
 }

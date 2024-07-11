@@ -13,7 +13,7 @@ export class InMemorySaleRepository implements SaleRepository {
     this.map.set(sale.props.id, sale);
   }
 
-  async getById(id: string): Promise<Sale> {
+  async getById(id: string): Promise<Sale | null> {
     const sale = this.map.get(id);
     if (!sale) {
       throw new SaleErrors.NotFound();

@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
 import { DateOfArrival } from "../valuesObject.ts/DateOfArrival";
-import { ProductInfo } from "../valuesObject.ts/ProductInfo";
+import { ProductInfo } from "../types/ProductInfo";
 import { OrderStatus } from "../types/OrderStatus";
 
 export type OrderProperties = {

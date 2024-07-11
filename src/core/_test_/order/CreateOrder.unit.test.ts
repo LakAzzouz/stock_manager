@@ -4,8 +4,8 @@ import { OrderRepository } from "../../repositories/OrderRepository";
 import { ProductRepository } from "../../repositories/ProductRepository";
 import { OrderStatus } from "../../types/OrderStatus";
 import { CreateOrder } from "../../usecases/Order/CreateOrder";
-import { InMemoryOrderRepository } from "../adapters/InMemoryOrderRepository";
-import { InMemoryProductRepository } from "../adapters/InMemoryProductRepository";
+import { InMemoryOrderRepository } from "../../adapters/repositories/InMemoryOrderRepository";
+import { InMemoryProductRepository } from "../../adapters/repositories/InMemoryProductRepository";
 import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - create order", () => {

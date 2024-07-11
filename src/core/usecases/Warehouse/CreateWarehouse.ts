@@ -7,7 +7,7 @@ type CreateWarehouseInput = {
   numberOfEmployees: number;
 };
 
-export class CreateWarehouse implements Usecases<CreateWarehouseInput, Promise<Warehouse>> {
+export class CreateWarehouse implements Usecases<CreateWarehouseInput, Promise<Warehouse>>{
   constructor(private readonly _warehouseRepository: WarehouseRepository) {}
 
   async execute(input: CreateWarehouseInput): Promise<Warehouse> {

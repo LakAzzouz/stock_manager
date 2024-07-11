@@ -2,7 +2,7 @@ import { Warehouse } from "../../entities/Warehouse";
 import { WarehouseErrors } from "../../errors/WarehouseErrors";
 import { WarehouseRepository } from "../../repositories/WarehouseRepository";
 import { DeleteWarehouse } from "../../usecases/Warehouse/DeleteWarehouse";
-import { InMemoryWarehouseRepository } from "../adapters/InMemoryWarehouseRepository";
+import { InMemoryWarehouseRepository } from "../../adapters/repositories/InMemoryWarehouseRepository";
 import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - delete warehouse", () => {

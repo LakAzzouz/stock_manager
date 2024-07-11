@@ -2,7 +2,7 @@ import { Store } from "../../entities/Store";
 import { StoreErrors } from "../../errors/StoreErrors";
 import { StoreRepository } from "../../repositories/StoreRepository";
 import { DeleteStore } from "../../usecases/Store/DeleteStore";
-import { InMemoryStoreRepository } from "../adapters/InMemoryStoreRepository";
+import { InMemoryStoreRepository } from "../../adapters/repositories/InMemoryStoreRepository";
 import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - delete the store", () => {
