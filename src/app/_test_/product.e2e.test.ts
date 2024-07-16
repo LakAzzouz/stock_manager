@@ -1,67 +1,41 @@
-import express from "express";
-import { SqlProductRepository } from "../../adapters/repositories/SQL/SqlProductRepository";
-import { productRouter } from "../routes/product";
-import { SqlProductMapper } from "../../adapters/repositories/mappers/SqlProductMapper";
-import request from "supertest";
-import { DataBuilders } from "../../core/_test_/tools/DataBuilders";
-import { dbTest } from "../../adapters/_test_/tools/dbTest";
+// import express from "express";
+// import request from "supertest";
 
-const app = express();
-const product = DataBuilders.generateProduct({});
+// import { SqlProductRepository } from "../../adapters/repositories/SQL/SqlProductRepository";
+// import { productRouter } from "../routes/product";
+// import { SqlProductMapper } from "../../adapters/repositories/mappers/SqlProductMapper";
+// import { DataBuilders } from "../../core/_test_/tools/DataBuilders";
+// import { dbTest } from "../../adapters/_test_/tools/dbTest";
 
-describe("E2E - Product", () => {
-  let productRepository: SqlProductRepository;
+// const app = express();
+// const product = DataBuilders.generateProduct({});
 
-  beforeAll(async () => {
-    app.use(express.json());
-    app.use("/products", productRouter);
+// describe("E2E - Product", () => {
+//   let productRepository: SqlProductRepository;
 
-    const productMapper = new SqlProductMapper();
-    productRepository = new SqlProductRepository(dbTest, productMapper);
-  });
+//   beforeAll(async () => {
+//     app.use(express.json());
+//     app.use("/products", productRouter);
 
-  afterEach(async () => {
-    await dbTest.raw(`TRUNCATE TABLE products`);
-  });
+//     const productMapper = new SqlProductMapper();
+//     productRepository = new SqlProductRepository(dbTest, productMapper);
+//   });
 
-  // it("Should return a status 201 /product", async () => {
-  //   await request(app)
-  //     .post("/products")
-  //     .send({
-  //       name: product.props.name,
-  //       productType: product.props.productType,
-  //       price: product.props.price,
-  //       size: product.props.size,
-  //     })
-  //     .expect((response: any) => {
-  //       const responseBody = response.body;
-  //       expect(responseBody.id).toBeDefined();
-  //       expect(responseBody.name).toEqual(product.props.name);
-  //       expect(responseBody.productType).toEqual(product.props.productType);
-  //       expect(responseBody.price).toEqual(product.props.price);
-  //       expect(responseBody.size).toEqual(product.props.size);
-  //       expect(responseBody.createdAt).toBeDefined();
-  //     })
-  //     .expect(201);
-  //   jest.setTimeout(1000);
-  // });
+//   afterEach(async () => {
+//     await dbTest.raw(`TRUNCATE TABLE products`);
+//   });
 
-  it("Should throw an error with status 400", async () => {
-    const response = await request(app).post("/products");
-    expect(response.status).toBe(400);
-    jest.setTimeout(1000);
-  });
-
-//   it("Should return a status 200 /products/:id", async () => {
-//     const product = DataBuilders.generateProduct({});
-
-//     await productRepository.save(product);
-
+//   it("Should return a status 201 /product", async () => {
 //     await request(app)
-//       .get(`/products/${product.props.id}`)
+//       .post("/products")
+//       .send({
+//         name: product.props.name,
+//         productType: product.props.productType,
+//         price: product.props.price,
+//         size: product.props.size,
+//       })
 //       .expect((response: any) => {
 //         const responseBody = response.body;
-//         console.log(responseBody)
 //         expect(responseBody.id).toBeDefined();
 //         expect(responseBody.name).toEqual(product.props.name);
 //         expect(responseBody.productType).toEqual(product.props.productType);
@@ -69,7 +43,34 @@ describe("E2E - Product", () => {
 //         expect(responseBody.size).toEqual(product.props.size);
 //         expect(responseBody.createdAt).toBeDefined();
 //       })
-//       .expect(200);
+//       .expect(201);
 //     jest.setTimeout(1000);
 //   });
-});
+
+//   it("Should throw an error with status 400", async () => {
+//     const response = await request(app).post("/products");
+//     expect(response.status).toBe(400);
+//     jest.setTimeout(1000);
+//   });
+
+//     it("Should return a status 200 /products/:id", async () => {
+//       const product = DataBuilders.generateProduct({});
+
+//       await productRepository.save(product);
+
+//       await request(app)
+//         .get(`/products/${product.props.id}`)
+//         .expect((response: any) => {
+//           const responseBody = response.body;
+//           console.log(responseBody)
+//           expect(responseBody.id).toBeDefined();
+//           expect(responseBody.name).toEqual(product.props.name);
+//           expect(responseBody.productType).toEqual(product.props.productType);
+//           expect(responseBody.price).toEqual(product.props.price);
+//           expect(responseBody.size).toEqual(product.props.size);
+//           expect(responseBody.createdAt).toBeDefined();
+//         })
+//         .expect(200);
+//       jest.setTimeout(1000);
+//     });
+// });

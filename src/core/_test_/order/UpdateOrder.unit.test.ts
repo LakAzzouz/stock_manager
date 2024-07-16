@@ -3,12 +3,14 @@ import { OrderRepository } from "../../repositories/OrderRepository";
 import { UpdateOrder } from "../../usecases/Order/UpdateOrder";
 import { InMemoryOrderRepository } from "../../adapters/repositories/InMemoryOrderRepository";
 import { DataBuilders } from "../tools/DataBuilders";
+import { OrderErrors } from "../../errors/OrderErrors";
 
 describe("Unit - update order", () => {
   let orderRepository: OrderRepository;
   let updateOrder: UpdateOrder;
   const orderDb = new Map<string, Order>();
   const newDateOfArrival = new Date(1)
+  const id = "id"
 
   beforeAll(async () => {
     orderRepository = new InMemoryOrderRepository(orderDb);
@@ -31,4 +33,13 @@ describe("Unit - update order", () => {
 
     expect(result.props.dateOfArrival).toEqual(newDateOfArrival)
   });
+
+  it("Should an error because order is not found", async () => {
+    const result = updateOrder.execute({
+      id,
+      dateOfArrival: newDateOfArrival
+  });
+
+  await expect(result).rejects.toThrow(OrderErrors.NotFound);
+  })
 });

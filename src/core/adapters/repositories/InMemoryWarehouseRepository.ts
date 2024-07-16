@@ -16,7 +16,7 @@ export class InMemoryWarehouseRepository implements WarehouseRepository {
   async getById(id: string): Promise<Warehouse | null> {
     const warehouse = this.map.get(id);
     if (!warehouse) {
-      throw new WarehouseErrors.NotFound();
+      return null;
     }
     return warehouse;
   }
@@ -25,7 +25,7 @@ export class InMemoryWarehouseRepository implements WarehouseRepository {
     const arr = Array.from(this.map.values());
     const warehouse = arr.find((elm) => elm.props.managerId === managerId);
     if (!warehouse) {
-      throw new WarehouseErrors.NotFound();
+      return null;
     }
     return warehouse;
   }
@@ -33,6 +33,9 @@ export class InMemoryWarehouseRepository implements WarehouseRepository {
   async getAllIds(): Promise<string[] | null> {
     const allWarehouses = Array.from(this.map.values());
     const allWarehousesIds = allWarehouses.map((elm) => elm.props.id);
+    if (!allWarehousesIds.length) {
+      return null;
+    }
     return allWarehousesIds;
   }
 

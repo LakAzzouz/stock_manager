@@ -1,13 +1,12 @@
 import "dotenv/config";
-import { EmailGateway } from "../../core/gateways/EmailGateway";
-
-
 import nodemailer from "nodemailer";
 
-export class NodeMailerGateway implements EmailGateway {
+import { EmailGateway } from "../../core/gateways/EmailGateway";
+import { SendEmailPayload } from "../../core/valuesObject.ts/SendEmailPayload";
 
-  async sendEmail(email: string, message: string, username: string): Promise<void> {
-   const transporter = nodemailer.createTransport({
+export class NodeMailerGateway implements EmailGateway {
+  async sendEmail(sendEmailPayload: SendEmailPayload): Promise<void> {
+    const transporter = nodemailer.createTransport({
       host: "smtp-mail.outlook.com",
       port: 587,
       secure: false, // Use `true` for port 465, `false` for all other ports
@@ -18,14 +17,13 @@ export class NodeMailerGateway implements EmailGateway {
     });
 
     const info = await transporter.sendMail({
-      from: '"Maddison Foo Koch 👻" <lakhdar.azzouz@outlook.fr>', // sender address
-      to: email, // list of receivers
+      from: '"stock_manager" <lakhdar.azzouz@outlook.fr>', // sender address
+      to: sendEmailPayload.email, // list of receivers
       subject: "Hello ✔", // Subject line
-      text: "Hello world", // plain text body
-      html: `<b>Security code ${message}</b>`, // html body
+      text: "Confirm your e-mail", // plain text body
+      html: `<b>Security code ${sendEmailPayload.message}</b>`, // html body
     });
 
-    console.log(info.response)
-
+    console.log(info.response);
   }
 }

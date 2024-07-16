@@ -167,7 +167,7 @@ export class DataBuilders {
       birthDate: props?.birthDate ? props.birthDate : faker.date.birthdate(),
       isVerified: props?.isVerified ? props.isVerified : false,
       resetPasswordCode: props?.resetPasswordCode ? props.resetPasswordCode : "",
-      verifyEmailCode: props?.verifyEmailCode ? props.verifyEmailCode : "",
+      verifyEmailCode: props?.verifyEmailCode ? props.verifyEmailCode : faker.string.uuid(),
       createdAt: props?.createdAt ? props.createdAt : new Date(1719152430000),
       updatedAt: props?.updatedAt ? props.updatedAt : new Date(1719152430000)
     })

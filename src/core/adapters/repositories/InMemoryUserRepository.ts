@@ -16,7 +16,7 @@ export class InMemoryUserRepository implements UserRepository {
   async getById(id: string): Promise<User | null> {
     const user = this.map.get(id);
     if (!user) {
-      throw new UserErrors.NotFound();
+      return null
     }
     return user;
   }
@@ -27,6 +27,11 @@ export class InMemoryUserRepository implements UserRepository {
     if (!user) {
       return null;
     }
+    return user;
+  }
+
+  async update(user: User): Promise<User> {
+    this.map.set(user.props.id, user);
     return user;
   }
 

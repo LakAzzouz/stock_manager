@@ -8,16 +8,12 @@ export class SqlWarehouseRepository implements WarehouseRepository {
     private readonly _knex: Knex,
     private readonly _warehouseMapper: SqlWarehouseMapper
   ) {}
-  
-  getAllIds(): Promise<string[]> {
-    throw new Error("Method not implemented.");
-  }
 
   async save(warehouse: Warehouse): Promise<void> {
     const warehouseModel = this._warehouseMapper.fromDomain(warehouse);
     await this._knex.raw(
       `INSERT INTO warehouses (id, city, manager_id, number_of_employees, created_at, updated_at)
-        VALUES (:id, :city, :manager_id, :number_of_employees, :created_at, :updated_at)`,
+      VALUES (:id, :city, :manager_id, :number_of_employees, :created_at, :updated_at)`,
       {
         id: warehouseModel.id,
         city: warehouseModel.city,
@@ -53,6 +49,16 @@ export class SqlWarehouseRepository implements WarehouseRepository {
     const warehouse = this._warehouseMapper.toDomain(warehouseModel[0][0]);
 
     return warehouse;
+  }
+
+  getAllIds(): Promise<string[]> {
+    throw new Error("Method not implemented.");
+    // const warehouseModel = await this._knex.raw(
+    //   `SELECT * FROM warehouses WHERE ids = :id`,
+    //   {
+    //     id: ,
+    //   }
+    // )
   }
 
   async delete(id: string): Promise<void> {

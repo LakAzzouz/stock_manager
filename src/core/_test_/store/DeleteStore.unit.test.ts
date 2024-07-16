@@ -39,9 +39,9 @@ describe("Unit - delete the store", () => {
     storeDb.set(store.props.id, store);
 
     const result = deleteStore.execute({
-      id: "wrong_id"
+      id: "wrong_id",
     });
 
-    await expect(result).rejects.toThrow(StoreErrors.NotFound)
-  })
+    await expect(result).rejects.toThrow(StoreErrors.NotFound);
+  });
 });

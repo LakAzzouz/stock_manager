@@ -6,12 +6,12 @@ import { InMemoryWarehouseRepository } from "../../adapters/repositories/InMemor
 import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - get warehouse by managerId", () => {
-  let warehouseRepository: WarehouseRepository;
   let getWarehouseByManagerId: GetWarehouseByManagerId;
   const warehouseDb = new Map<string, Warehouse>();
+  const managerId = "manager_id";
 
   beforeAll(async () => {
-    warehouseRepository = new InMemoryWarehouseRepository(warehouseDb);
+    const warehouseRepository = new InMemoryWarehouseRepository(warehouseDb);
     getWarehouseByManagerId = new GetWarehouseByManagerId(warehouseRepository);
   });
 
@@ -32,14 +32,10 @@ describe("Unit - get warehouse by managerId", () => {
   });
 
   it("Should throw an error because manager id is not found", async () => {
-    const warehouse = DataBuilders.generateWarehouse({});
-
-    warehouseDb.set(warehouse.props.managerId, warehouse);
-
     const result = getWarehouseByManagerId.execute({
-      managerId: "wrong_id"
+      managerId,
     });
 
     await expect(result).rejects.toThrow(WarehouseErrors.NotFound);
-  })
+  });
 });

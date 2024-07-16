@@ -32,10 +32,6 @@ describe("Unit - get store by city", () => {
   });
 
   it("Should throw an error because the store is not found", async () => {
-    const store = DataBuilders.generateStore({});
-
-    storeDb.set(store.props.city, store);
-
     const result = getStoreByCity.execute({
       city: "wrong_city",
     });

@@ -16,7 +16,7 @@ export class InMemoryStoreRepository implements StoreRepository {
   async getById(id: string): Promise<Store | null> {
     const store = this.map.get(id);
     if (!store) {
-      throw new StoreErrors.NotFound();
+      return null
     }
     return store;
   }
@@ -25,7 +25,7 @@ export class InMemoryStoreRepository implements StoreRepository {
     const arr = Array.from(this.map.values());
     const store = arr.find((elm) => elm.props.city === city);
     if (!store) {
-      throw new StoreErrors.NotFound();
+      return null
     }
     return store;
   }
@@ -33,6 +33,9 @@ export class InMemoryStoreRepository implements StoreRepository {
   async getAllIds(): Promise<string[] | null> {
     const allStores = Array.from(this.map.values())
     const AllStoresIds = allStores.map((elm) => elm.props.id)
+    if(!AllStoresIds.length) {
+      return null
+    }
     return AllStoresIds
   }
 

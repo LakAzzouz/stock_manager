@@ -1,27 +1,25 @@
 import express from "express";
+import multer from "multer";
+
 import { CreateProduct } from "../../core/usecases/Product/CreateProduct";
-import { Product } from "../../core/entities/Product";
 import { GetProductById } from "../../core/usecases/Product/GetProductById";
 import { GetProductByName } from "../../core/usecases/Product/GetProductByName";
 import { UpdateProduct } from "../../core/usecases/Product/UpdateProduct";
 import { DeleteProduct } from "../../core/usecases/Product/DeleteProduct";
-import { ProductCreateCommand, ProductUpdateCommand } from "../validation/productCommands";
+import {ProductCreateCommand, ProductUpdateCommand} from "../validation/productCommands";
 import { SqlProductRepository } from "../../adapters/repositories/SQL/SqlProductRepository";
 import { SqlProductMapper } from "../../adapters/repositories/mappers/SqlProductMapper";
-import multer from 'multer';
-import { InMemoryProductRepository } from "../../core/adapters/repositories/InMemoryProductRepository";
 import { initFirebase } from "../config/InitFirebase";
 import { FirebaseStorageGateway } from "../../adapters/gateways/FirebaseStorageGateway";
-import { db } from "../config/dbConfig";
+import { dbTest } from "../../adapters/_test_/tools/dbTest";
 
 export const productRouter = express.Router();
+const firebase = initFirebase();
 
-export const productDb = new Map<string, Product>();
-
-const sqlProductRepository = new SqlProductRepository(db, new SqlProductMapper)
-const productRepository = new InMemoryProductRepository(productDb)
-const firebase = initFirebase()
 const firebaseGateway = new FirebaseStorageGateway(firebase);
+
+const productMapper = new SqlProductMapper();
+const sqlProductRepository = new SqlProductRepository(dbTest, productMapper);
 
 const createProduct = new CreateProduct(sqlProductRepository, firebaseGateway);
 const getProductById = new GetProductById(sqlProductRepository);
@@ -34,7 +32,7 @@ export const upload = multer({ storage: storage });
 
 productRouter.post("/", upload.single("file"), async (req: express.Request, res: express.Response) => {
     try {
-      const body = JSON.parse(req.body.body)
+      const body = JSON.parse(req.body.body);
       const { name, productType, price, size } = ProductCreateCommand.validateProductCreate(body);
 
       const product = await createProduct.execute({
@@ -54,13 +52,13 @@ productRouter.post("/", upload.single("file"), async (req: express.Request, res:
         price,
         size,
         createdAt: product.props.createdAt,
-        image: product.props.image
+        image: product.props.image,
       };
 
-      res.status(201).send(result);
+      return res.status(201).send(result);
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).send(error.message);
+        return res.status(400).send(error.message);
       }
     }
   }
@@ -83,10 +81,10 @@ productRouter.get("/:id", async (req: express.Request, res: express.Response) =>
         createdAt: product.props.createdAt,
       };
 
-      res.status(200).send(result);
+      return res.status(200).send(result);
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).send(error.message);
+        return res.status(400).send(error.message);
       }
     }
   }
@@ -109,10 +107,10 @@ productRouter.get("/:name", async (req: express.Request, res: express.Response) 
         createdAt: product.props.createdAt,
       };
 
-      res.status(200).send(result);
+      return res.status(200).send(result);
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).send(error.message);
+        return res.status(400).send(error.message);
       }
     }
   }
@@ -138,10 +136,10 @@ productRouter.patch("/:id", async (req: express.Request, res: express.Response) 
         updateAt: product.props.updatedAt,
       };
 
-      res.status(200).send(result);
+      return res.status(200).send(result);
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).send(error.message);
+        return res.status(400).send(error.message);
       }
     }
   }
@@ -155,12 +153,12 @@ productRouter.delete("/:id", async (req: express.Request, res: express.Response)
         id,
       });
 
-      const result = "Product deleted";
+      const result = "PRODUCT_DELETED";
 
-      res.status(202).send(result);
+      return res.status(202).send(result);
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).send(error.message);
+        return res.status(400).send(error.message);
       }
     }
   }

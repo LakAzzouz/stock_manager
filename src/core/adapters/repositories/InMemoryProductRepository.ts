@@ -17,7 +17,7 @@ export class InMemoryProductRepository implements ProductRepository {
   async getById(id: string): Promise<Product | null> {
     const product = this.map.get(id);
     if (!product) {
-      throw new ProductErrors.NotFound();
+      return null
     }
     return product;
   }
@@ -26,7 +26,7 @@ export class InMemoryProductRepository implements ProductRepository {
     const arr = Array.from(this.map.values());
     const product = arr.find((elm) => elm.props.name === name)
     if (!product) {
-      throw new ProductErrors.NotFound();
+      return null
     }
     return product;
   }
@@ -41,19 +41,6 @@ export class InMemoryProductRepository implements ProductRepository {
       return sum;
     }, 0);
     return totalPrice;
-  }
-
-  async getQuantityByProductInfos(productInfo: ProductInfo[]): Promise<number> {
-    let totalProducts = 0;
-    for (const info of productInfo) {
-      const product = this.map.get(info.productId);
-      if (product) {
-        totalProducts += info.quantity;
-      } else {
-        throw new ProductErrors.NotFound();
-      }
-    }
-    return totalProducts;
   }
 
   async delete(id: string): Promise<void> {

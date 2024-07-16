@@ -1,26 +1,28 @@
 import express from "express";
+
 import { CreateSale } from "../../core/usecases/Sale/CreateSale";
-import { InMemorySaleRepository } from "../../core/adapters/repositories/InMemorySaleRepository";
-import { Sale } from "../../core/entities/Sale";
-import { Product } from "../../core/entities/Product";
-import { InMemoryProductRepository } from "../../core/adapters/repositories/InMemoryProductRepository";
 import { GetSaleById } from "../../core/usecases/Sale/GetSaleById";
 import { UpdateSale } from "../../core/usecases/Sale/UpdateSale";
 import { DeleteSale } from "../../core/usecases/Sale/DeleteSale";
-import { SaleCreateCommand, SaleUpdateCommand } from "../validation/saleCommands";
+import {SaleCreateCommand, SaleUpdateCommand} from "../validation/saleCommands";
+import { SqlSaleMapper } from "../../adapters/repositories/mappers/SqlSaleMapper";
+import { SqlSaleRepository } from "../../adapters/repositories/SQL/SqlSaleRepository";
+import { dbTest } from "../../adapters/_test_/tools/dbTest";
+import { SqlProductMapper } from "../../adapters/repositories/mappers/SqlProductMapper";
+import { SqlProductRepository } from "../../adapters/repositories/SQL/SqlProductRepository";
 
 export const saleRouter = express.Router();
 
-const saleDb = new Map<string, Sale>();
-const productDb = new Map<string, Product>();
+const productMapper = new SqlProductMapper();
+const sqlProductRepository = new SqlProductRepository(dbTest, productMapper);
 
-const saleRepository = new InMemorySaleRepository(saleDb);
-const productRepository = new InMemoryProductRepository(productDb);
+const saleMapper = new SqlSaleMapper();
+const sqlSaleRepository = new SqlSaleRepository(dbTest, saleMapper);
 
-const createSale = new CreateSale(saleRepository, productRepository);
-const getSaleById = new GetSaleById(saleRepository);
-const updateSale = new UpdateSale(saleRepository);
-const deleteSale = new DeleteSale(saleRepository);
+const createSale = new CreateSale(sqlSaleRepository, sqlProductRepository);
+const getSaleById = new GetSaleById(sqlSaleRepository);
+const updateSale = new UpdateSale(sqlSaleRepository);
+const deleteSale = new DeleteSale(sqlSaleRepository);
 
 saleRouter.post("/", async (req: express.Request, res: express.Response) => {
   try {
@@ -37,10 +39,10 @@ saleRouter.post("/", async (req: express.Request, res: express.Response) => {
       saleDate: sale.props.saleDate,
     };
 
-    res.status(201).send(result);
+    return res.status(201).send(result);
   } catch (error) {
     if (error instanceof Error) {
-      res.status(400).send(error.message);
+      return res.status(400).send(error.message);
     }
   }
 });
@@ -60,10 +62,10 @@ saleRouter.get("/:id", async (req: express.Request, res: express.Response) => {
       saleDate: sale.props.saleDate,
     };
 
-    res.status(200).send(result);
+    return res.status(200).send(result);
   } catch (error) {
     if (error instanceof Error) {
-      res.status(400).send(error.message);
+      return res.status(400).send(error.message);
     }
   }
 });
@@ -83,13 +85,13 @@ saleRouter.patch("/:id", async (req: express.Request, res: express.Response) => 
         productInfos: sale.props.productInfos,
         totalPrice: newTotalPrice,
         saleDate: sale.props.saleDate,
-        updatedAt: sale.props.updatedAt
+        updatedAt: sale.props.updatedAt,
       };
 
-      res.status(200).send(result);
+      return res.status(200).send(result);
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).send(error.message);
+        return res.status(400).send(error.message);
       }
     }
   }
@@ -103,12 +105,12 @@ saleRouter.delete("/:id", async (req: express.Request, res: express.Response) =>
         id,
       });
 
-      const result = "Sale deleted";
+      const result = "SALE_DELETED";
 
-      res.status(202).send(result);
+      return res.status(202).send(result);
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).send(error.message);
+        return res.status(400).send(error.message);
       }
     }
   }

@@ -17,35 +17,39 @@ describe("Unit - create stock", () => {
   const productId = "product_id";
   const stockId = "stock_id";
   const quantity = 0;
-  let stock: Stock
-  let stock2: Stock
+  let stock: Stock;
+  let stock2: Stock;
 
   beforeAll(async () => {
     stockRepository = new InMemoryStockRepository(stockDb);
     stockDataRepository = new InMemoryStockDataRepository(stockDataDb);
     createStock = new CreateStockData(stockRepository, stockDataRepository);
-    stock = new Stock ({
+    stock = new Stock({
       id: "id1",
       locationId: "location_id1",
       type: Location.STORE,
-      stockDatas: [{
-        productId, 
-        quantity,
-        stockId
-      }],
-      createdAt: new Date()
-    })
-    stock2 = new Stock ({
+      stockDatas: [
+        {
+          productId,
+          quantity,
+          stockId,
+        },
+      ],
+      createdAt: new Date(),
+    });
+    stock2 = new Stock({
       id: "id2",
       locationId: "location_id2",
       type: Location.WAREHOUSE,
-      stockDatas: [{
-        productId, 
-        quantity,
-        stockId
-      }],
-      createdAt: new Date()
-    })
+      stockDatas: [
+        {
+          productId,
+          quantity,
+          stockId,
+        },
+      ],
+      createdAt: new Date(),
+    });
   });
 
   afterEach(async () => {
@@ -57,17 +61,25 @@ describe("Unit - create stock", () => {
     stockDb.set(stock2.props.id, stock2);
 
     const result = await createStock.execute({
-      productId
-    })
+      productId,
+    });
 
-    const stockUpdated = stockDb.get(stock.props.id)
-    const stockUpdated2 = stockDb.get(stock2.props.id)
+    const stockUpdated = stockDb.get(stock.props.id);
+    const stockUpdated2 = stockDb.get(stock2.props.id);
 
-    if(!stockUpdated || !stockUpdated2) {
-      throw new StockErrors.NotFound()
+    if (!stockUpdated || !stockUpdated2) {
+      throw new StockErrors.NotFound();
     }
-    
+
     expect(stockUpdated.props.stockDatas).toHaveLength(1);
-    expect(stockUpdated2.props.stockDatas).toHaveLength(1)
+    expect(stockUpdated2.props.stockDatas).toHaveLength(1);
   });
+
+  it("Should return an error because the stock is not found", async () => {
+    const result = createStock.execute({
+      productId
+    });
+
+    await expect(result).rejects.toThrow(StockErrors.NotFound);
+  })
 });

@@ -1,7 +1,8 @@
 import { EmailGateway } from "../../gateways/EmailGateway";
+import { SendEmailPayload } from "../../valuesObject.ts/SendEmailPayload";
 
 export class MockEmailGateway implements EmailGateway {
-  async sendEmail(_email: string, _message: string, _username: string): Promise<void> {
+  async sendEmail(sendEmailPayload: SendEmailPayload): Promise<void> {
     return;
   }
 }

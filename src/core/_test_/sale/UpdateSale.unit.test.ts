@@ -3,6 +3,7 @@ import { SaleRepository } from "../../repositories/SaleRepository";
 import { UpdateSale } from "../../usecases/Sale/UpdateSale";
 import { InMemorySaleRepository } from "../../adapters/repositories/InMemorySaleRepository";
 import { DataBuilders } from "../tools/DataBuilders";
+import { SaleErrors } from "../../errors/SaleErrors";
 
 describe("Unit - update Sale", () => {
   let saleRepository: SaleRepository;
@@ -33,5 +34,14 @@ describe("Unit - update Sale", () => {
     expect(result.props.productInfos).toEqual(sale.props.productInfos);
     expect(result.props.saleDate).toBeDefined();
     expect(result.props.totalPrice).toEqual(newTotalPrice);
+  });
+
+  it("Should return an error because the sale is not found", async () => {
+    const result = updateSale.execute({
+      id: "wrong_id",
+      newTotalPrice,
+    });
+
+    await expect(result).rejects.toThrow(SaleErrors.NotFound);
   });
 });

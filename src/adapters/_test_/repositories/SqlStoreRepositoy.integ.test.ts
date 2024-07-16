@@ -22,7 +22,7 @@ describe("Integ - Sql Warehouse Repository", () => {
 
     const result = await sqlStoreRepository.getById(store.props.id);
 
-    expect(result.props).toEqual(store.props);
+    expect(result?.props).toEqual(store.props);
   });
 
   it("Should get store by city", async () => {

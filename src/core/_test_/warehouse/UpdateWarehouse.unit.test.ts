@@ -3,12 +3,14 @@ import { WarehouseRepository } from "../../repositories/WarehouseRepository";
 import { UpdateWarehouse } from "../../usecases/Warehouse/UpdateWarehouse";
 import { InMemoryWarehouseRepository } from "../../adapters/repositories/InMemoryWarehouseRepository";
 import { DataBuilders } from "../tools/DataBuilders";
+import { WarehouseErrors } from "../../errors/WarehouseErrors";
 
 describe("Unit - update warehouse", () => {
   let warehouseRepository: WarehouseRepository;
   let updateWarehouse: UpdateWarehouse;
   const warehouseDb = new Map<string, Warehouse>();
-  const newNumberOfEmployees = 20
+  const id = "id";
+  const newNumberOfEmployees = 20;
 
   beforeAll(async () => {
     warehouseRepository = new InMemoryWarehouseRepository(warehouseDb);
@@ -20,15 +22,24 @@ describe("Unit - update warehouse", () => {
   });
 
   it("Should update warehouse", async () => {
-    const warehouse = DataBuilders.generateWarehouse({})
+    const warehouse = DataBuilders.generateWarehouse({});
 
-    warehouseDb.set(warehouse.props.id, warehouse)
+    warehouseDb.set(warehouse.props.id, warehouse);
 
     const result = await updateWarehouse.execute({
-        id: warehouse.props.id,
-        newNumberOfEmployees,
-    })
+      id: warehouse.props.id,
+      newNumberOfEmployees,
+    });
 
-    expect(result.props.numberOfEmployees).toEqual(newNumberOfEmployees)
-  })
+    expect(result.props.numberOfEmployees).toEqual(newNumberOfEmployees);
+  });
+
+  it("Should throw an error because the warehouse id is not found", async () => {
+    const result = updateWarehouse.execute({
+      id,
+      newNumberOfEmployees,
+    });
+
+    await expect(result).rejects.toThrow(WarehouseErrors.NotFound);
+  });
 });

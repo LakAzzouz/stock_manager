@@ -68,7 +68,7 @@ export class SqlOderRepository implements OrderRepository {
       GROUP BY orders.id`,
       [id]
     );
-    
+
     const rawOrder = orderModel[0][0];
 
     if (!rawOrder) {

@@ -1,7 +1,6 @@
 import { User } from "../../entities/User";
 import { UserErrors } from "../../errors/UserErrors";
 import { CreateUser } from "../../usecases/User/CreateUser";
-import { MockEmailGateway } from "../../adapters/gateways/MockEmailGateway";
 import { MockPasswordGateway } from "../../adapters/gateways/MockPasswordGateway";
 import { InMemoryUserRepository } from "../../adapters/repositories/InMemoryUserRepository";
 import { DataBuilders } from "../tools/DataBuilders";
@@ -16,8 +15,7 @@ describe("Unit - Create user", () => {
   beforeAll(async () => {
     const userRepository = new InMemoryUserRepository(userDb);
     const passwordGateway = new MockPasswordGateway();
-    const emailGateway = new MockEmailGateway();
-    createUser = new CreateUser(userRepository, passwordGateway, emailGateway);
+    createUser = new CreateUser(userRepository, passwordGateway);
   });
 
   afterEach(async () => {
@@ -28,7 +26,7 @@ describe("Unit - Create user", () => {
     const result = await createUser.execute({
       email,
       password,
-      username
+      username,
     });
 
     expect(result.props.id).toBeDefined();
@@ -54,16 +52,16 @@ describe("Unit - Create user", () => {
       password,
       username,
     });
-  
-    expect(userDb.get(user.props.id)).toEqual(user)
-  })
+
+    expect(userDb.get(user.props.id)).toEqual(user);
+  });
 
   it("Should throw an error because the mail already exist", async () => {
     const user = DataBuilders.generateUser({
-      email
+      email,
     });
 
-    userDb.set(user.props.id, user)
+    userDb.set(user.props.id, user);
 
     const result = createUser.execute({
       username,

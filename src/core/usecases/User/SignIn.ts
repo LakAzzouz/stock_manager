@@ -25,8 +25,6 @@ export class SignIn implements Usecases<SignInInput, Promise<User>> {
       throw new UserErrors.EmailNotFound();
     }
 
-    console.log(user)
-
     if(!user.props.isVerified) {
       throw new UserErrors.NotVerified();
     }

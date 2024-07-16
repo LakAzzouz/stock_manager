@@ -27,7 +27,7 @@ export class SqlStoreRepository implements StoreRepository {
     );
   }
 
-  async getById(id: string): Promise<Store> {
+  async getById(id: string): Promise<Store | null> {
     const storeModel = await this._knex.raw(
       `SELECT * FROM stores WHERE id = :id`,
       {
@@ -53,7 +53,7 @@ export class SqlStoreRepository implements StoreRepository {
     return store;
   }
 
-  getAllIds(): Promise<string[]> {
+  getAllIds(): Promise<string[] | null> {
     throw new Error("Method not implemented.");
   }
 

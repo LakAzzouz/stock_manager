@@ -3,6 +3,7 @@ import { ProductRepository } from "../../repositories/ProductRepository";
 import { GetProductById } from "../../usecases/Product/GetProductById";
 import { InMemoryProductRepository } from "../../adapters/repositories/InMemoryProductRepository";
 import { DataBuilders } from "../tools/DataBuilders";
+import { ProductErrors } from "../../errors/ProductErrors";
 
 describe("Unit - Get product by id", () => {
   let productRepository: ProductRepository;
@@ -51,6 +52,6 @@ describe("Unit - Get product by id", () => {
       id: "wrong_id",
     });
 
-    await expect(result).rejects.toThrow("PRODUCT_NOT_FOUND");
+    await expect(result).rejects.toThrow(ProductErrors.NotFound);
   });
 });

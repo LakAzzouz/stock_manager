@@ -10,10 +10,6 @@ export class SqlStockRepository implements StockRepository {
     private readonly _knex: Knex,
     private readonly _stockMapper: SqlStockMapper
   ) {}
-  
-  getAllIds(): Promise<string[]> {
-    throw new Error("Method not implemented.");
-  }
 
   async save(stock: Stock): Promise<void> {
     const stockModel = this._stockMapper.fromDomain(stock);
@@ -92,6 +88,10 @@ export class SqlStockRepository implements StockRepository {
     await this._knex.raw(`DELETE FROM stocks WHERE id = :id`, {
       id: id,
     });
+  }
+
+  getAllIds(): Promise<string[]> {
+    throw new Error("Method not implemented.");
   }
 
   ensureThatDoesNotExistByProductId(productId: string): Promise<void> {

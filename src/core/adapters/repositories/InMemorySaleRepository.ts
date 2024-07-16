@@ -16,7 +16,7 @@ export class InMemorySaleRepository implements SaleRepository {
   async getById(id: string): Promise<Sale | null> {
     const sale = this.map.get(id);
     if (!sale) {
-      throw new SaleErrors.NotFound();
+      return null
     }
     return sale;
   }

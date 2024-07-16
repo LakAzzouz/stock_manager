@@ -1,35 +1,36 @@
 import express from "express";
-import { Order } from "../../core/entities/Order";
+
 import { CreateOrder } from "../../core/usecases/Order/CreateOrder";
-import { InMemoryOrderRepository } from "../../core/adapters/repositories/InMemoryOrderRepository";
-import { InMemoryProductRepository } from "../../core/adapters/repositories/InMemoryProductRepository";
-import { Product } from "../../core/entities/Product";
 import { GetOrderById } from "../../core/usecases/Order/GetOrderById";
 import { UpdateOrder } from "../../core/usecases/Order/UpdateOrder";
 import { DeleteOrder } from "../../core/usecases/Order/DeleteOrder";
-import { OrderCreateCommand, OrderUpdateCommand } from "../validation/orderCommands";
+import {OrderCreateCommand, OrderUpdateCommand} from "../validation/orderCommands";
+import { SqlOderRepository } from "../../adapters/repositories/SQL/SqlOrderRepository";
+import { dbTest } from "../../adapters/_test_/tools/dbTest";
+import { SqlOrderMapper } from "../../adapters/repositories/mappers/SqlOrderMapper";
+import { SqlProductMapper } from "../../adapters/repositories/mappers/SqlProductMapper";
+import { SqlProductRepository } from "../../adapters/repositories/SQL/SqlProductRepository";
+import { ValidateOrder } from "../../core/usecases/Order/ValidateOrder";
 
 export const orderRouter = express.Router();
 
-export const orderDb = new Map<string, Order>();
-export const productDb = new Map<string, Product>();
+const productMapper = new SqlProductMapper();
+const sqlProductRepository = new SqlProductRepository(dbTest, productMapper);
 
-const orderRepository = new InMemoryOrderRepository(orderDb);
-const productRepository = new InMemoryProductRepository(productDb);
+const orderMapper = new SqlOrderMapper();
+const sqlOrderRepository = new SqlOderRepository(dbTest, orderMapper);
 
-const createOrder = new CreateOrder(orderRepository, productRepository);
-const getOrderById = new GetOrderById(orderRepository);
-const updateOrder = new UpdateOrder(orderRepository);
-const deleteOrder = new DeleteOrder(orderRepository);
+const createOrder = new CreateOrder(sqlOrderRepository, sqlProductRepository);
+const getOrderById = new GetOrderById(sqlOrderRepository);
+const updateOrder = new UpdateOrder(sqlOrderRepository);
+const deleteOrder = new DeleteOrder(sqlOrderRepository);
+const validateOrder = new ValidateOrder(sqlOrderRepository);
 
 orderRouter.post("/", async (req: express.Request, res: express.Response) => {
   try {
-    const { productInfos, locationId } = OrderCreateCommand.validateOrderCreate(req.body)
+    const { productInfos, locationId } = OrderCreateCommand.validateOrderCreate(req.body);
 
-    const order = await createOrder.execute({
-      locationId,
-      productInfos,
-    });
+    const order = await createOrder.execute({ locationId, productInfos });
 
     const result = {
       id: order.props.id,
@@ -42,13 +43,30 @@ orderRouter.post("/", async (req: express.Request, res: express.Response) => {
       dateOfArrival: order.props.dateOfArrival,
     };
 
-    res.status(201).send(result);
+    return res.status(201).send(result);
   } catch (error) {
     if (error instanceof Error) {
-      res.status(400).send(error.message);
+      return res.status(400).send(error.message);
     }
   }
 });
+
+orderRouter.get("/validate/:id", async (req: express.Request, res: express.Response) => {
+    try {
+      const id = req.params.id;
+
+      const result = await validateOrder.execute({
+        id,
+      });
+
+      return res.status(200).send(result);
+    } catch (error) {
+      if (error instanceof Error) {
+        return res.status(400).send(error.message);
+      }
+    }
+  }
+);
 
 orderRouter.get("/:id", async (req: express.Request, res: express.Response) => {
   try {
@@ -69,17 +87,19 @@ orderRouter.get("/:id", async (req: express.Request, res: express.Response) => {
       dateOfArrival: order.props.dateOfArrival,
     };
 
-    res.status(200).send(result);
+    return res.status(200).send(result);
   } catch (error) {
     if (error instanceof Error) {
-      res.status(400).send(error.message);
+      return res.status(400).send(error.message);
     }
   }
 });
 
 orderRouter.patch("/:id", async (req: express.Request, res: express.Response) => {
     try {
-      const { newDateOfArrival } = OrderUpdateCommand.validateOrderUpdate(req.body);
+      const { newDateOfArrival } = OrderUpdateCommand.validateOrderUpdate(
+        req.body
+      );
       const id = req.params.id;
 
       const order = await updateOrder.execute({
@@ -96,13 +116,13 @@ orderRouter.patch("/:id", async (req: express.Request, res: express.Response) =>
         status: order.props.status,
         expectedArrivalDate: order.props.expectedArrivalDate,
         dateOfArrival: newDateOfArrival,
-        updatedAt: order.props.updatedAt
+        updatedAt: order.props.updatedAt,
       };
 
-      res.status(200).send(result);
+      return res.status(200).send(result);
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).send(error.message);
+        return res.status(400).send(error.message);
       }
     }
   }
@@ -116,12 +136,12 @@ orderRouter.delete("/:id", async (req: express.Request, res: express.Response) =
         id,
       });
 
-      const result = "Order deleted";
+      const result = "ORDER_DELETED";
 
-      res.status(202).send(result);
+      return res.status(202).send(result);
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).send(error.message);
+        return res.status(400).send(error.message);
       }
     }
   }

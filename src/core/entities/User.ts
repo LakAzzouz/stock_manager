@@ -7,8 +7,8 @@ export type UserProperties = {
   password: string;
   birthDate: Date;
   isVerified: boolean;
-  resetPasswordCode: string;
-  verifyEmailCode: string;
+  resetPasswordCode?: string;
+  verifyEmailCode?: string;
   createdAt: Date;
   updatedAt?: Date;
 };
@@ -20,7 +20,8 @@ export class User {
     this.props = userProperties;
   }
 
-  static create(props: {username: string, email: string, password: string, resetPasswordCode: string, verifyEmailCode: string;}): User {
+  static create(props: {username: string, email: string, password: string, resetPasswordCode: string}): User {
+    const code = this.generateCode();
     const user = new User({
       id: v4(),
       username: props.username,
@@ -29,9 +30,23 @@ export class User {
       birthDate: new Date(1997, 5, 23),
       isVerified: false,
       resetPasswordCode: props.resetPasswordCode,
-      verifyEmailCode: props.verifyEmailCode,
+      verifyEmailCode: code,
       createdAt: new Date(),
     });
     return user;
+  }
+
+  update(newResetPasswordCode: string): User {
+    this.props.resetPasswordCode = newResetPasswordCode;
+    return this;
+  }
+
+  static generateCode(): string{
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    return code
+  }
+
+  verifyEmail() {
+    this.props.isVerified = true
   }
 }

@@ -1,17 +1,15 @@
 import { Warehouse } from "../../entities/Warehouse";
 import { WarehouseErrors } from "../../errors/WarehouseErrors";
-import { WarehouseRepository } from "../../repositories/WarehouseRepository";
 import { DeleteWarehouse } from "../../usecases/Warehouse/DeleteWarehouse";
 import { InMemoryWarehouseRepository } from "../../adapters/repositories/InMemoryWarehouseRepository";
 import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - delete warehouse", () => {
-  let warehouseRepository: WarehouseRepository;
   let deleteWarehouse: DeleteWarehouse;
   const warehouseDb = new Map<string, Warehouse>();
 
   beforeAll(async () => {
-    warehouseRepository = new InMemoryWarehouseRepository(warehouseDb);
+    const warehouseRepository = new InMemoryWarehouseRepository(warehouseDb);
     deleteWarehouse = new DeleteWarehouse(warehouseRepository);
   });
 
@@ -39,9 +37,9 @@ describe("Unit - delete warehouse", () => {
     warehouseDb.set(warehouse.props.id, warehouse);
 
     const result = deleteWarehouse.execute({
-      id: "wrong_id"
+      id: "wrong_id",
     });
 
-    await expect(result).rejects.toThrow(WarehouseErrors.NotFound)
-  })
+    await expect(result).rejects.toThrow(WarehouseErrors.NotFound);
+  });
 });

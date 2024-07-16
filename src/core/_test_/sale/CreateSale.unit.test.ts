@@ -1,7 +1,5 @@
 import { Product } from "../../entities/Product";
 import { Sale } from "../../entities/Sale";
-import { ProductErrors } from "../../errors/ProductErrors";
-import { SaleErrors } from "../../errors/SaleErrors";
 import { ProductRepository } from "../../repositories/ProductRepository";
 import { SaleRepository } from "../../repositories/SaleRepository";
 import { CreateSale } from "../../usecases/Sale/CreateSale";

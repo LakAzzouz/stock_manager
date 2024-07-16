@@ -1,23 +1,16 @@
 import { Warehouse } from "../../entities/Warehouse";
 import { WarehouseErrors } from "../../errors/WarehouseErrors";
-import { WarehouseRepository } from "../../repositories/WarehouseRepository";
 import { GetWarehouseById } from "../../usecases/Warehouse/GetWarehouseById";
 import { InMemoryWarehouseRepository } from "../../adapters/repositories/InMemoryWarehouseRepository";
 import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - get warehouse by id", () => {
-  let warehouseRepository: WarehouseRepository;
   let getWarehouseById: GetWarehouseById;
   const warehouseDb = new Map<string, Warehouse>();
-  const id = "id";
-  const city = "Paris";
-  const managerId = "managerId";
-  const numberOfEmployees = 20;
-  const createdAt = new Date();
-  const updatedAt = new Date();
+  const warehouse = DataBuilders.generateWarehouse({});
 
   beforeAll(async () => {
-    warehouseRepository = new InMemoryWarehouseRepository(warehouseDb);
+    const warehouseRepository = new InMemoryWarehouseRepository(warehouseDb);
     getWarehouseById = new GetWarehouseById(warehouseRepository);
   });
 
@@ -26,15 +19,6 @@ describe("Unit - get warehouse by id", () => {
   });
 
   it("Should get warehouse by id", async () => {
-    const warehouse = DataBuilders.generateWarehouse({
-      id,
-      city,
-      managerId,
-      numberOfEmployees,
-      createdAt,
-      updatedAt,
-    });
-
     warehouseDb.set(warehouse.props.id, warehouse);
 
     const result = await getWarehouseById.execute({
@@ -44,9 +28,7 @@ describe("Unit - get warehouse by id", () => {
     expect(result).toEqual(warehouse);
   });
 
-  it("Should throw an error because id is not found", async () => {
-    const warehouse = DataBuilders.generateWarehouse({});
-
+  it("Should throw an error because warehouse id is not found", async () => {
     warehouseDb.set(warehouse.props.id, warehouse);
 
     const result = getWarehouseById.execute({

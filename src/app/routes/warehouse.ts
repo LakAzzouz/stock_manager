@@ -1,24 +1,25 @@
 import express from "express";
+
 import { CreateWarehouse } from "../../core/usecases/Warehouse/CreateWarehouse";
-import { InMemoryWarehouseRepository } from "../../core/adapters/repositories/InMemoryWarehouseRepository";
-import { Warehouse } from "../../core/entities/Warehouse";
 import { GetWarehouseById } from "../../core/usecases/Warehouse/GetWarehouseById";
 import { GetWarehouseByManagerId } from "../../core/usecases/Warehouse/GetWarehouseByManagerId";
 import { UpdateWarehouse } from "../../core/usecases/Warehouse/UpdateWarehouse";
 import { DeleteWarehouse } from "../../core/usecases/Warehouse/DeleteWarehouse";
 import { WarehouseCreateCommand, WarehouseUpdateCommand } from "../validation/warehouseCommands";
+import { SqlWarehouseMapper } from "../../adapters/repositories/mappers/SqlWarehouseMapper";
+import { SqlWarehouseRepository } from "../../adapters/repositories/SQL/SqlWarehouseRepository";
+import { dbTest } from "../../adapters/_test_/tools/dbTest";
 
 export const warehouseRouter = express.Router();
 
-const warehouseDb = new Map<string, Warehouse>();
+const warehouseMapper = new SqlWarehouseMapper();
+const sqlWarehouseRepository = new SqlWarehouseRepository(dbTest, warehouseMapper)
 
-const warehouseRepository = new InMemoryWarehouseRepository(warehouseDb);
-
-const createWarehouse = new CreateWarehouse(warehouseRepository);
-const getWarehouseById = new GetWarehouseById(warehouseRepository);
-const getWarehouseByManagerId = new GetWarehouseByManagerId(warehouseRepository);
-const updateWarehouse = new UpdateWarehouse(warehouseRepository);
-const deleteWarehouse = new DeleteWarehouse(warehouseRepository);
+const createWarehouse = new CreateWarehouse(sqlWarehouseRepository);
+const getWarehouseById = new GetWarehouseById(sqlWarehouseRepository);
+const getWarehouseByManagerId = new GetWarehouseByManagerId(sqlWarehouseRepository);
+const updateWarehouse = new UpdateWarehouse(sqlWarehouseRepository);
+const deleteWarehouse = new DeleteWarehouse(sqlWarehouseRepository);
 
 warehouseRouter.post("/", async (req: express.Request, res: express.Response) => {
     try {
@@ -37,10 +38,10 @@ warehouseRouter.post("/", async (req: express.Request, res: express.Response) =>
         createdAt: warehouse.props.createdAt,
       };
 
-      res.status(201).send(result);
+      return res.status(201).send(result);
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).send(error.message);
+        return res.status(400).send(error.message);
       }
     }
   }
@@ -62,10 +63,10 @@ warehouseRouter.get("/:id", async (req: express.Request, res: express.Response) 
         createdAt: warehouse.props.createdAt,
       };
 
-      res.status(200).send(result);
+      return res.status(200).send(result);
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).send(error.message);
+        return res.status(400).send(error.message);
       }
     }
   }
@@ -87,10 +88,10 @@ warehouseRouter.get("/:managerId", async (req: express.Request, res: express.Res
         createdAt: warehouse.props.createdAt,
       };
 
-      res.status(200).send(result);
+      return res.status(200).send(result);
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).send(error.message);
+        return res.status(400).send(error.message);
       }
     }
   }
@@ -114,10 +115,10 @@ warehouseRouter.patch("/:id", async (req: express.Request, res: express.Response
         createdAt: warehouse.props.createdAt,
       };
 
-      res.status(200).send(result);
+      return res.status(200).send(result);
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).send(error.message);
+        return res.status(400).send(error.message);
       }
     }
   }
@@ -127,16 +128,16 @@ warehouseRouter.delete("/:id", async (req: express.Request, res: express.Respons
     try {
       const id = req.params.id;
 
-      const warehouse = await deleteWarehouse.execute({
+      await deleteWarehouse.execute({
         id,
       });
 
-      const result = "Warehouse deleted";
+      const result = "WAREHOUSE_DELETED";
 
-      res.status(200).send(result);
+      return res.status(200).send(result);
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).send(error.message);
+        return res.status(400).send(error.message);
       }
     }
   }

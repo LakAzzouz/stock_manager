@@ -9,14 +9,15 @@ const stockDb = new Map<string, Stock>();
 describe("Unit - initiate stock", () => {
   let stockRepository: StockRepository;
   let initiateStock: InitiateStock;
-  const type = Location.STORE
-  const locationId = "location_id"
-  const stockDatas = [{
-    productId: "product_id",
-    quantity: 0,
-    stockId: "stock_id"
-  }]
-
+  const type = Location.STORE;
+  const locationId = "location_id";
+  const stockDatas = [
+    {
+      productId: "product_id",
+      quantity: 0,
+      stockId: "stock_id",
+    },
+  ];
 
   beforeAll(async () => {
     stockRepository = new InMemoryStockRepository(stockDb);
@@ -31,7 +32,7 @@ describe("Unit - initiate stock", () => {
     const result = await initiateStock.execute({
       type,
       locationId,
-      stockDatas
+      stockDatas,
     });
 
     expect(result.props.type).toEqual(type);

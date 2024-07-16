@@ -6,7 +6,7 @@ export namespace UserErrors {
       super("EMAIL_NOT_FOUND");
     }
   }
-  export class NotFound extends DomainErrors {
+  export class UserNotFound extends DomainErrors {
     constructor() {
       super("USER_NOT_FOUND");
     }
@@ -31,7 +31,20 @@ export namespace UserErrors {
 
   export class NotVerified extends DomainErrors {
     constructor() {
-      super("USER_IS_NOT_VERIFIED")
+      super("USER_IS_NOT_VERIFIED");
     }
   }
+
+  export class InvalidCode extends DomainErrors {
+    constructor() {
+      super("CODE_DOES_NOT_MATCH");
+    }
+  }
+
+  export class CodeNotFound extends DomainErrors {
+    constructor() {
+      super("CODE_NOT_FOUND")
+    }
+  }
+
 }

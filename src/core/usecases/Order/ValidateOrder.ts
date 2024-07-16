@@ -1,7 +1,6 @@
 import { Order } from "../../entities/Order";
 import { OrderErrors } from "../../errors/OrderErrors";
 import { OrderRepository } from "../../repositories/OrderRepository";
-import { StockRepository } from "../../repositories/StockRepository";
 import { Usecases } from "../Usecase";
 
 type ValidateOrderInput = {

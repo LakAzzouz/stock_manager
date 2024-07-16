@@ -17,35 +17,17 @@ export class InMemoryStockRepository implements StockRepository {
   async getById(id: string): Promise<Stock | null> {
     const stock = this.map.get(id);
     if (!stock) {
-      throw new StockErrors.NotFound();
+      return null
     }
     return stock;
-  }
-
-  async ensureThatDoesNotExistByProductId(productId: string): Promise<void> {
-    const stocks = Array.from(this.map.values());
-    const stockExists = stocks.some((stock) =>
-      stock.props.stockDatas.some(
-        (stockData) => stockData.productId === productId
-      )
-    );
-    if (stockExists) {
-      throw new StockErrors.AlReadyExists();
-    }
-  }
-
-  async addStockDataToAllLocations(stockData: StockData): Promise<void> {
-    const stocks = Array.from(this.map.values());
-    for (const stock of stocks) {
-      stock.props.stockDatas.push(stockData);
-      this.map.set(stock.props.id, stock);
-    }
-    return;
   }
 
   async getAllIds(): Promise<string[] | null> {
     const stocks = Array.from(this.map.values());
     const stockIds = stocks.map((elm) => elm.props.id);
+    if(!stockIds.length) {
+      return null
+    }
     return stockIds
   }
 

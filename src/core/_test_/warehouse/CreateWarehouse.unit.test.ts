@@ -4,14 +4,13 @@ import { CreateWarehouse } from "../../usecases/Warehouse/CreateWarehouse";
 import { InMemoryWarehouseRepository } from "../../adapters/repositories/InMemoryWarehouseRepository";
 
 describe("Unit - create warehouse", () => {
-  let warehouseRepository: WarehouseRepository;
   let createWarehouse: CreateWarehouse;
   const warehouseDb = new Map<string, Warehouse>();
   const city = "Paris";
   const numberOfEmployees = 20;
 
   beforeAll(async () => {
-    warehouseRepository = new InMemoryWarehouseRepository(warehouseDb);
+    const warehouseRepository = new InMemoryWarehouseRepository(warehouseDb);
     createWarehouse = new CreateWarehouse(warehouseRepository);
   });
 
