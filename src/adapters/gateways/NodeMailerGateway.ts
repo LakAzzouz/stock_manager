@@ -23,7 +23,5 @@ export class NodeMailerGateway implements EmailGateway {
       text: "Confirm your e-mail", // plain text body
       html: `<b>Security code ${sendEmailPayload.message}</b>`, // html body
     });
-
-    console.log(info.response);
   }
 }

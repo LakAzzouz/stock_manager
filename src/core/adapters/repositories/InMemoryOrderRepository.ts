@@ -16,15 +16,13 @@ export class InMemoryOrderRepository implements OrderRepository {
   async getById(id: string): Promise<Order | null> {
     const order = this.map.get(id);
     if (!order) {
-      return null
+      return null;
     }
     return order;
   }
 
   async delete(id: string): Promise<void> {
-    const isOrderDeleted = this.map.delete(id);
-    if (!isOrderDeleted) {
-      throw new OrderErrors.NotFound();
-    }
+    this.map.delete(id);
+    return;
   }
 }

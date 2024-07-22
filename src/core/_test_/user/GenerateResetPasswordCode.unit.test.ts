@@ -27,7 +27,6 @@ describe("Unit - generate reset password code", () => {
     const result = await generateResetPasswordCode.execute({
       email: user.props.email,
       username: user.props.username,
-      id: user.props.id,
       resetPasswordCode,
     });
 
@@ -38,7 +37,6 @@ describe("Unit - generate reset password code", () => {
     const result = generateResetPasswordCode.execute({
       email: user.props.email,
       username: user.props.username,
-      id: user.props.id,
       resetPasswordCode,
     });
 

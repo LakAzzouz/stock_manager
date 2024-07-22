@@ -7,7 +7,10 @@ describe("Integ - Sql Stock Repository", () => {
   let sqlStockMapper: SqlStockMapper;
   let sqlStockRepository: SqlStockRepository;
   const stock = DataBuilders.generateStock({
-    id: "stock_id"
+    id: "stock_id",
+  });
+  const stock2 = DataBuilders.generateStock({
+    id: "stock_id2",
   });
 
   beforeAll(async () => {
@@ -33,6 +36,16 @@ describe("Integ - Sql Stock Repository", () => {
 
     const result = await sqlStockRepository.delete(stock.props.id);
 
-    expect(result).toBeUndefined()
-  })
+    expect(result).toBeUndefined();
+  });
+
+  it("Should get stocks by ids", async () => {
+    await sqlStockRepository.save(stock);
+    await sqlStockRepository.save(stock2);
+
+    const result = await sqlStockRepository.getAllIds();
+
+    expect(result).toHaveLength(2);
+    expect(result).toEqual([stock.props.id, stock2.props.id]);
+  });
 });

@@ -9,6 +9,7 @@ import { WarehouseCreateCommand, WarehouseUpdateCommand } from "../validation/wa
 import { SqlWarehouseMapper } from "../../adapters/repositories/mappers/SqlWarehouseMapper";
 import { SqlWarehouseRepository } from "../../adapters/repositories/SQL/SqlWarehouseRepository";
 import { dbTest } from "../../adapters/_test_/tools/dbTest";
+import { Auth } from "../../adapters/middlewares/auth";
 
 export const warehouseRouter = express.Router();
 
@@ -21,7 +22,8 @@ const getWarehouseByManagerId = new GetWarehouseByManagerId(sqlWarehouseReposito
 const updateWarehouse = new UpdateWarehouse(sqlWarehouseRepository);
 const deleteWarehouse = new DeleteWarehouse(sqlWarehouseRepository);
 
-warehouseRouter.post("/", async (req: express.Request, res: express.Response) => {
+warehouseRouter.use(Auth);
+warehouseRouter.post("/create", async (req: express.Request, res: express.Response) => {
     try {
       const { city, numberOfEmployees } = WarehouseCreateCommand.validateWarehouseCreate(req.body);
 

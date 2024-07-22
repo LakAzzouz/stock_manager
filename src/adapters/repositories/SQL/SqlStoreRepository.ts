@@ -53,8 +53,12 @@ export class SqlStoreRepository implements StoreRepository {
     return store;
   }
 
-  getAllIds(): Promise<string[] | null> {
-    throw new Error("Method not implemented.");
+  async getAllIds(): Promise<string[] | null> {
+    const storeIdsColumn = await this._knex.raw<[{ id: string }[], any[]]>(`SELECT id FROM stores`);
+
+    const storesIds = storeIdsColumn[0].map((elm) => elm.id)
+
+    return storesIds;
   }
 
   async delete(id: string): Promise<void> {

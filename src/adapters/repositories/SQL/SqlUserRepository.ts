@@ -24,7 +24,7 @@ export class SqlUserRepository implements UserRepository {
         reset_password_code: userModel.reset_password_code,
         verify_email_code: userModel.verify_email_code,
         created_at: userModel.created_at,
-        updated_at: userModel.updated_at,
+        updated_at: userModel.updated_at || new Date()
       }
     );
   }
@@ -49,6 +49,10 @@ export class SqlUserRepository implements UserRepository {
         email: email,
       }
     );
+
+    if(!userModel[0][0]) {
+      return null
+    }
 
     const user = this._userMapper.toDomain(userModel[0][0]);
 

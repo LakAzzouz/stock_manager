@@ -10,6 +10,7 @@ import { SqlSaleRepository } from "../../adapters/repositories/SQL/SqlSaleReposi
 import { dbTest } from "../../adapters/_test_/tools/dbTest";
 import { SqlProductMapper } from "../../adapters/repositories/mappers/SqlProductMapper";
 import { SqlProductRepository } from "../../adapters/repositories/SQL/SqlProductRepository";
+import { Auth } from "../../adapters/middlewares/auth";
 
 export const saleRouter = express.Router();
 
@@ -24,7 +25,8 @@ const getSaleById = new GetSaleById(sqlSaleRepository);
 const updateSale = new UpdateSale(sqlSaleRepository);
 const deleteSale = new DeleteSale(sqlSaleRepository);
 
-saleRouter.post("/", async (req: express.Request, res: express.Response) => {
+saleRouter.use(Auth);
+saleRouter.post("/create", async (req: express.Request, res: express.Response) => {
   try {
     const { productInfos } = SaleCreateCommand.validateSaleCreate(req.body);
 

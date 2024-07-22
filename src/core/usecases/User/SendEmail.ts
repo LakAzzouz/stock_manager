@@ -29,10 +29,6 @@ export class SendEmail implements Usecases<SendEmailInput, Promise<void>> {
 
     const code = user.props.verifyEmailCode;
 
-    if(!code) {
-      throw new Error("CODE_NOT_FOUND")
-    }
-
     await this._emailGateway.sendEmail({ email, message: code, username });
 
     return;

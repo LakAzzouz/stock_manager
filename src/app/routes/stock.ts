@@ -10,6 +10,7 @@ import { SqlStockRepository } from "../../adapters/repositories/SQL/SqlStockRepo
 import { dbTest } from "../../adapters/_test_/tools/dbTest";
 import { InMemoryStockDataRepository } from "../../core/adapters/repositories/InMemoryStockDataRepository";
 import { StockData } from "../../core/types/StockData";
+import { Auth } from "../../adapters/middlewares/auth";
 
 export const stockRouter = express.Router();
 
@@ -23,6 +24,7 @@ const createStock = new CreateStockData(sqlStockRepository, stockDataRepository)
 const getStockById = new GetStockById(sqlStockRepository);
 const deleteStock = new DeleteStock(sqlStockRepository);
 
+stockRouter.use(Auth);
 stockRouter.post("/initiate", async (req: express.Request, res: express.Response) => {
     try {
       const { locationId, stockDatas, type } = StockInitiateCommand.validateStockInitiate(req.body);

@@ -11,6 +11,7 @@ import { SqlOrderMapper } from "../../adapters/repositories/mappers/SqlOrderMapp
 import { SqlProductMapper } from "../../adapters/repositories/mappers/SqlProductMapper";
 import { SqlProductRepository } from "../../adapters/repositories/SQL/SqlProductRepository";
 import { ValidateOrder } from "../../core/usecases/Order/ValidateOrder";
+import { Auth } from "../../adapters/middlewares/auth";
 
 export const orderRouter = express.Router();
 
@@ -26,7 +27,8 @@ const updateOrder = new UpdateOrder(sqlOrderRepository);
 const deleteOrder = new DeleteOrder(sqlOrderRepository);
 const validateOrder = new ValidateOrder(sqlOrderRepository);
 
-orderRouter.post("/", async (req: express.Request, res: express.Response) => {
+orderRouter.use(Auth);
+orderRouter.post("/create", async (req: express.Request, res: express.Response) => {
   try {
     const { productInfos, locationId } = OrderCreateCommand.validateOrderCreate(req.body);
 
@@ -97,9 +99,7 @@ orderRouter.get("/:id", async (req: express.Request, res: express.Response) => {
 
 orderRouter.patch("/:id", async (req: express.Request, res: express.Response) => {
     try {
-      const { newDateOfArrival } = OrderUpdateCommand.validateOrderUpdate(
-        req.body
-      );
+      const { newDateOfArrival } = OrderUpdateCommand.validateOrderUpdate(req.body);
       const id = req.params.id;
 
       const order = await updateOrder.execute({
@@ -132,13 +132,11 @@ orderRouter.delete("/:id", async (req: express.Request, res: express.Response) =
     try {
       const id = req.params.id;
 
-      const order = await deleteOrder.execute({
+      await deleteOrder.execute({
         id,
       });
 
-      const result = "ORDER_DELETED";
-
-      return res.status(202).send(result);
+      return res.sendStatus(200)
     } catch (error) {
       if (error instanceof Error) {
         return res.status(400).send(error.message);

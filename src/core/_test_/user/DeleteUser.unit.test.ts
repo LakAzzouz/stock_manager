@@ -1,5 +1,6 @@
 import { InMemoryUserRepository } from "../../adapters/repositories/InMemoryUserRepository";
 import { User } from "../../entities/User";
+import { UserErrors } from "../../errors/UserErrors";
 import { UserRepository } from "../../repositories/UserRepository";
 import { DeleteUser } from "../../usecases/User/DeleteUser";
 import { DataBuilders } from "../tools/DataBuilders";
@@ -30,4 +31,15 @@ describe("Unit - delete user", () => {
 
     expect(result).toBeUndefined();
   });
+
+  it("Should throw an error because user not found", async () => {
+    const result = deleteUser.execute({
+      id: user.props.id,
+    });
+
+    userDb.get(user.props.id);
+
+    await expect(result).rejects.toThrow(UserErrors.UserNotFound);
+
+  })
 });

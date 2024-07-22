@@ -12,6 +12,7 @@ import { SqlProductMapper } from "../../adapters/repositories/mappers/SqlProduct
 import { initFirebase } from "../config/InitFirebase";
 import { FirebaseStorageGateway } from "../../adapters/gateways/FirebaseStorageGateway";
 import { dbTest } from "../../adapters/_test_/tools/dbTest";
+import { Auth } from "../../adapters/middlewares/auth";
 
 export const productRouter = express.Router();
 const firebase = initFirebase();
@@ -30,7 +31,8 @@ const deleteProduct = new DeleteProduct(sqlProductRepository);
 const storage = multer.memoryStorage();
 export const upload = multer({ storage: storage });
 
-productRouter.post("/", upload.single("file"), async (req: express.Request, res: express.Response) => {
+productRouter.use(Auth);
+productRouter.post("/create", upload.single("file"), async (req: express.Request, res: express.Response) => {
     try {
       const body = JSON.parse(req.body.body);
       const { name, productType, price, size } = ProductCreateCommand.validateProductCreate(body);

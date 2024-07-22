@@ -4,19 +4,20 @@ import { MediaGateway } from "../../gateways/MediaGateway";
 import { ProductRepository } from "../../repositories/ProductRepository";
 import { CreateProduct } from "../../usecases/Product/CreateProduct";
 import { InMemoryProductRepository } from "../../adapters/repositories/InMemoryProductRepository";
+import { MockMediaGateway } from "../../adapters/gateways/MockMediaGateway";
 
 describe("Unit - Create product", () => {
   let productRepository: ProductRepository;
   let createProduct: CreateProduct;
   let mediaGateway: MediaGateway;
   const productDb = new Map<string, Product>();
-  const shoesName = "Air Jordan";
+  const name = "Air Jordan";
   const size = 43;
   const price = 50;
-  const image = `123456_${shoesName}`
 
   beforeAll(async () => {
     productRepository = new InMemoryProductRepository(productDb);
+    mediaGateway = new MockMediaGateway()
     createProduct = new CreateProduct(productRepository, mediaGateway);
   });
 
@@ -26,14 +27,14 @@ describe("Unit - Create product", () => {
 
   it("Should create a product", async () => {
     const result = await createProduct.execute({
-      name: shoesName,
+      name,
       productType: ProductType.SHOES,
       price,
       size,
     });
 
     expect(result.props.id).toBeDefined();
-    expect(result.props.name).toEqual(shoesName);
+    expect(result.props.name).toEqual(name);
     expect(result.props.productType).toEqual(ProductType.SHOES);
     expect(result.props.size).toEqual(size);
     expect(result.props.price).toEqual(price);
@@ -42,7 +43,7 @@ describe("Unit - Create product", () => {
 
   it("Should save a product", async () => {
     const product = await createProduct.execute({
-      name: shoesName,
+      name,
       productType: ProductType.SHOES,
       price,
       size,
@@ -53,12 +54,26 @@ describe("Unit - Create product", () => {
 
   it("Should throw an error because the size is wrong", async () => {
     const result = createProduct.execute({
-      name: shoesName,
+      name,
       productType: ProductType.SHOES,
       price,
       size: 35,
     });
     await expect(result).rejects.toThrow(ProductErrors.SizeErrors);
   });
+
+  it("Should upload image in the server", async () => {
+    const result = await createProduct.execute({
+      name,
+      productType: ProductType.SHOES,
+      price,
+      size,
+      file: Buffer.from("Air jordan"),
+      fileName: "Air Jordan",
+      mimetype: "png"
+    })
+
+    expect(result).toBeDefined()
+  })
 
 });

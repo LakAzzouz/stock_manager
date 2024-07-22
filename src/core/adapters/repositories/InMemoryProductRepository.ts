@@ -17,16 +17,16 @@ export class InMemoryProductRepository implements ProductRepository {
   async getById(id: string): Promise<Product | null> {
     const product = this.map.get(id);
     if (!product) {
-      return null
+      return null;
     }
     return product;
   }
 
   async getByName(name: string): Promise<Product | null> {
     const arr = Array.from(this.map.values());
-    const product = arr.find((elm) => elm.props.name === name)
+    const product = arr.find((elm) => elm.props.name === name);
     if (!product) {
-      return null
+      return null;
     }
     return product;
   }
@@ -44,9 +44,7 @@ export class InMemoryProductRepository implements ProductRepository {
   }
 
   async delete(id: string): Promise<void> {
-    const isProductDeleted = this.map.delete(id);
-    if (!isProductDeleted) {
-      throw new ProductErrors.NotFound();
-    }
+    this.map.delete(id);
+    return;
   }
 }

@@ -40,9 +40,7 @@ export class InMemoryWarehouseRepository implements WarehouseRepository {
   }
 
   async delete(id: string): Promise<void> {
-    const isWarehouseDeleted = this.map.delete(id);
-    if (!isWarehouseDeleted) {
-      throw new WarehouseErrors.NotFound();
-    }
+    this.map.delete(id);
+    return;
   }
 }

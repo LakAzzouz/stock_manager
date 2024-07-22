@@ -11,6 +11,7 @@ import { SqlStoreMapper } from "../../adapters/repositories/mappers/SqlStoreMapp
 import { SqlStoreRepository } from "../../adapters/repositories/SQL/SqlStoreRepository";
 import { dbTest } from "../../adapters/_test_/tools/dbTest";
 import { GetAllStoreByIds } from "../../core/usecases/Store/GetAllStoreByIds";
+import { Auth } from "../../adapters/middlewares/auth";
 
 export const storeRouter = express.Router();
 
@@ -35,7 +36,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-storeRouter.post("/", upload.single("store"), async (req: express.Request, res: express.Response) => {
+storeRouter.use(Auth);
+storeRouter.post("/create", upload.single("store"), async (req: express.Request, res: express.Response) => {
     try {
       const body = JSON.parse(req.body.body);
       const { name, city, turnover, frequentation } =

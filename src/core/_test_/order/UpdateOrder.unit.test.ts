@@ -42,4 +42,20 @@ describe("Unit - update order", () => {
 
   await expect(result).rejects.toThrow(OrderErrors.NotFound);
   })
+
+  it("Should modify total price because the date limit has passed ", async () => {
+    const orderWithDatePassed = DataBuilders.generateOrder({
+      orderDate: new Date(1),
+      totalPrice: 100
+    });
+
+    orderDb.set(orderWithDatePassed.props.id, orderWithDatePassed);
+
+    const result = await updateOrder.execute({
+      id: orderWithDatePassed.props.id,
+      dateOfArrival: new Date()
+    });
+
+    expect(result.props.totalPrice).toEqual(80);
+  });
 });

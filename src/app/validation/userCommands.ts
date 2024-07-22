@@ -51,3 +51,55 @@ export class UserVerifyCommand {
     return validation.data;
   }
 }
+
+export const userSendEmailSchema = z.object({
+  email: z.string(),
+  username: z.string(),
+});
+
+type UserSendEmailSchema = z.infer<typeof userSendEmailSchema>;
+
+export class UserSendEmailCommand {
+  static validateUserSendEmail(body: any): UserSendEmailSchema {
+    const validation = userSendEmailSchema.safeParse(body);
+    if (!validation.success) {
+      throw new Error(validation.error.message);
+    }
+    return validation.data;
+  }
+}
+
+export const userResetPasswordCodeSchema = z.object({
+  email: z.string(),
+  username: z.string(),
+});
+
+type UserResetPasswordCodeSchema = z.infer<typeof userResetPasswordCodeSchema>;
+
+export class UserResetPasswordCodeCommand {
+  static validateUserResetPasswordCode(body: any): UserResetPasswordCodeSchema {
+    const validation = userResetPasswordCodeSchema.safeParse(body);
+    if (!validation.success) {
+      throw new Error(validation.error.message);
+    }
+    return validation.data;
+  }
+}
+
+export const userVerifyResetCodeSchema = z.object({
+  email: z.string(),
+  password: z.string(),
+  code: z.string(),
+});
+
+type UserVerifyResetCodeSchema = z.infer<typeof userVerifyResetCodeSchema>;
+
+export class UseVerifyResetCodeCommand {
+  static validateVerifyResetPasswordCode(body: any): UserVerifyResetCodeSchema {
+    const validation = userVerifyResetCodeSchema.safeParse(body);
+    if (!validation.success) {
+      throw new Error(validation.error.message);
+    }
+    return validation.data;
+  }
+}

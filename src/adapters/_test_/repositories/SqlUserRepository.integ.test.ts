@@ -40,8 +40,8 @@ describe("Integ - Sql User repository", () => {
 
     const result = await sqlUserRepository.update(user);
 
-    expect(result.props).toEqual(user.props)
-  })
+    expect(result.props).toEqual(user.props);
+  });
 
   it("Should delete user", async () => {
     await sqlUserRepository.save(user);

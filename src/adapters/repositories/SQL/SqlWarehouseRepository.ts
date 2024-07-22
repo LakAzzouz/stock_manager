@@ -51,14 +51,12 @@ export class SqlWarehouseRepository implements WarehouseRepository {
     return warehouse;
   }
 
-  getAllIds(): Promise<string[]> {
-    throw new Error("Method not implemented.");
-    // const warehouseModel = await this._knex.raw(
-    //   `SELECT * FROM warehouses WHERE ids = :id`,
-    //   {
-    //     id: ,
-    //   }
-    // )
+  async getAllIds(): Promise<string[] | null> {
+    const warehouseIdsColumn = await this._knex.raw<[{ id: string }[], any[]]>(`SELECT id FROM warehouses`);
+
+    const warehouseIds = warehouseIdsColumn[0].map((elm) => elm.id)
+
+    return warehouseIds;
   }
 
   async delete(id: string): Promise<void> {

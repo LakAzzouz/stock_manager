@@ -5,7 +5,6 @@ import { Email } from "../../valuesObject.ts/Email";
 import { Usecases } from "../Usecase";
 
 type GenerateResetPasswordCodeInput = {
-  id: string;
   email: string;
   username: string;
   resetPasswordCode: string;
@@ -18,9 +17,9 @@ export class GenerateResetPasswordCode implements Usecases<GenerateResetPassword
   ) {}
 
   async execute(input: GenerateResetPasswordCodeInput): Promise<void> {
-    const { id, resetPasswordCode, email, username } = input;
+    const { resetPasswordCode, email, username } = input;
 
-    const user = await this._userRepository.getById(id);
+    const user = await this._userRepository.getByEmail(email);
 
     if (!user) {
       throw new UserErrors.UserNotFound();
@@ -30,7 +29,7 @@ export class GenerateResetPasswordCode implements Usecases<GenerateResetPassword
     
     const userUpdated = user.update(resetPasswordCode);
 
-    await this._userRepository.save(userUpdated);
+    await this._userRepository.update(userUpdated);
 
     const code = Math.floor(100000 + Math.random() * 900000).toString();
 

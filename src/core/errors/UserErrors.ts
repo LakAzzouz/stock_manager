@@ -41,10 +41,9 @@ export namespace UserErrors {
     }
   }
 
-  export class CodeNotFound extends DomainErrors {
+  export class EmailFormat extends DomainErrors {
     constructor() {
-      super("CODE_NOT_FOUND")
+      super("EMAIL_FORMAT_INCORRECT");
     }
   }
-
 }

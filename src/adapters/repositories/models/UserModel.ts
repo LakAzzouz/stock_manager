@@ -6,7 +6,7 @@ export interface UserModel {
   birth_date: Date;
   is_verified: boolean;
   reset_password_code?: string;
-  verify_email_code?: string;
+  verify_email_code: string;
   created_at: Date;
   updated_at?: Date;
 }

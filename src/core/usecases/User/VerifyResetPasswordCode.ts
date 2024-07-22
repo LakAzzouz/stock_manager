@@ -25,7 +25,7 @@ export class VerifyResetPasswordCode implements Usecases<VerifyResetPasswordCode
 
     user.update(userUpdated)
 
-    await this._userRepository.save(user)
+    await this._userRepository.update(user)
 
     return user;
   }

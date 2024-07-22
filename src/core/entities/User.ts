@@ -8,7 +8,7 @@ export type UserProperties = {
   birthDate: Date;
   isVerified: boolean;
   resetPasswordCode?: string;
-  verifyEmailCode?: string;
+  verifyEmailCode: string;
   createdAt: Date;
   updatedAt?: Date;
 };

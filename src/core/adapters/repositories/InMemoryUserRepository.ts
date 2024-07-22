@@ -16,7 +16,7 @@ export class InMemoryUserRepository implements UserRepository {
   async getById(id: string): Promise<User | null> {
     const user = this.map.get(id);
     if (!user) {
-      return null
+      return null;
     }
     return user;
   }

@@ -8,10 +8,15 @@ import { DataBuilders } from "../tools/DataBuilders";
 describe("Unit - Send email", () => {
   let sendEmail: SendEmail;
   const userDb = new Map<string, User>();
-  const user = DataBuilders.generateUser({});
   const email = "toto@gmail.com";
   const username = "toto";
-
+  const verifyEmailCode = "1234"
+  const user = DataBuilders.generateUser({
+    email,
+    username,
+    verifyEmailCode
+  });
+  
   beforeAll(async () => {
     const emailGateway = new MockEmailGateway();
     const userRepository = new InMemoryUserRepository(userDb);
@@ -42,5 +47,17 @@ describe("Unit - Send email", () => {
     });
 
     await expect(result).rejects.toThrow(UserErrors.UserNotFound);
+  });
+
+  it("Shoulw throw an error because email format is incorrect", async () => {
+    userDb.set(user.props.id, user);
+
+    const result = sendEmail.execute({
+      email: "toto.com",
+      id: user.props.id,
+      username,
+    });
+
+    await expect(result).rejects.toThrow(UserErrors.EmailFormat);
   });
 });

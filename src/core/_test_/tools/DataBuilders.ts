@@ -62,7 +62,6 @@ type GenerateSale = {
   updatedAt?: Date
 };
 
-
 type GenerateStock = {
   id?: string;
   locationId?: string;
@@ -163,8 +162,8 @@ export class DataBuilders {
       id: props?.id ? props.id : v4(),
       username: props?.username ? props.username : faker.internet.userName(),
       email: props?.email ? props.email : faker.internet.email(),
-      password: props?.password ? props.password : faker.internet.password(),
-      birthDate: props?.birthDate ? props.birthDate : faker.date.birthdate(),
+      password: props?.password ? props.password : "Toto1234!",
+      birthDate: props?.birthDate ? props.birthDate : new Date(),
       isVerified: props?.isVerified ? props.isVerified : false,
       resetPasswordCode: props?.resetPasswordCode ? props.resetPasswordCode : "",
       verifyEmailCode: props?.verifyEmailCode ? props.verifyEmailCode : faker.string.uuid(),

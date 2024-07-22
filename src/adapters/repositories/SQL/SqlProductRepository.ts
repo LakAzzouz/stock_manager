@@ -53,8 +53,24 @@ export class SqlProductRepository implements ProductRepository {
     return product;
   }
 
-  getTotalPriceByProductIds(productInfo: ProductInfo[]): Promise<number> {
-    throw new Error("Method not implemented.");
+  async getTotalPriceByProductIds(productInfo: ProductInfo[]): Promise<number> {
+    const productModel = await this._knex.raw(
+      `SELECT SUM(products.price * product_infos.quantity) AS total_price
+      FROM product_infos
+      JOIN products ON product_infos.product_id = products.id
+      WHERE product_infos.product_id`,
+      {
+        product_info: productInfo,
+      }
+    );
+
+    const product = this._productMapper.toDomain(productModel[0][0]);
+
+    console.log(product);
+
+    const price = product.props.price;
+
+    return price;
   }
 
   async delete(id: string): Promise<void> {

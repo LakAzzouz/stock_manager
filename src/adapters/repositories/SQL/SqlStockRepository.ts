@@ -41,7 +41,6 @@ export class SqlStockRepository implements StockRepository {
       );
       await tx.commit();
     } catch (error) {
-      console.log(error);
       await tx.rollback();
     }
   }
@@ -71,10 +70,6 @@ export class SqlStockRepository implements StockRepository {
 
     const rawStock = stockModel[0][0];
 
-    if (!rawStock) {
-      throw new StockErrors.NotFound();
-    }
-
     if (typeof rawStock.stock_datas === "string") {
       rawStock.stock_datas = JSON.parse(rawStock.stock_datas);
     }
@@ -90,15 +85,11 @@ export class SqlStockRepository implements StockRepository {
     });
   }
 
-  getAllIds(): Promise<string[]> {
-    throw new Error("Method not implemented.");
-  }
+  async getAllIds(): Promise<string[] | null> {
+    const stockIdsColumn = await this._knex.raw<[{ id: string }[], any[]]>(`SELECT id FROM stocks`);
 
-  ensureThatDoesNotExistByProductId(productId: string): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
+    const stockIds = stockIdsColumn[0].map((elm) => elm.id)
 
-  addStockDataToAllLocations(stockData: StockData): Promise<void> {
-    throw new Error("Method not implemented.");
+    return stockIds;
   }
 }

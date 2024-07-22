@@ -12,13 +12,15 @@ export class UpdateOrder implements Usecases<UpdateOrderInput, Promise<Order>> {
   constructor(private readonly _orderRepository: OrderRepository) {}
 
   async execute(input: UpdateOrderInput): Promise<Order> {
-    const order = await this._orderRepository.getById(input.id);
-    
+    const { id, dateOfArrival } = input;
+
+    const order = await this._orderRepository.getById(id);
+
     if (!order) {
       throw new OrderErrors.NotFound();
     }
 
-    const orderUpdated = order.update(input.dateOfArrival);
+    const orderUpdated = order.update(dateOfArrival);
 
     return orderUpdated;
   }

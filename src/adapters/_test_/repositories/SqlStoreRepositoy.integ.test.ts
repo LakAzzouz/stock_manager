@@ -3,10 +3,11 @@ import { SqlStoreRepository } from "../../repositories/SQL/SqlStoreRepository";
 import { SqlStoreMapper } from "../../repositories/mappers/SqlStoreMapper";
 import { dbTest } from "../tools/dbTest";
 
-describe("Integ - Sql Warehouse Repository", () => {
+describe("Integ - Sql Store Repository", () => {
   let sqlStoreMapper: SqlStoreMapper;
   let sqlStoreRepository: SqlStoreRepository;
   const store = DataBuilders.generateStore({});
+  const store2 = DataBuilders.generateStore()
 
   beforeAll(async () => {
     sqlStoreMapper = new SqlStoreMapper();
@@ -39,5 +40,14 @@ describe("Integ - Sql Warehouse Repository", () => {
     const result = await sqlStoreRepository.delete(store.props.id);
 
     expect(result).toBeUndefined();
+  });
+
+  it("Should get stores by ids", async () => {
+    await sqlStoreRepository.save(store);
+    await sqlStoreRepository.save(store2);
+
+    const result = await sqlStoreRepository.getAllIds();
+
+    expect(result).toHaveLength(2);
   });
 });

@@ -7,10 +7,14 @@ describe("Integ - Sql Warehouse Repository", () => {
   let sqlWarehouseMapper: SqlWarehouseMapper;
   let sqlWarehouseRepository: SqlWarehouseRepository;
   const warehouse = DataBuilders.generateWarehouse({});
+  const warehouse2 = DataBuilders.generateWarehouse();
 
   beforeAll(async () => {
     sqlWarehouseMapper = new SqlWarehouseMapper();
-    sqlWarehouseRepository = new SqlWarehouseRepository(dbTest, sqlWarehouseMapper);
+    sqlWarehouseRepository = new SqlWarehouseRepository(
+      dbTest,
+      sqlWarehouseMapper
+    );
   });
 
   beforeEach(async () => {
@@ -28,7 +32,9 @@ describe("Integ - Sql Warehouse Repository", () => {
   it("Should get warehouse by manager id", async () => {
     await sqlWarehouseRepository.save(warehouse);
 
-    const result = await sqlWarehouseRepository.getByManagerId(warehouse.props.managerId);
+    const result = await sqlWarehouseRepository.getByManagerId(
+      warehouse.props.managerId
+    );
 
     expect(result).toEqual(warehouse);
   });
@@ -39,5 +45,14 @@ describe("Integ - Sql Warehouse Repository", () => {
     const result = await sqlWarehouseRepository.delete(warehouse.props.id);
 
     expect(result).toBeUndefined();
+  });
+
+  it("Should get warehouses by ids", async () => {
+    await sqlWarehouseRepository.save(warehouse);
+    await sqlWarehouseRepository.save(warehouse2);
+
+    const result = await sqlWarehouseRepository.getAllIds();
+
+    expect(result).toHaveLength(2);
   });
 });

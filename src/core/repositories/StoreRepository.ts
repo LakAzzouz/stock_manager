@@ -9,5 +9,5 @@ export interface StoreRepository {
 
   getAllIds(): Promise<string[] | null>;
 
-  delete(id: string): Promise<void>
+  delete(id: string): Promise<void | null>
 }

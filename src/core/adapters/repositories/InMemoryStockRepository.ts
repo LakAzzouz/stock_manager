@@ -9,7 +9,7 @@ export class InMemoryStockRepository implements StockRepository {
   constructor(map: Map<string, Stock>) {
     this.map = map;
   }
-  
+
   async save(stock: Stock): Promise<void> {
     this.map.set(stock.props.id, stock);
   }
@@ -17,7 +17,7 @@ export class InMemoryStockRepository implements StockRepository {
   async getById(id: string): Promise<Stock | null> {
     const stock = this.map.get(id);
     if (!stock) {
-      return null
+      return null;
     }
     return stock;
   }
@@ -25,16 +25,14 @@ export class InMemoryStockRepository implements StockRepository {
   async getAllIds(): Promise<string[] | null> {
     const stocks = Array.from(this.map.values());
     const stockIds = stocks.map((elm) => elm.props.id);
-    if(!stockIds.length) {
-      return null
+    if (!stockIds.length) {
+      return null;
     }
-    return stockIds
+    return stockIds;
   }
 
   async delete(id: string): Promise<void> {
-    const isStockDeleted = this.map.delete(id);
-    if (!isStockDeleted) {
-      throw new StockErrors.NotFound();
-    }
+    this.map.delete(id);
+    return;
   }
 }
