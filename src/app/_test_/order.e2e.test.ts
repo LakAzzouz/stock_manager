@@ -40,9 +40,10 @@ describe("E2E - order", () => {
     productRepository = new SqlProductRepository(dbTest, productMapper)
   });
 
-  afterEach(async () => {
+  beforeEach(async () => {
     await dbTest.raw(`TRUNCATE TABLE orders`);
     await dbTest.raw(`TRUNCATE TABLE users`);
+    await dbTest.raw(`TRUNCATE TABLE products`);
   });
 
   it("POST /orders/create", async () => {
@@ -67,7 +68,7 @@ describe("E2E - order", () => {
       });
 
     const responseBody = response.body;
-    console.log(response)
+    console.log(responseBody)
     expect(responseBody.id).toBeDefined();
     expect(responseBody.productInfos).toEqual(order.props.productInfos);
     expect(responseBody.locationId).toEqual(order.props.locationId);
@@ -80,7 +81,7 @@ describe("E2E - order", () => {
     jest.setTimeout(1000);
   });
 
-  it("POST /users/create should return a status 400", async () => {
+  // it("POST /users/create should return a status 400", async () => {
 
-  })
+  // })
 });

@@ -31,15 +31,19 @@ export class InMemoryProductRepository implements ProductRepository {
     return product;
   }
 
-  async getTotalPriceByProductIds(productInfo: ProductInfo[]): Promise<number> {
+  async getTotalPriceByProductIds(productInfo: ProductInfo[]): Promise<{totalPrice: number, productId: string}> {
     const arr = Array.from(this.map.values());
     const totalPrice = productInfo.reduce((sum, info) => {
       const product = arr.find((elm) => elm.props.id === info.productId);
       if (product) {
-        return sum + product.props.price * info.quantity;
+        sum = {
+          totalPrice: sum.totalPrice + product.props.price * info.quantity,
+          productId: product.props.id
+        }
+        return sum
       }
       return sum;
-    }, 0);
+    }, {totalPrice: 0, productId: ""});
     return totalPrice;
   }
 

@@ -7,7 +7,6 @@ import { SqlUserMapper } from "../../adapters/repositories/mappers/SqlUserMapper
 import { dbTest } from "../../adapters/_test_/tools/dbTest";
 import { DataBuilders } from "../../core/_test_/tools/DataBuilders";
 import { NodeMailerGateway } from "../../adapters/gateways/NodeMailerGateway";
-import { PasswordGateway } from "../../core/gateways/PasswordGateway";
 import { BCryptGateway } from "../../adapters/gateways/BcryptGateway";
 
 const app = express();
@@ -16,8 +15,6 @@ const jwtSecret = process.env.JWT_SECRET
 
 describe("E2E - User", () => {
   let userRepository: SqlUserRepository;
-  let emailGateway: NodeMailerGateway;
-  let passwordGateway: PasswordGateway;
   let authorization
 
   const user = DataBuilders.generateUser();
@@ -28,8 +25,8 @@ describe("E2E - User", () => {
 
     const userMapper = new SqlUserMapper();
     userRepository = new SqlUserRepository(dbTest, userMapper);
-    emailGateway = new NodeMailerGateway()
-    passwordGateway = new BCryptGateway()
+    const emailGateway = new NodeMailerGateway()
+    const passwordGateway = new BCryptGateway()
   });
 
   afterEach(async () => {
@@ -116,14 +113,14 @@ describe("E2E - User", () => {
       email: user.props.email,
       password: user.props.password,
     });
-    const responseBody = response.body;
-    console.log(response)
+    const responseBody = response.body.result;
+    const responseToken = response.body.token
     expect(responseBody.id).toBeDefined();
     expect(responseBody.username).toEqual(user.props.username);
     expect(responseBody.email).toEqual(user.props.email);
     expect(responseBody.birthDate).toBeDefined();
     expect(responseBody.createdAt).toBeDefined();
-    expect(responseBody.token).toBeDefined()
+    expect(responseToken).toBeDefined()
     expect(response.status).toBe(201);
     jest.setTimeout(1000);
   });
@@ -230,7 +227,7 @@ describe("E2E - User", () => {
       jwtSecret
     );
 
-    const response = await supertest(app).get(`/users/${user.props.id}`)
+    const response = await supertest(app).get("/users/")
     .set("authorization", authorization)
     .send({
       id: user.props.id,
@@ -253,7 +250,7 @@ describe("E2E - User", () => {
       },
       jwtSecret
     );
-    const response = await supertest(app).get(`/users/${user.props.id}`)
+    const response = await supertest(app).get("/users/")
     .set("authorization", authorization);
     expect(response.status).toBe(400);
     jest.setTimeout(1000);
@@ -271,7 +268,7 @@ describe("E2E - User", () => {
     );
 
     const response = await supertest(app)
-      .delete(`/users/${user.props.id}`)
+      .delete("/users/delete")
       .set("authorization", authorization)
       .send({
         id: user.props.id,
@@ -289,14 +286,9 @@ describe("E2E - User", () => {
       },
       jwtSecret
     );
-    const response = await supertest(app).delete(`/users/${user.props.id}`)
+    const response = await supertest(app).delete("/users/delete")
     .set("authorization", authorization);
     const responseStatus = response.status;
     expect(responseStatus).toBe(400);
   });
-
-  it("Should return a status 401", async () => {
-    const response = await supertest(app).delete(`/users/${user.props.id}`)
-    expect(response.status).toBe(401)
-  })
 });

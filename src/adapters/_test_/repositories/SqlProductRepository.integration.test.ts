@@ -10,8 +10,18 @@ describe("Integ - Sql Product Repository", () => {
   let sqlSaleMapper: SqlSaleMapper;
   let sqlProductRepository: SqlProductRepository;
   let sqlSaleRepository: SqlSaleRepository;
-  const product = DataBuilders.generateProduct();
-  const sale = DataBuilders.generateSale();
+  const product = DataBuilders.generateProduct({
+    id: "id",
+    price: 1,
+  });
+  const sale = DataBuilders.generateSale({
+    productInfos: [
+      {
+        productId: "id",
+        quantity: 10,
+      },
+    ],
+  });
 
   beforeAll(async () => {
     sqlProductMapper = new SqlProductMapper();
@@ -46,9 +56,12 @@ describe("Integ - Sql Product Repository", () => {
     await sqlProductRepository.save(product);
     await sqlSaleRepository.save(sale);
 
-    const result = await sqlProductRepository.getTotalPriceByProductIds(sale.props.productInfos);
+    const result = await sqlProductRepository.getTotalPriceByProductIds(
+      sale.props.productInfos
+    );
 
-    expect(result).toEqual(sale.props.totalPrice)
+    expect(result.productId).toEqual(product.props.id);
+    expect(result.totalPrice).toEqual(product.props.price * sale.props.productInfos[0].quantity)
   });
 
   it("Should delete product", async () => {

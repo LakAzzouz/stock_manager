@@ -17,11 +17,13 @@ export class CreateSale implements Usecases<CreateSaleInput, Promise<Sale>> {
   async execute(input: CreateSaleInput): Promise<Sale> {
     const { productInfos } = input;
 
-    const totalPrice = await this._productRepository.getTotalPriceByProductIds(productInfos);
+    const productInfo = await this._productRepository.getTotalPriceByProductIds(productInfos);
+
+    const totalPrice = productInfo.totalPrice;
 
     const sale = Sale.create({
       productInfos,
-      totalPrice,
+      totalPrice
     });
 
     await this._saleRepository.save(sale);

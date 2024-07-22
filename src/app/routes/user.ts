@@ -109,14 +109,14 @@ userRouter.post("/verify", async (req: express.Request, res: express.Response) =
 
 userRouter.post("/sign_in", async (req: express.Request, res: express.Response) => {
     try {
-      const { email, password } = req.body //UserSignInCommand.validateUserSignIn(req.body);
+      const { email, password } = UserSignInCommand.validateUserSignIn(req.body);
 
       const user = await signIn.execute({
         email,
         password,
       });
 
-      // const token = jwt.sign({ id: user.props.id, email: user.props.email }, jwtSecret)
+      const token = jwt.sign({ id: user.props.id, email: user.props.email }, jwtSecret)
 
       const result = {
         id: user.props.id,
@@ -126,7 +126,7 @@ userRouter.post("/sign_in", async (req: express.Request, res: express.Response) 
         createdAt: user.props.createdAt,
       };
 
-      return res.status(201).send({ result });
+      return res.status(201).send({ result, token });
     } catch (error: any) {
       console.error(error);
       if (error instanceof Error) {
@@ -139,7 +139,6 @@ userRouter.post("/sign_in", async (req: express.Request, res: express.Response) 
 userRouter.use(Auth);
 userRouter.post("/reset_password_code", async (req: express.Request, res: express.Response) => {
     try {
-      const authRequest = req as RequestAuth;
       const { email, username } = UserResetPasswordCodeCommand.validateUserResetPasswordCode(req.body);
 
       await resetPassword.execute({
@@ -165,7 +164,7 @@ userRouter.post("/reset_password_code", async (req: express.Request, res: expres
 userRouter.post("/verify_reset_code", async (req: express.Request, res: express.Response) => {
     try {
       const authRequest = req as RequestAuth;
-      const userId = authRequest.user.id;  
+      const id = authRequest.user.id;  
       const { email, password, code } = UseVerifyResetCodeCommand.validateVerifyResetPasswordCode(req.body);
 
       const user = await verifyResetCode.execute({
@@ -175,7 +174,7 @@ userRouter.post("/verify_reset_code", async (req: express.Request, res: express.
       });
 
       const result = {
-        id: user.props.id,
+        id,
         username: user.props.username,
         email: user.props.email,
         birthDate: user.props.birthDate,
@@ -192,9 +191,10 @@ userRouter.post("/verify_reset_code", async (req: express.Request, res: express.
   }
 );
 
-userRouter.get("/:id", async (req: express.Request, res: express.Response) => {
+userRouter.get("/", async (req: express.Request, res: express.Response) => {
   try {
-    const id = req.params.id;
+    const authRequest = req as RequestAuth;
+    const id = authRequest.user.id;  
 
     const user = await getUserById.execute({
       id,
@@ -217,9 +217,10 @@ userRouter.get("/:id", async (req: express.Request, res: express.Response) => {
   }
 });
 
-userRouter.delete("/:id", async (req: express.Request, res: express.Response) => {
+userRouter.delete("/delete", async (req: express.Request, res: express.Response) => {
     try {
-      const id = req.params.id;
+      const authRequest = req as RequestAuth;
+      const id = authRequest.user.id;  
 
       await deleteUser.execute({
         id,

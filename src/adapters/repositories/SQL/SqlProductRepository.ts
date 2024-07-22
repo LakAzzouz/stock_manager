@@ -53,24 +53,23 @@ export class SqlProductRepository implements ProductRepository {
     return product;
   }
 
-  async getTotalPriceByProductIds(productInfo: ProductInfo[]): Promise<number> {
+  async getTotalPriceByProductIds(productInfo: ProductInfo[]): Promise<{totalPrice: number, productId: string}> {
+    const productIds = productInfo.map((elm) => elm.productId);
     const productModel = await this._knex.raw(
-      `SELECT SUM(products.price * product_infos.quantity) AS total_price
-      FROM product_infos
+      `SELECT SUM(products.price * product_infos.quantity) AS total_price,
+      product_infos.product_id AS product_id
+      FROM product_infos 
       JOIN products ON product_infos.product_id = products.id
-      WHERE product_infos.product_id`,
+      WHERE product_infos.product_id IN (:product_id)
+      GROUP BY product_infos.product_id`,
       {
-        product_info: productInfo,
+        product_id: productIds.join(", ")
       }
     );
-
-    const product = this._productMapper.toDomain(productModel[0][0]);
-
-    console.log(product);
-
-    const price = product.props.price;
-
-    return price;
+    return {
+      totalPrice: productModel[0][0].total_price,
+      productId: productModel[0][0].product_id
+    }
   }
 
   async delete(id: string): Promise<void> {

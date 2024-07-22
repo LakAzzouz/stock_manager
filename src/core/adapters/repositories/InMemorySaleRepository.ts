@@ -1,5 +1,4 @@
 import { Sale } from "../../entities/Sale";
-import { SaleErrors } from "../../errors/SaleErrors";
 import { SaleRepository } from "../../repositories/SaleRepository";
 
 export class InMemorySaleRepository implements SaleRepository {
