@@ -32,17 +32,21 @@ export class Product {
     this.props = productProperties;
   }
 
-  static create(props: {name: string, productType: ProductType, image?: string, price: number, size: number}): Product {
+  static create(props: {name: string, productType: ProductType, price: number, size: number}): Product {
     const product = new Product({
       id: v4(),
       name: props.name,
       productType: props.productType,
-      image: props.image,
       price: props.price,
       size: props.size,
       createdAt: new Date(),
     });
     return product;
+  }
+
+  updateImage(image: string): Product {
+    this.props.image = image;
+    return this;
   }
 
   update(newPrice: number): Product {

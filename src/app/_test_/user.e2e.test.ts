@@ -6,8 +6,6 @@ import { userRouter } from "../routes/user";
 import { SqlUserMapper } from "../../adapters/repositories/mappers/SqlUserMapper";
 import { dbTest } from "../../adapters/_test_/tools/dbTest";
 import { DataBuilders } from "../../core/_test_/tools/DataBuilders";
-import { NodeMailerGateway } from "../../adapters/gateways/NodeMailerGateway";
-import { BCryptGateway } from "../../adapters/gateways/BcryptGateway";
 
 const app = express();
 const { sign } = require("jsonwebtoken");
@@ -25,8 +23,6 @@ describe("E2E - User", () => {
 
     const userMapper = new SqlUserMapper();
     userRepository = new SqlUserRepository(dbTest, userMapper);
-    const emailGateway = new NodeMailerGateway()
-    const passwordGateway = new BCryptGateway()
   });
 
   afterEach(async () => {
@@ -34,11 +30,14 @@ describe("E2E - User", () => {
   });
 
   it("POST /users/create", async () => {
-    const response = await supertest(app).post("/users/create").send({
+    const response = await supertest(app)
+    .post("/users/create")
+    .send({
       email: user.props.email,
       password: user.props.password,
       username: user.props.username,
     });
+    
     const responseBody = response.body;
     expect(responseBody.id).toBeDefined();
     expect(responseBody.username).toEqual(user.props.username);
@@ -52,7 +51,7 @@ describe("E2E - User", () => {
     jest.setTimeout(1000);
   });
 
-  it("POST /users/create should return a status 400 ", async () => {
+  it("POST /users/create should return a status 400", async () => {
     const response = await supertest(app).post("/users/create");
     expect(response.status).toBe(400);
     jest.setTimeout(1000);
@@ -113,14 +112,13 @@ describe("E2E - User", () => {
       email: user.props.email,
       password: user.props.password,
     });
-    const responseBody = response.body.result;
-    const responseToken = response.body.token
+    const responseBody = response.body
     expect(responseBody.id).toBeDefined();
     expect(responseBody.username).toEqual(user.props.username);
     expect(responseBody.email).toEqual(user.props.email);
     expect(responseBody.birthDate).toBeDefined();
     expect(responseBody.createdAt).toBeDefined();
-    expect(responseToken).toBeDefined()
+    expect(responseBody.token).toBeDefined()
     expect(response.status).toBe(201);
     jest.setTimeout(1000);
   });
@@ -216,7 +214,7 @@ describe("E2E - User", () => {
     jest.setTimeout(1000);
   });
 
-  it("GET /users/:id", async () => {
+  it("GET /users/", async () => {
     await userRepository.save(user);
 
     authorization = sign(
@@ -291,4 +289,9 @@ describe("E2E - User", () => {
     const responseStatus = response.status;
     expect(responseStatus).toBe(400);
   });
+
+  it("Should return a status 401", async () => {
+    const response = await supertest(app).delete(`/users/${user.props.id}`)
+    expect(response.status).toBe(401)
+  })
 });

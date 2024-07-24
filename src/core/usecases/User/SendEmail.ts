@@ -17,7 +17,7 @@ export class SendEmail implements Usecases<SendEmailInput, Promise<void>> {
   ) {}
 
   async execute(input: SendEmailInput): Promise<void> {
-    const { email, username, id } = input;
+    const { id, email, username } = input;
 
     const user = await this._userRepository.getById(id);
 

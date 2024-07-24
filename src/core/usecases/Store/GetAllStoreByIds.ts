@@ -1,4 +1,3 @@
-import { Store } from "../../entities/Store";
 import { StoreErrors } from "../../errors/StoreErrors";
 import { StoreRepository } from "../../repositories/StoreRepository";
 import { Usecases } from "../Usecase";

@@ -4,6 +4,8 @@ import { saleRouter } from "./app/routes/sale";
 import { storeRouter } from "./app/routes/store";
 import { warehouseRouter } from "./app/routes/warehouse";
 import { stockRouter } from "./app/routes/stock";
+import "../src/messages/EventEmitter";
+import "../src/app/handlers/userCreatedHandler";
 
 import { rateLimit } from 'express-rate-limit'
 
@@ -14,6 +16,8 @@ import { userRouter } from "./app/routes/user";
 
 const app = express();
 const port = process.env.PORT;
+
+console.log(process.env)
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes

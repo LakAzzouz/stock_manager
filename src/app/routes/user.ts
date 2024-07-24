@@ -56,7 +56,6 @@ userRouter.post("/create", async (req: express.Request, res: express.Response) =
 
     return res.status(201).send(result);
   } catch (error: any) {
-    console.error(error);
     if (error instanceof Error) {
       return res.status(400).send(error.message);
     }
@@ -80,7 +79,6 @@ userRouter.post("/send_email/:id", async (req: express.Request, res: express.Res
 
       return res.status(201).send(result);
     } catch (error: any) {
-      console.error(error);
       if (error instanceof Error) {
         return res.status(400).send(error.message);
       }
@@ -99,7 +97,6 @@ userRouter.post("/verify", async (req: express.Request, res: express.Response) =
 
       return res.sendStatus(201);
     } catch (error: any) {
-      console.error(error);
       if (error instanceof Error) {
         return res.status(400).send(error.message);
       }
@@ -124,11 +121,11 @@ userRouter.post("/sign_in", async (req: express.Request, res: express.Response) 
         email: user.props.email,
         birthDate: user.props.birthDate,
         createdAt: user.props.createdAt,
+        token
       };
 
-      return res.status(201).send({ result, token });
+      return res.status(201).send(result);
     } catch (error: any) {
-      console.error(error);
       if (error instanceof Error) {
         return res.status(400).send(error.message);
       }
@@ -153,7 +150,6 @@ userRouter.post("/reset_password_code", async (req: express.Request, res: expres
 
       return res.status(201).send(result);
     } catch (error: any) {
-      console.error(error);
       if (error instanceof Error) {
         return res.status(400).send(error.message);
       }
@@ -183,7 +179,6 @@ userRouter.post("/verify_reset_code", async (req: express.Request, res: express.
 
       return res.status(201).send(result);
     } catch (error: any) {
-      console.error(error);
       if (error instanceof Error) {
         return res.status(400).send(error.message);
       }
@@ -210,7 +205,6 @@ userRouter.get("/", async (req: express.Request, res: express.Response) => {
 
     return res.status(200).send(result);
   } catch (error: any) {
-    console.error(error);
     if (error instanceof Error) {
       return res.status(400).send(error.message);
     }
@@ -228,7 +222,6 @@ userRouter.delete("/delete", async (req: express.Request, res: express.Response)
 
       return res.sendStatus(200);
     } catch (error: any) {
-      console.error(error);
       if (error instanceof Error) {
         return res.status(400).send(error.message);
       }

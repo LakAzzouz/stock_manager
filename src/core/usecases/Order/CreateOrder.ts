@@ -18,9 +18,7 @@ export class CreateOrder implements Usecases<CreateOrderInput, Promise<Order>> {
   async execute(input: CreateOrderInput): Promise<Order> {
     const { locationId, productInfos } = input;
 
-    const productInfo = await this._productRepository.getTotalPriceByProductIds(productInfos);
-
-    const totalPrice = productInfo.totalPrice;
+    const totalPrice = await this._productRepository.getTotalPriceByProductIds(productInfos);
 
     const order = Order.create({
       productInfos,

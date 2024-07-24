@@ -4,7 +4,7 @@ import { CreateOrder } from "../../core/usecases/Order/CreateOrder";
 import { GetOrderById } from "../../core/usecases/Order/GetOrderById";
 import { UpdateOrder } from "../../core/usecases/Order/UpdateOrder";
 import { DeleteOrder } from "../../core/usecases/Order/DeleteOrder";
-import {OrderCreateCommand, OrderUpdateCommand} from "../validation/orderCommands";
+import { OrderCreateCommand, OrderUpdateCommand } from "../validation/orderCommands";
 import { SqlOderRepository } from "../../adapters/repositories/SQL/SqlOrderRepository";
 import { dbTest } from "../../adapters/_test_/tools/dbTest";
 import { SqlOrderMapper } from "../../adapters/repositories/mappers/SqlOrderMapper";
@@ -32,7 +32,10 @@ orderRouter.post("/create", async (req: express.Request, res: express.Response) 
   try {
     const { productInfos, locationId } = OrderCreateCommand.validateOrderCreate(req.body);
 
-    const order = await createOrder.execute({ locationId, productInfos });
+    const order = await createOrder.execute({ 
+      locationId, 
+      productInfos 
+    });
 
     const result = {
       id: order.props.id,

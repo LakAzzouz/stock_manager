@@ -10,6 +10,10 @@ export class SqlProductRepository implements ProductRepository {
     private readonly _productMapper: SqlProductMapper
   ) {}
 
+  update(product: Product): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+
   async save(product: Product): Promise<void> {
     const productModel = this._productMapper.fromDomain(product);
     await this._knex.raw(
@@ -19,7 +23,7 @@ export class SqlProductRepository implements ProductRepository {
         id: productModel.id,
         name: productModel.name,
         product_type: productModel.product_type,
-        image: productModel.image,
+        image: productModel.image || null,
         price: productModel.price,
         size: productModel.size,
         created_at: productModel.created_at,
@@ -53,23 +57,21 @@ export class SqlProductRepository implements ProductRepository {
     return product;
   }
 
-  async getTotalPriceByProductIds(productInfo: ProductInfo[]): Promise<{totalPrice: number, productId: string}> {
+  async getTotalPriceByProductIds(productInfo: ProductInfo[]): Promise<number> {
     const productIds = productInfo.map((elm) => elm.productId);
     const productModel = await this._knex.raw(
-      `SELECT SUM(products.price * product_infos.quantity) AS total_price,
-      product_infos.product_id AS product_id
+      `SELECT SUM(products.price * product_infos.quantity) AS total_price
       FROM product_infos 
       JOIN products ON product_infos.product_id = products.id
-      WHERE product_infos.product_id IN (:product_id)
-      GROUP BY product_infos.product_id`,
+      WHERE product_infos.product_id IN (:product_id)`,
       {
-        product_id: productIds.join(", ")
+        product_id: productIds
       }
     );
-    return {
-      totalPrice: productModel[0][0].total_price,
-      productId: productModel[0][0].product_id
-    }
+
+    const totalPrice = productModel[0][0].total_price
+
+    return totalPrice;
   }
 
   async delete(id: string): Promise<void> {

@@ -6,23 +6,25 @@ import { GetProductById } from "../../core/usecases/Product/GetProductById";
 import { GetProductByName } from "../../core/usecases/Product/GetProductByName";
 import { UpdateProduct } from "../../core/usecases/Product/UpdateProduct";
 import { DeleteProduct } from "../../core/usecases/Product/DeleteProduct";
-import {ProductCreateCommand, ProductUpdateCommand} from "../validation/productCommands";
+import { ProductCreateCommand, ProductUpdateCommand } from "../validation/productCommands";
 import { SqlProductRepository } from "../../adapters/repositories/SQL/SqlProductRepository";
 import { SqlProductMapper } from "../../adapters/repositories/mappers/SqlProductMapper";
 import { initFirebase } from "../config/InitFirebase";
 import { FirebaseStorageGateway } from "../../adapters/gateways/FirebaseStorageGateway";
 import { dbTest } from "../../adapters/_test_/tools/dbTest";
-import { Auth } from "../../adapters/middlewares/auth";
+import { Auth, RequestAuth } from "../../adapters/middlewares/auth";
+import { UploadImage } from "../../core/usecases/Product/UploadImage";
 
 export const productRouter = express.Router();
 const firebase = initFirebase();
 
-const firebaseGateway = new FirebaseStorageGateway(firebase);
+export const firebaseGateway = new FirebaseStorageGateway(firebase);
 
 const productMapper = new SqlProductMapper();
 const sqlProductRepository = new SqlProductRepository(dbTest, productMapper);
 
-const createProduct = new CreateProduct(sqlProductRepository, firebaseGateway);
+const createProduct = new CreateProduct(sqlProductRepository);
+const uploadImage = new UploadImage(sqlProductRepository, firebaseGateway);
 const getProductById = new GetProductById(sqlProductRepository);
 const getProductByName = new GetProductByName(sqlProductRepository);
 const updateProduct = new UpdateProduct(sqlProductRepository);
@@ -32,17 +34,15 @@ const storage = multer.memoryStorage();
 export const upload = multer({ storage: storage });
 
 productRouter.use(Auth);
-productRouter.post("/create", upload.single("file"), async (req: express.Request, res: express.Response) => {
+productRouter.post("/create", async (req: express.Request, res: express.Response) => {
     try {
-      const body = JSON.parse(req.body.body);
+      const body = req.body;
+
       const { name, productType, price, size } = ProductCreateCommand.validateProductCreate(body);
 
       const product = await createProduct.execute({
         name,
         productType,
-        file: req.file?.buffer,
-        fileName: req.file?.originalname,
-        mimetype: "jpg",
         price,
         size,
       });
@@ -66,9 +66,36 @@ productRouter.post("/create", upload.single("file"), async (req: express.Request
   }
 );
 
-productRouter.get("/:id", async (req: express.Request, res: express.Response) => {
+productRouter.post("/upload", upload.single("file"), async (req: express.Request, res: express.Response) => {
     try {
-      const id = req.params.id;
+      const authRequest = req as RequestAuth;
+      const id = authRequest.user.id;  
+      const body = req.body;
+
+      uploadImage.execute({
+        id,
+        image: "",
+        file: req.file?.buffer,
+        fileName: req.file?.originalname,
+        mimetype: "jpg",
+      });
+
+      const msg = {
+        message: "Image upload successfully"
+      }
+
+      return res.status(201).send(msg)
+    } catch (error) {
+      if (error instanceof Error) {
+        return res.status(400).send(error.message);
+      }
+    }
+  }
+);
+productRouter.get("/", async (req: express.Request, res: express.Response) => {
+    try {
+      const authRequest = req as RequestAuth;
+      const id = authRequest.user.id;  
 
       const product = await getProductById.execute({
         id,
@@ -118,10 +145,11 @@ productRouter.get("/:name", async (req: express.Request, res: express.Response) 
   }
 );
 
-productRouter.patch("/:id", async (req: express.Request, res: express.Response) => {
+productRouter.patch("/update", async (req: express.Request, res: express.Response) => {
     try {
       const { newPrice } = ProductUpdateCommand.updateProduct(req.body);
-      const id = req.params.id;
+      const authRequest = req as RequestAuth;
+      const id = authRequest.user.id;  
 
       const product = await updateProduct.execute({
         id,
@@ -147,9 +175,10 @@ productRouter.patch("/:id", async (req: express.Request, res: express.Response) 
   }
 );
 
-productRouter.delete("/:id", async (req: express.Request, res: express.Response) => {
+productRouter.delete("/delete", async (req: express.Request, res: express.Response) => {
     try {
-      const id = req.params.id;
+      const authRequest = req as RequestAuth;
+      const id = authRequest.user.id;  
 
       const product = await deleteProduct.execute({
         id,

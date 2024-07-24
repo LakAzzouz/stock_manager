@@ -25,8 +25,8 @@ describe("E2E - order", () => {
   let authorization;
 
   const user = DataBuilders.generateUser();
-  const order = DataBuilders.generateOrder();
-  const product = DataBuilders.generateProduct()
+  const order = DataBuilders.generateOrder()
+  const product = DataBuilders.generateProduct();
 
   beforeAll(async () => {
     app.use(express.json());
@@ -34,23 +34,19 @@ describe("E2E - order", () => {
 
     const orderMapper = new SqlOrderMapper();
     const userMapper = new SqlUserMapper();
-    const productMapper = new SqlProductMapper()
+    const productMapper = new SqlProductMapper();
     orderRepository = new SqlOderRepository(dbTest, orderMapper);
     userRepository = new SqlUserRepository(dbTest, userMapper);
-    productRepository = new SqlProductRepository(dbTest, productMapper)
+    productRepository = new SqlProductRepository(dbTest, productMapper);
   });
 
-  beforeEach(async () => {
+  afterEach(async () => {
     await dbTest.raw(`TRUNCATE TABLE orders`);
     await dbTest.raw(`TRUNCATE TABLE users`);
     await dbTest.raw(`TRUNCATE TABLE products`);
   });
 
   it("POST /orders/create", async () => {
-    await userRepository.save(user)
-    await productRepository.save(product)
-    await orderRepository.save(order)
-
     authorization = sign(
       {
         id: user.props.id,
@@ -68,7 +64,7 @@ describe("E2E - order", () => {
       });
 
     const responseBody = response.body;
-    console.log(responseBody)
+    console.log(response)
     expect(responseBody.id).toBeDefined();
     expect(responseBody.productInfos).toEqual(order.props.productInfos);
     expect(responseBody.locationId).toEqual(order.props.locationId);

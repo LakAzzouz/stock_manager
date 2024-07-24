@@ -2,11 +2,7 @@ import { z } from "zod";
 
 export const productCreateSchema = z.object({
   name: z.string(),
-  productType: z.any().refine((val) =>val.toLowerCase() === "shoes" || val.toLowerCase() === "tee-shirt",
-      {
-        message: "Need shoes or tee-shirt",
-      }
-    ),
+  productType: z.any(),
   price: z.number(),
   size: z.number(),
 });

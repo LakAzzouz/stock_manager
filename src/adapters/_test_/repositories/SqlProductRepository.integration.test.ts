@@ -14,11 +14,20 @@ describe("Integ - Sql Product Repository", () => {
     id: "id",
     price: 1,
   });
+  const product2 = DataBuilders.generateProduct({
+    id: "id2",
+    price: 10,
+  });
+
   const sale = DataBuilders.generateSale({
     productInfos: [
       {
         productId: "id",
         quantity: 10,
+      },
+      {
+        productId: "id2",
+        quantity: 100,
       },
     ],
   });
@@ -54,14 +63,12 @@ describe("Integ - Sql Product Repository", () => {
 
   it("Should get total price by product ids", async () => {
     await sqlProductRepository.save(product);
+    await sqlProductRepository.save(product2);
     await sqlSaleRepository.save(sale);
 
-    const result = await sqlProductRepository.getTotalPriceByProductIds(
-      sale.props.productInfos
-    );
+    const result = await sqlProductRepository.getTotalPriceByProductIds(sale.props.productInfos);
 
-    expect(result.productId).toEqual(product.props.id);
-    expect(result.totalPrice).toEqual(product.props.price * sale.props.productInfos[0].quantity)
+    expect(result).toEqual(product.props.price * sale.props.productInfos[0].quantity);
   });
 
   it("Should delete product", async () => {

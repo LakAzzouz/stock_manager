@@ -20,10 +20,8 @@ SELECT * FROM product_infos;
 
 TRUNCATE TABLE product_infos;
 
-SELECT SUM(products.price * product_infos.quantity) AS total_price,
-product_infos.product_id AS product_id
+SELECT SUM(products.price * product_infos.quantity) AS total_price
 FROM product_infos 
 JOIN products ON product_infos.product_id = products.id
-WHERE product_infos.product_id IN("1", "2")
-GROUP BY product_infos.product_id
+WHERE product_infos.product_id IN("1", "2");
 

@@ -18,7 +18,7 @@ describe("Unit - Create product", () => {
   beforeAll(async () => {
     productRepository = new InMemoryProductRepository(productDb);
     mediaGateway = new MockMediaGateway()
-    createProduct = new CreateProduct(productRepository, mediaGateway);
+    createProduct = new CreateProduct(productRepository);
   });
 
   afterEach(async () => {
@@ -67,10 +67,7 @@ describe("Unit - Create product", () => {
       name,
       productType: ProductType.SHOES,
       price,
-      size,
-      file: Buffer.from("Air jordan"),
-      fileName: "Air Jordan",
-      mimetype: "png"
+      size
     })
 
     expect(result).toBeDefined()

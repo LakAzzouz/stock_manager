@@ -31,7 +31,7 @@ export class InMemoryProductRepository implements ProductRepository {
     return product;
   }
 
-  async getTotalPriceByProductIds(productInfo: ProductInfo[]): Promise<{totalPrice: number, productId: string}> {
+  async getTotalPriceByProductIds(productInfo: ProductInfo[]): Promise<number> {
     const arr = Array.from(this.map.values());
     const totalPrice = productInfo.reduce((sum, info) => {
       const product = arr.find((elm) => elm.props.id === info.productId);
@@ -44,7 +44,12 @@ export class InMemoryProductRepository implements ProductRepository {
       }
       return sum;
     }, {totalPrice: 0, productId: ""});
-    return totalPrice;
+    return totalPrice.totalPrice;
+  }
+
+  async update(product: Product): Promise<void> {
+    this.map.set(product.props.id, product);
+    return;
   }
 
   async delete(id: string): Promise<void> {

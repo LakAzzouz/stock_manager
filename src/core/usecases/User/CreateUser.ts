@@ -1,3 +1,5 @@
+import { eventEmitter } from "../../../messages/EventEmitter";
+import { UserCreated } from "../../../messages/user/UserCreated";
 import { User } from "../../entities/User";
 import { UserErrors } from "../../errors/UserErrors";
 import { PasswordGateway } from "../../gateways/PasswordGateway";
@@ -40,6 +42,14 @@ export class CreateUser implements Usecases<CreateUserInput, Promise<User>> {
     });
 
     this._userRepository.save(user);
+
+    const event = new UserCreated ({
+      id: user.props.id,
+      email,
+      username
+    });
+
+    eventEmitter.emit("user_created", event);
 
     return user;
   }

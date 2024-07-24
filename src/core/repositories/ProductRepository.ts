@@ -8,7 +8,9 @@ export interface ProductRepository {
 
   getByName(name: string): Promise<Product | null>;
 
-  getTotalPriceByProductIds(productInfo: ProductInfo[]): Promise<{totalPrice: number, productId: string}>;
+  getTotalPriceByProductIds(productInfo: ProductInfo[]): Promise<number>;
+
+  update(product: Product): Promise<void>;
 
   delete(id: string): Promise<void>;
 }

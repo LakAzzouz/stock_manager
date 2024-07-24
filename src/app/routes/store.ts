@@ -6,12 +6,12 @@ import { GetStoreById } from "../../core/usecases/Store/GetStoreById";
 import { GetStoreByCity } from "../../core/usecases/Store/GetStoreByCity";
 import { UpdateStore } from "../../core/usecases/Store/UpdateStore";
 import { DeleteStore } from "../../core/usecases/Store/DeleteStore";
-import {StoreCreateCommand, StoreUpdateCommand} from "../validation/storeCommands";
+import { StoreCreateCommand, StoreUpdateCommand } from "../validation/storeCommands";
 import { SqlStoreMapper } from "../../adapters/repositories/mappers/SqlStoreMapper";
 import { SqlStoreRepository } from "../../adapters/repositories/SQL/SqlStoreRepository";
 import { dbTest } from "../../adapters/_test_/tools/dbTest";
 import { GetAllStoreByIds } from "../../core/usecases/Store/GetAllStoreByIds";
-import { Auth } from "../../adapters/middlewares/auth";
+import { Auth, RequestAuth } from "../../adapters/middlewares/auth";
 
 export const storeRouter = express.Router();
 
@@ -40,8 +40,7 @@ storeRouter.use(Auth);
 storeRouter.post("/create", upload.single("store"), async (req: express.Request, res: express.Response) => {
     try {
       const body = JSON.parse(req.body.body);
-      const { name, city, turnover, frequentation } =
-        StoreCreateCommand.validateStoreCreate(body);
+      const { name, city, turnover, frequentation } = StoreCreateCommand.validateStoreCreate(body);
 
       const store = await createStore.execute({
         name,
@@ -71,7 +70,8 @@ storeRouter.post("/create", upload.single("store"), async (req: express.Request,
 
 storeRouter.get("/:id", async (req: express.Request, res: express.Response) => {
   try {
-    const id = req.params.id;
+    const authRequest = req as RequestAuth;
+    const id = authRequest.user.id;  
 
     const store = await getStoreById.execute({
       id,
@@ -100,7 +100,7 @@ storeRouter.get("/:id", async (req: express.Request, res: express.Response) => {
 //     const id = req.params.id;
 
 //     const result = await getAllStoreByIds.execute({
-//       ids
+//       id
 //     })
 
 //     return res.status(200).send(result);
