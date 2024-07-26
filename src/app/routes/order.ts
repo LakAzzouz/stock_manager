@@ -11,7 +11,7 @@ import { SqlOrderMapper } from "../../adapters/repositories/mappers/SqlOrderMapp
 import { SqlProductMapper } from "../../adapters/repositories/mappers/SqlProductMapper";
 import { SqlProductRepository } from "../../adapters/repositories/SQL/SqlProductRepository";
 import { ValidateOrder } from "../../core/usecases/Order/ValidateOrder";
-import { Auth } from "../../adapters/middlewares/auth";
+import { Auth, RequestAuth } from "../../adapters/middlewares/auth";
 
 export const orderRouter = express.Router();
 
@@ -30,12 +30,16 @@ const validateOrder = new ValidateOrder(sqlOrderRepository);
 orderRouter.use(Auth);
 orderRouter.post("/create", async (req: express.Request, res: express.Response) => {
   try {
+    console.log("=>")
     const { productInfos, locationId } = OrderCreateCommand.validateOrderCreate(req.body);
+
+    console.log("=>")
 
     const order = await createOrder.execute({ 
       locationId, 
       productInfos 
     });
+    console.log("=>")
 
     const result = {
       id: order.props.id,
@@ -47,6 +51,7 @@ orderRouter.post("/create", async (req: express.Request, res: express.Response) 
       expectedArrivalDate: order.props.expectedArrivalDate,
       dateOfArrival: order.props.dateOfArrival,
     };
+    console.log("=>")
 
     return res.status(201).send(result);
   } catch (error) {
@@ -56,13 +61,17 @@ orderRouter.post("/create", async (req: express.Request, res: express.Response) 
   }
 });
 
-orderRouter.get("/validate/:id", async (req: express.Request, res: express.Response) => {
+orderRouter.post("/validate/:id", async (req: express.Request, res: express.Response) => {
     try {
       const id = req.params.id;
-
-      const result = await validateOrder.execute({
+  
+      await validateOrder.execute({
         id,
       });
+
+      const result = {
+        msg: "Your order has been validated"
+      }
 
       return res.status(200).send(result);
     } catch (error) {
@@ -73,9 +82,10 @@ orderRouter.get("/validate/:id", async (req: express.Request, res: express.Respo
   }
 );
 
-orderRouter.get("/:id", async (req: express.Request, res: express.Response) => {
+orderRouter.get("/", async (req: express.Request, res: express.Response) => {
   try {
-    const id = req.params.id;
+    const authRequest = req as RequestAuth;
+    const id = authRequest.user.id;  
 
     const order = await getOrderById.execute({
       id,
@@ -100,11 +110,12 @@ orderRouter.get("/:id", async (req: express.Request, res: express.Response) => {
   }
 });
 
-orderRouter.patch("/:id", async (req: express.Request, res: express.Response) => {
+orderRouter.patch("/", async (req: express.Request, res: express.Response) => {
     try {
       const { newDateOfArrival } = OrderUpdateCommand.validateOrderUpdate(req.body);
-      const id = req.params.id;
-
+      const authRequest = req as RequestAuth;
+      const id = authRequest.user.id;  
+  
       const order = await updateOrder.execute({
         id,
         dateOfArrival: newDateOfArrival,
@@ -131,10 +142,11 @@ orderRouter.patch("/:id", async (req: express.Request, res: express.Response) =>
   }
 );
 
-orderRouter.delete("/:id", async (req: express.Request, res: express.Response) => {
+orderRouter.delete("/", async (req: express.Request, res: express.Response) => {
     try {
-      const id = req.params.id;
-
+      const authRequest = req as RequestAuth;
+      const id = authRequest.user.id;  
+  
       await deleteOrder.execute({
         id,
       });

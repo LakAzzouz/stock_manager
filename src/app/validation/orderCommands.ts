@@ -11,6 +11,7 @@ export class OrderCreateCommand {
   static validateOrderCreate(body: any): OrderCreateSchema {
     const validation = orderCreateSchema.safeParse(body);
     if (!validation.success) {
+      console.log("error")
       throw new Error(validation.error.message);
     }
     return validation.data;

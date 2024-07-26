@@ -12,7 +12,7 @@ export class GetProductById implements Usecases<GetProductByIdInput, Promise<Pro
 
   async execute(input: GetProductByIdInput): Promise<Product> {
     const product = await this._productRepository.getById(input.id);
-    
+
     if(!product) {
       throw new ProductErrors.NotFound();
     }

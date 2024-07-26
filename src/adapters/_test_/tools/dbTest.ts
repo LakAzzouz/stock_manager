@@ -9,6 +9,14 @@ export const dbTest = knex({
     password: "password",
     database: "stock_manager",
   },
+  debug: true
+});
+
+dbTest.on('query', queryData => {
+  console.log("==========>", {
+    sql: queryData.sql,
+    bindings: queryData.bindings ? queryData.bindings.join(', ') : ''
+  });
 });
 
 console.log("Connection db ok");

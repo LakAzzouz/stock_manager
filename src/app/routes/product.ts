@@ -92,6 +92,7 @@ productRouter.post("/upload", upload.single("file"), async (req: express.Request
     }
   }
 );
+
 productRouter.get("/", async (req: express.Request, res: express.Response) => {
     try {
       const authRequest = req as RequestAuth;

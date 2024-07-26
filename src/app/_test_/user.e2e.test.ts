@@ -225,7 +225,8 @@ describe("E2E - User", () => {
       jwtSecret
     );
 
-    const response = await supertest(app).get("/users/")
+    const response = await supertest(app)
+    .get("/users/")
     .set("authorization", authorization)
     .send({
       id: user.props.id,

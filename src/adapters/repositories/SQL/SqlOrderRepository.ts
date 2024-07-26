@@ -13,8 +13,6 @@ export class SqlOderRepository implements OrderRepository {
   async save(order: Order): Promise<void> {
     const orderModel = this._orderMapper.fromDomain(order);
     const tx = await this._knex.transaction();
-    const productId = orderModel.product_infos.map((elm) => elm.product_id)[0];
-    const quantity = orderModel.product_infos.map((elm) => elm.quantity)[0];
     try {
       await tx.raw(
         `INSERT INTO orders (id, total_price, location_id, order_date, status, expected_arrival_date, date_of_arrival, updated_at)
@@ -30,15 +28,10 @@ export class SqlOderRepository implements OrderRepository {
           updated_at: orderModel.updated_at ? orderModel.updated_at : null,
         }
       );
+      const productInfos = orderModel.product_infos.map((elm) => `("${elm.product_id}", ${elm.quantity}, "${orderModel.id}")`).join(",")
       await tx.raw(
         `INSERT INTO product_infos (product_id, quantity, order_id)
-        VALUES (:productId, :quantity, :orderId)`,
-        {
-          productId: productId,
-          quantity: quantity,
-          orderId: orderModel.id,
-        }
-      );
+        VALUES ${productInfos}`)
       await tx.commit();
     } catch (error) {
       await tx.rollback();
@@ -69,7 +62,11 @@ export class SqlOderRepository implements OrderRepository {
       [id]
     );
 
+    console.log(orderModel);
+
     const rawOrder = orderModel[0][0];
+
+    console.log(rawOrder);
 
     if (!rawOrder) {
       throw new OrderErrors.NotFound();
@@ -80,6 +77,23 @@ export class SqlOderRepository implements OrderRepository {
     }
 
     const order = this._orderMapper.toDomain(rawOrder);
+
+    return order;
+  }
+
+  async update(order: Order): Promise<Order> {
+    const orderModel = this._orderMapper.fromDomain(order);
+    await this._knex.raw(
+      `UPDATE orders 
+      SET date_of_arrival = :date_of_arrival,
+      status = :status
+      WHERE id = :id`,
+      {
+        date_of_arrival: orderModel.date_of_arrival,
+        status: orderModel.status,
+        id: orderModel.id
+      }
+    );
 
     return order;
   }

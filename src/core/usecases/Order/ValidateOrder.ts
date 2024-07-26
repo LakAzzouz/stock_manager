@@ -21,9 +21,7 @@ export class ValidateOrder implements Usecases<ValidateOrderInput, Promise<Order
 
     order.validate();
 
-    
-
-    await this._orderRepository.save(order);
+    await this._orderRepository.update(order);
 
     return order;
   }

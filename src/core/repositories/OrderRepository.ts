@@ -5,5 +5,7 @@ export interface OrderRepository {
 
   getById(id: string): Promise<Order | null>;
 
+  update(order: Order): Promise<Order>;
+
   delete(id: string): Promise<void>;
 }

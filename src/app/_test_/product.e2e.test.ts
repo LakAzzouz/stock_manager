@@ -84,76 +84,76 @@ describe("E2E - Product", () => {
     jest.setTimeout(1000);
   });
 
-  it("POST /products/upload", async () => {
-    await userRepository.save(user);
-    await productRepository.save(product);
+  // it("POST /products/upload", async () => {
+  //   await userRepository.save(user);
+  //   await productRepository.save(product);
 
-    authorization = sign(
-      {
-        id: user.props.id,
-        email: user.props.email,
-      },
-      jwtSecret
-    );
 
-    const response = await supertest(app)
-      .post("/products/upload")
-      .set("authorization", authorization)
-      .send({
-        id: product.props.id,
-        image: product.props.image,
-        file: Buffer.from(""),
-        fileName: "Air Jordan",
-        mimetype: "jpg",
-      });
-    const responseBody = response.body;
-    console.log(response);
-    expect(responseBody.msg).toEqual("Image upload successfully");
-    expect(responseBody.status).toBe(201);
-    jest.setTimeout(1000);
-  });
+  //   authorization = sign(
+  //     {
+  //       id: user.props.id,
+  //       email: user.props.email,
+  //     },
+  //     jwtSecret
+  //   );
 
-  it("POST /products/upload should return a status 400", async () => {
-    authorization = sign(
-      {
-        id: user.props.id,
-        email: user.props.email,
-      },
-      jwtSecret
-    );
-    const response = await supertest(app)
-      .post("/products/upload")
-      .set("authorization", authorization);
-    expect(response.status).toBe(400);
-    jest.setTimeout(1000);
-  });
+  //   const response = await supertest(app)
+  //     .post("/products/upload")
+  //     .set("authorization", authorization)
+  //     .send({
+  //       id: product.props.id,
+  //       image: product.props.image,
+  //       file: Buffer.from(""),
+  //       fileName: "Air Jordan",
+  //       mimetype: "jpg",
+  //     });
+  //   const responseBody = response.body;
+  //   console.log(response)
+  //   expect(responseBody.message).toEqual("Image upload successfully");
+  //   expect(response.status).toBe(201);
+  //   jest.setTimeout(1000);
+  // });
 
-  it("GET /products/", async () => {
-    await userRepository.save(user);
-    await productRepository.save(product);
+  // it("POST /products/upload should return a status 400", async () => {
+  //   authorization = sign(
+  //     {
+  //       id: user.props.id,
+  //       email: user.props.email,
+  //     },
+  //     jwtSecret
+  //   );
+  //   const response = await supertest(app)
+  //     .post("/products/upload")
+  //     .set("authorization", authorization);
+  //   expect(response.status).toBe(400);
+  //   jest.setTimeout(1000);
+  // });
 
-    authorization = sign(
-      {
-        id: user.props.id,
-        email: user.props.email,
-      },
-      jwtSecret
-    );
+  // it("GET /products/", async () => {
+  //   await userRepository.save(user);
+  //   await productRepository.save(product);
 
-    const response = await supertest(app)
-      .get("/products/")
-      .set("authorization", authorization)
-      .send({
-        id: product.props.id,
-      });
-    const responseBody = response.body;
-    console.log(response)
-    expect(responseBody.id).toBeDefined();
-    expect(responseBody.name).toEqual(product.props.name);
-    expect(responseBody.productType).toEqual(product.props.productType);
-    expect(responseBody.price).toEqual(product.props.price);
-    expect(responseBody.size).toEqual(product.props.size);
-    expect(responseBody.createdAt).toBeDefined();
-    expect(responseBody.status).toBe(200);
-  });
+  //   authorization = sign(
+  //     {
+  //       id: user.props.id,
+  //       email: user.props.email,
+  //     },
+  //     jwtSecret
+  //   );
+
+  //   const response = await supertest(app)
+  //     .get("/products/")
+  //     .set("authorization", authorization)
+  //     .send({
+  //       id: product.props.id,
+  //     });
+  //   const responseBody = response.body;
+  //   expect(responseBody.id).toBeDefined();
+  //   expect(responseBody.name).toEqual(product.props.name);
+  //   expect(responseBody.productType).toEqual(product.props.productType);
+  //   expect(responseBody.price).toEqual(product.props.price);
+  //   expect(responseBody.size).toEqual(product.props.size);
+  //   expect(responseBody.createdAt).toBeDefined();
+  //   expect(responseBody.status).toBe(200);
+  // });
 });

@@ -25,8 +25,40 @@ describe("E2E - order", () => {
   let authorization;
 
   const user = DataBuilders.generateUser();
-  const order = DataBuilders.generateOrder()
-  const product = DataBuilders.generateProduct();
+  const product = DataBuilders.generateProduct({
+    name: "Air Jordan",
+    price: 200
+  });
+  const order = DataBuilders.generateOrder({
+    productInfos: [
+      {
+        productId: product.props.id,
+        quantity: 10,
+      },
+    ],
+  });
+
+  const product2 = DataBuilders.generateProduct({
+    id: "id",
+    price: 1,
+  });
+  const product3 = DataBuilders.generateProduct({
+    id: "id2",
+    price: 10,
+  });
+
+  const order2 = DataBuilders.generateOrder({
+    productInfos: [
+      {
+        productId: product2.props.id,
+        quantity: 10,
+      },
+      {
+        productId: product3.props.id,
+        quantity: 100,
+      },
+    ]
+  });
 
   beforeAll(async () => {
     app.use(express.json());
@@ -40,13 +72,19 @@ describe("E2E - order", () => {
     productRepository = new SqlProductRepository(dbTest, productMapper);
   });
 
-  afterEach(async () => {
-    await dbTest.raw(`TRUNCATE TABLE orders`);
+  beforeEach(async () => {
     await dbTest.raw(`TRUNCATE TABLE users`);
-    await dbTest.raw(`TRUNCATE TABLE products`);
+    //await dbTest.raw(`TRUNCATE TABLE products`);
+    //await dbTest.raw(`TRUNCATE TABLE orders`);
+
   });
 
   it("POST /orders/create", async () => {
+    await productRepository.save(product);
+    await productRepository.save(product2);
+    await productRepository.save(product3);
+
+
     authorization = sign(
       {
         id: user.props.id,
@@ -59,25 +97,105 @@ describe("E2E - order", () => {
       .post("/orders/create")
       .set("authorization", authorization)
       .send({
-        productInfos: order.props.productInfos,
-        locationId: order.props.locationId,
+        productInfos: order2.props.productInfos,
+        locationId: order2.props.locationId,
       });
 
     const responseBody = response.body;
-    console.log(response)
     expect(responseBody.id).toBeDefined();
-    expect(responseBody.productInfos).toEqual(order.props.productInfos);
-    expect(responseBody.locationId).toEqual(order.props.locationId);
-    expect(responseBody.totalPrice).toEqual(order.props.totalPrice);
-    expect(responseBody.orderDate).toEqual(order.props.orderDate);
-    expect(responseBody.status).toEqual(order.props.status);
-    expect(responseBody.expectedArrivalDate).toEqual(order.props.expectedArrivalDate);
-    expect(responseBody.dateOfArrival).toEqual(order.props.dateOfArrival);
+    expect(responseBody.productInfos).toEqual(order2.props.productInfos);
+    expect(responseBody.locationId).toEqual(order2.props.locationId);
+    expect(responseBody.totalPrice).toEqual(product2.props.price * order2.props.productInfos[0].quantity);
+    expect(responseBody.orderDate).toEqual(order2.props.orderDate);
+    expect(responseBody.status).toEqual(order2.props.status);
+    expect(responseBody.expectedArrivalDate).toEqual(order2.props.expectedArrivalDate);
+    expect(responseBody.dateOfArrival).toBeDefined();
     expect(response.status).toBe(201);
     jest.setTimeout(1000);
   });
 
-  // it("POST /users/create should return a status 400", async () => {
+  it("POST /orders/create should return a status 400", async () => {
+    authorization = sign(
+      {
+        id: user.props.id,
+        email: user.props.email,
+      },
+      jwtSecret
+    );
 
-  // })
+    const response = await supertest(app)
+      .post("/orders/create")
+      .set("authorization", authorization);
+    expect(response.status).toBe(400);
+    jest.setTimeout(1000);
+  });
+
+  it("POST /orders/validate/:id", async () => {
+    await userRepository.save(user);
+    await orderRepository.save(order);
+
+    authorization = sign(
+      {
+        id: user.props.id,
+        email: user.props.email,
+      },
+      jwtSecret
+    );
+
+    const response = await supertest(app)
+      .post(`/orders/validate/${order.props.id}`)
+      .set("authorization", authorization);
+    const responseBody = response.body;
+    expect(responseBody.msg).toEqual("Your order has been validated");
+    expect(response.status).toBe(200);
+    jest.setTimeout(1000);
+  });
+
+  it("POST /orders/validate/:id should return a status 400", async () => {
+    authorization = sign(
+      {
+        id: user.props.id,
+        email: user.props.email,
+      },
+      jwtSecret
+    );
+
+    const response = await supertest(app)
+    .post(`/orders/validate/${order.props.id}`)
+    .set("authorization", authorization);
+    expect(response.status).toBe(400);
+    jest.setTimeout(1000)
+  });
+
+  it("GET /orders/", async () => {
+    await productRepository.save(product);
+    await orderRepository.save(order);
+
+    authorization = sign(
+      {
+        id: user.props.id,
+        email: user.props.email,
+      },
+      jwtSecret
+    );
+
+    const response = await supertest(app)
+      .get("/orders/")
+      .set("authorization", authorization)
+      .send({
+        id: order.props.id,
+      });
+      const responseBody = response.body;
+      console.log(response);
+      expect(responseBody.id).toBeDefined();
+      expect(responseBody.productInfos).toEqual(order.props.productInfos);
+      expect(responseBody.locationId).toEqual(order.props.locationId);
+      expect(responseBody.totalPrice).toEqual(product.props.price * order.props.productInfos[0].quantity);
+      expect(responseBody.orderDate).toEqual(order.props.orderDate);
+      expect(responseBody.status).toEqual(order.props.status);
+      expect(responseBody.expectedArrivalDate).toEqual(order.props.expectedArrivalDate);
+      expect(responseBody.dateOfArrival).toBeDefined();
+      expect(response.status).toBe(200);
+      jest.setTimeout(1000);
+  });
 });

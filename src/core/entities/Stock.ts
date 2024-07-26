@@ -4,9 +4,9 @@ import { Location } from "../types/LocationType";
 
 export type StockProperties = {
   id: string;
-  locationId: string; 
+  locationId: string;
   type: Location;
-  stockDatas: StockData[]; 
+  stockDatas: StockData[];
   createdAt: Date;
   updatedAt?: Date;
 };

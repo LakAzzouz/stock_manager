@@ -10,10 +10,6 @@ export class SqlProductRepository implements ProductRepository {
     private readonly _productMapper: SqlProductMapper
   ) {}
 
-  update(product: Product): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-
   async save(product: Product): Promise<void> {
     const productModel = this._productMapper.fromDomain(product);
     await this._knex.raw(
@@ -34,12 +30,14 @@ export class SqlProductRepository implements ProductRepository {
 
   async getById(id: string): Promise<Product> {
     const productModel = await this._knex.raw(
-      `SELECT * FROM products WHERE id = :id`,
+      `SELECT * 
+      FROM products 
+      WHERE id = :id`,
       {
         id: id,
       }
-    );
-
+      );
+      
     const product = this._productMapper.toDomain(productModel[0][0]);
 
     return product;
@@ -47,7 +45,9 @@ export class SqlProductRepository implements ProductRepository {
 
   async getByName(name: string): Promise<Product> {
     const productModel = await this._knex.raw(
-      `SELECT * FROM products WHERE name = :name`,
+      `SELECT * 
+      FROM products 
+      WHERE name = :name`,
       {
         name: name,
       }
@@ -59,23 +59,42 @@ export class SqlProductRepository implements ProductRepository {
 
   async getTotalPriceByProductIds(productInfo: ProductInfo[]): Promise<number> {
     const productIds = productInfo.map((elm) => elm.productId);
+    console.log("=================>")
     const productModel = await this._knex.raw(
       `SELECT SUM(products.price * product_infos.quantity) AS total_price
       FROM product_infos 
       JOIN products ON product_infos.product_id = products.id
       WHERE product_infos.product_id IN (:product_id)`,
       {
-        product_id: productIds
+        product_id: productIds.length > 1 ? productIds.join(",") : productIds[0]
       }
     );
 
-    const totalPrice = productModel[0][0].total_price
+    console.log(productModel)
+    const totalPrice = productModel[0][0].total_price;
 
     return totalPrice;
   }
 
+  async update(product: Product): Promise<void> {
+    const productModel = this._productMapper.fromDomain(product);
+    await this._knex.raw(
+      `UPDATE products 
+      SET image = :image
+      WHERE id = :id`,
+      {
+        id: productModel.id,
+        image: productModel.image || null,
+      }
+    );
+    return;
+  }
+
   async delete(id: string): Promise<void> {
-    await this._knex.raw(`DELETE FROM products WHERE id = :id`, {
+    await this._knex.raw(`
+    DELETE FROM products 
+    WHERE id = :id`, 
+    {
       id: id,
     });
   }

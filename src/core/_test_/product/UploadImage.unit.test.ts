@@ -27,7 +27,29 @@ describe("Unit - upload image", () => {
     productDb.clear();
   });
 
-  it("Should upload an image", async () => {
+  it("Should upload another image", async () => {
+    productDb.set(product.props.id, product);
+
+    const result = await uploadImage.execute({
+      id: product.props.id,
+      image,
+      file: Buffer.from(""),
+      fileName,
+      mimetype,
+    });
+
+    expect(result.props.id).toBeDefined();
+    expect(result.props.image).toEqual(image);
+    expect(result.props.name).toBeDefined();
+    expect(result.props.price).toBeDefined();
+    expect(result.props.productType).toBeDefined();
+    expect(result.props.size).toBeDefined();
+    expect(result.props.createdAt).toBeDefined();
+  });
+
+  it("Should upload a first image ", async () => {
+    product.props.image = undefined
+    
     productDb.set(product.props.id, product);
 
     const result = await uploadImage.execute({

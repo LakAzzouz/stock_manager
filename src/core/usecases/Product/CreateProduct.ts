@@ -27,6 +27,8 @@ export class CreateProduct implements Usecases<CreateProductInput, Promise<Produ
 
     await this._productRepository.save(product);
 
+    // event => creation stockData 
+
     return product;
   }
 }

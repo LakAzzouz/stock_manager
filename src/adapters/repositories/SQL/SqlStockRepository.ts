@@ -2,8 +2,6 @@ import { Knex } from "knex";
 import { StockRepository } from "../../../core/repositories/StockRepository";
 import { SqlStockMapper } from "../mappers/SqlStockMapper";
 import { Stock } from "../../../core/entities/Stock";
-import { StockData } from "../../../core/types/StockData";
-import { StockErrors } from "../../../core/errors/StockErrors";
 
 export class SqlStockRepository implements StockRepository {
   constructor(
