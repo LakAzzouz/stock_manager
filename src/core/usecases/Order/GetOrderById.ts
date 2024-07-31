@@ -14,7 +14,7 @@ export class GetOrderById
 
   async execute(input: GetOrderByIdInput): Promise<Order> {
     const order = await this._orderRepository.getById(input.id);
-    
+
     if (!order) {
       throw new OrderErrors.NotFound();
     }

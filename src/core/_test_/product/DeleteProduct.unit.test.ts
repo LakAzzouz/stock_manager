@@ -1,4 +1,4 @@
-import { Product, ProductType } from "../../entities/Product";
+import { Product } from "../../entities/Product";
 import { ProductErrors } from "../../errors/ProductErrors";
 import { ProductRepository } from "../../repositories/ProductRepository";
 import { DeleteProduct } from "../../usecases/Product/DeleteProduct";

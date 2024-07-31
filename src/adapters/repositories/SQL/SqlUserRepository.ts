@@ -31,7 +31,9 @@ export class SqlUserRepository implements UserRepository {
 
   async getById(id: string): Promise<User | null> {
     const userModel = await this._knex.raw(
-      `SELECT * FROM users WHERE id = :id`,
+      `SELECT *
+      FROM users
+      WHERE id = :id`,
       {
         id: id,
       }
@@ -44,7 +46,9 @@ export class SqlUserRepository implements UserRepository {
 
   async getByEmail(email: string): Promise<User | null> {
     const userModel = await this._knex.raw(
-      `SELECT * FROM users WHERE email = :email`,
+      `SELECT *
+      FROM users
+      WHERE email = :email`,
       {
         email: email,
       }
@@ -82,7 +86,10 @@ export class SqlUserRepository implements UserRepository {
   }
 
   async delete(id: string): Promise<void> {
-    await this._knex.raw(`DELETE FROM users WHERE id = :id`, {
+    await this._knex.raw(
+      `DELETE FROM users
+      WHERE id = :id`,
+    {
       id: id,
     });
   }

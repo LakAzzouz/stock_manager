@@ -28,10 +28,12 @@ export class SqlOderRepository implements OrderRepository {
           updated_at: orderModel.updated_at ? orderModel.updated_at : null,
         }
       );
-      const productInfos = orderModel.product_infos.map((elm) => `("${elm.product_id}", ${elm.quantity}, "${orderModel.id}")`).join(",")
+      const productInfos = orderModel.product_infos.map((elm) => 
+      `("${elm.product_id}", ${elm.quantity}, "${orderModel.id}")`).join(",");
       await tx.raw(
         `INSERT INTO product_infos (product_id, quantity, order_id)
-        VALUES ${productInfos}`)
+        VALUES ${productInfos}`
+      );
       await tx.commit();
     } catch (error) {
       await tx.rollback();
@@ -57,16 +59,14 @@ export class SqlOderRepository implements OrderRepository {
       MAX(orders.updated_at) AS updated_at
       FROM orders
       LEFT JOIN product_infos ON orders.id = product_infos.order_id
-      WHERE orders.id = ?
+      WHERE orders.id = :id
       GROUP BY orders.id`,
-      [id]
+      {
+        id: id,
+      }
     );
 
-    console.log(orderModel);
-
     const rawOrder = orderModel[0][0];
-
-    console.log(rawOrder);
 
     if (!rawOrder) {
       throw new OrderErrors.NotFound();
@@ -91,7 +91,7 @@ export class SqlOderRepository implements OrderRepository {
       {
         date_of_arrival: orderModel.date_of_arrival,
         status: orderModel.status,
-        id: orderModel.id
+        id: orderModel.id,
       }
     );
 
@@ -99,8 +99,12 @@ export class SqlOderRepository implements OrderRepository {
   }
 
   async delete(id: string): Promise<void> {
-    await this._knex.raw(`DELETE FROM orders WHERE id = :id`, {
-      id: id,
-    });
+    await this._knex.raw(
+      `DELETE FROM 
+      orders WHERE id = :id`,
+      {
+        id: id,
+      }
+    );
   }
 }

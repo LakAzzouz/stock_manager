@@ -1,5 +1,6 @@
-import { Product, ProductType } from "../../entities/Product";
+import { Product } from "../../entities/Product";
 import { ProductRepository } from "../../repositories/ProductRepository";
+import { ProductType } from "../../types/ProductType";
 import { Size } from "../../valuesObject.ts/SizeProduct";
 import { Usecases } from "../Usecase";
 

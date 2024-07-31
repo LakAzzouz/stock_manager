@@ -1,17 +1,11 @@
 import { Location } from "../../../core/types/LocationType";
+import { StockDataModel } from "./StockDataModel";
 
 export interface StockModel {
   id: string;
   location_id: string;
-  type: Location;
   stock_datas: StockDataModel[];
+  type: Location;
   created_at: Date;
   updated_at?: Date;
-}
-
-export interface StockDataModel {
-  product_id: string;
-  quantity: number;
-  threshold?: number;
-  stock_id: string
 }

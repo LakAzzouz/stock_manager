@@ -1,10 +1,11 @@
-import { Product, ProductType } from "../../entities/Product";
+import { Product } from "../../entities/Product";
 import { ProductErrors } from "../../errors/ProductErrors";
 import { MediaGateway } from "../../gateways/MediaGateway";
 import { ProductRepository } from "../../repositories/ProductRepository";
 import { CreateProduct } from "../../usecases/Product/CreateProduct";
 import { InMemoryProductRepository } from "../../adapters/repositories/InMemoryProductRepository";
 import { MockMediaGateway } from "../../adapters/gateways/MockMediaGateway";
+import { ProductType } from "../../types/ProductType";
 
 describe("Unit - Create product", () => {
   let productRepository: ProductRepository;

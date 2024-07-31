@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
-import { StockData } from "../types/StockData";
 import { Location } from "../types/LocationType";
+import { StockData } from "./StockData";
 
 export type StockProperties = {
   id: string;
@@ -30,20 +30,19 @@ export class Stock {
   }
 
   static createStockDatas(props: {productId: string, stockIds: string[]}): StockData[] {
-    const {productId, stockIds} = props
+    const {productId, stockIds} = props;
 
-    let stockDatas: StockData[] = []
+    let stockDatas: StockData[] = [];
 
     for (const stockId of stockIds) {
-      const stockData: StockData = ({
+      const stockData = StockData.create({
         productId,
-        quantity: 0,
-        stockId
+        stockId,
       })
 
       stockDatas.push(stockData);
     }
     
-    return stockDatas
+    return stockDatas;
   }
 }

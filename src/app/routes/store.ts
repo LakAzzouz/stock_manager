@@ -34,13 +34,10 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage: storage });
-
 storeRouter.use(Auth);
-storeRouter.post("/create", upload.single("store"), async (req: express.Request, res: express.Response) => {
+storeRouter.post("/create", async (req: express.Request, res: express.Response) => {
     try {
-      const body = JSON.parse(req.body.body);
-      const { name, city, turnover, frequentation } = StoreCreateCommand.validateStoreCreate(body);
+      const { name, city, turnover, frequentation } = StoreCreateCommand.validateStoreCreate(req.body);
 
       const store = await createStore.execute({
         name,
@@ -55,9 +52,7 @@ storeRouter.post("/create", upload.single("store"), async (req: express.Request,
         city,
         turnover,
         frequentation,
-        priceReduction: store.props.priceReduction,
         createdAt: store.props.createdAt,
-        image: req.file?.filename ? "Image is uploaded" : "Image not found",
       };
 
       return res.status(201).send(result);
@@ -68,7 +63,7 @@ storeRouter.post("/create", upload.single("store"), async (req: express.Request,
     }
 });
 
-storeRouter.get("/:id", async (req: express.Request, res: express.Response) => {
+storeRouter.get("/", async (req: express.Request, res: express.Response) => {
   try {
     const authRequest = req as RequestAuth;
     const id = authRequest.user.id;  

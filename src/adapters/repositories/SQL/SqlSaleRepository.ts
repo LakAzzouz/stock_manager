@@ -77,7 +77,10 @@ export class SqlSaleRepository implements SaleRepository {
   }
 
   async delete(id: string): Promise<void> {
-    await this._knex.raw(`DELETE FROM sales WHERE id = :id`, {
+    await this._knex.raw(
+      `DELETE FROM 
+      sales WHERE id = :id`,
+    {
       id: id,
     });
   }

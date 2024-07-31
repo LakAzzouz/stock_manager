@@ -1,8 +1,8 @@
 import { Stock } from "../../entities/Stock";
 import { Usecases } from "../Usecase";
-import { StockData } from "../../types/StockData";
 import { StockRepository } from "../../repositories/StockRepository";
 import { Location } from "../../types/LocationType";
+import { StockData } from "../../entities/StockData";
 
 type InitiateStockInput = {
   locationId: string;

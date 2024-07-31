@@ -4,20 +4,20 @@ import { saleRouter } from "./app/routes/sale";
 import { storeRouter } from "./app/routes/store";
 import { warehouseRouter } from "./app/routes/warehouse";
 import { stockRouter } from "./app/routes/stock";
-import "../src/messages/EventEmitter";
-import "../src/app/handlers/userCreatedHandler";
-
+import { userRouter } from "./app/routes/user";
 import { rateLimit } from 'express-rate-limit'
+import { mediaRouteur } from "./app/routes/media";
 
-import "dotenv/config";
 import express from "express";
 import morgan from "morgan";
-import { userRouter } from "./app/routes/user";
+import knex from "knex";
+
+import "../src/messages/EventEmitter";
+import "../src/app/handlers/userCreatedHandler";
+import "dotenv/config";
 
 const app = express();
 const port = process.env.PORT;
-
-console.log(process.env)
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -25,7 +25,6 @@ const limiter = rateLimit({
   message: 'Trop de requêtes, veuillez réessayer plus tard.'
 });
 
-import knex from "knex";
 
 export const db = knex({
   client: "mysql",
@@ -51,6 +50,7 @@ app.use("/sales", saleRouter);
 app.use("/stocks", stockRouter);
 app.use("/stores", storeRouter);
 app.use("/warehouses", warehouseRouter);
+app.use("/medias", mediaRouteur)
 
 app.listen(port, () => {
   console.log(`Server is running in port ${port}`);

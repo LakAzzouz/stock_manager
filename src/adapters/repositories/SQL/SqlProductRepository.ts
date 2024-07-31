@@ -36,8 +36,9 @@ export class SqlProductRepository implements ProductRepository {
       {
         id: id,
       }
-      );
-      
+    );
+    console.log(id)
+
     const product = this._productMapper.toDomain(productModel[0][0]);
 
     return product;
@@ -57,21 +58,38 @@ export class SqlProductRepository implements ProductRepository {
     return product;
   }
 
-  async getTotalPriceByProductIds(productInfo: ProductInfo[]): Promise<number> {
-    const productIds = productInfo.map((elm) => elm.productId);
-    console.log("=================>")
-    const productModel = await this._knex.raw(
-      `SELECT SUM(products.price * product_infos.quantity) AS total_price
-      FROM product_infos 
-      JOIN products ON product_infos.product_id = products.id
-      WHERE product_infos.product_id IN (:product_id)`,
-      {
-        product_id: productIds.length > 1 ? productIds.join(",") : productIds[0]
-      }
+  async getTotalPriceByProductIds(productInfos: ProductInfo[]): Promise<number> {
+    const productIds = productInfos.map((elm) => elm.productId);
+    const priceIdPairModel = await this._knex.raw(
+      `SELECT price, id 
+      FROM products
+      WHERE products.id IN (?)
+      `,
+      [productIds]
     );
 
-    console.log(productModel)
-    const totalPrice = productModel[0][0].total_price;
+    const pricePair: { 
+      price: number;
+      id: string;
+    }[] = priceIdPairModel[0].map((elm: { price: number; id: string }) => {
+      return {
+        price: elm.price,
+        id: elm.id,
+      };
+    });
+
+    const totalPrice = pricePair.reduce(
+      (acc: number, pair: { price: number; id: string }): number => {
+        const productInfo = productInfos.find(
+          (elm) => elm.productId === pair.id
+        );
+        if (!productInfo?.quantity) {
+          throw new Error("");
+        }
+        return (acc += productInfo.quantity * pair.price);
+      },
+      0
+    );
 
     return totalPrice;
   }
@@ -91,11 +109,13 @@ export class SqlProductRepository implements ProductRepository {
   }
 
   async delete(id: string): Promise<void> {
-    await this._knex.raw(`
+    await this._knex.raw(
+      `
     DELETE FROM products 
-    WHERE id = :id`, 
-    {
-      id: id,
-    });
+    WHERE id = :id`,
+      {
+        id: id,
+      }
+    );
   }
 }

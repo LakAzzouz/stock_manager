@@ -11,7 +11,6 @@ export class OrderCreateCommand {
   static validateOrderCreate(body: any): OrderCreateSchema {
     const validation = orderCreateSchema.safeParse(body);
     if (!validation.success) {
-      console.log("error")
       throw new Error(validation.error.message);
     }
     return validation.data;
@@ -19,7 +18,7 @@ export class OrderCreateCommand {
 }
 
 export const orderUpdateSchema = z.object({
-  newDateOfArrival: z.date(),
+  newDateOfArrival: z.date()
 });
 
 type OrderUpdateSchema = z.infer<typeof orderUpdateSchema>;

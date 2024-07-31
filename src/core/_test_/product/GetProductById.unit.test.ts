@@ -1,9 +1,10 @@
-import { Product, ProductType } from "../../entities/Product";
+import { Product } from "../../entities/Product";
 import { ProductRepository } from "../../repositories/ProductRepository";
 import { GetProductById } from "../../usecases/Product/GetProductById";
 import { InMemoryProductRepository } from "../../adapters/repositories/InMemoryProductRepository";
 import { DataBuilders } from "../tools/DataBuilders";
 import { ProductErrors } from "../../errors/ProductErrors";
+import { ProductType } from "../../types/ProductType";
 
 describe("Unit - Get product by id", () => {
   let productRepository: ProductRepository;

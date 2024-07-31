@@ -1,5 +1,4 @@
 import { Product } from "../../entities/Product";
-import { ProductErrors } from "../../errors/ProductErrors";
 import { ProductRepository } from "../../repositories/ProductRepository";
 import { ProductInfo } from "../../types/ProductInfo";
 
@@ -45,11 +44,6 @@ export class InMemoryProductRepository implements ProductRepository {
       return sum;
     }, {totalPrice: 0, productId: ""});
     return totalPrice.totalPrice;
-  }
-
-  async update(product: Product): Promise<void> {
-    this.map.set(product.props.id, product);
-    return;
   }
 
   async delete(id: string): Promise<void> {

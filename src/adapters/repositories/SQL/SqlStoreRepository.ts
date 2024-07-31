@@ -29,7 +29,9 @@ export class SqlStoreRepository implements StoreRepository {
 
   async getById(id: string): Promise<Store | null> {
     const storeModel = await this._knex.raw(
-      `SELECT * FROM stores WHERE id = :id`,
+      `SELECT * 
+      FROM stores 
+      WHERE id = :id`,
       {
         id: id,
       }
@@ -42,7 +44,9 @@ export class SqlStoreRepository implements StoreRepository {
 
   async getByCity(city: string): Promise<Store> {
     const storeModel = await this._knex.raw(
-      `SELECT * FROM stores WHERE city = :city`,
+      `SELECT * 
+      FROM stores
+      WHERE city = :city`,
       {
         city: city,
       }
@@ -54,16 +58,23 @@ export class SqlStoreRepository implements StoreRepository {
   }
 
   async getAllIds(): Promise<string[] | null> {
-    const storeIdsColumn = await this._knex.raw<[{ id: string }[], any[]]>(`SELECT id FROM stores`);
+    const storeIdsColumn = await this._knex.raw<[{ id: string }[], any[]]>(
+      `SELECT id 
+      FROM stores`
+    );
 
-    const storesIds = storeIdsColumn[0].map((elm) => elm.id)
+    const storesIds = storeIdsColumn[0].map((elm) => elm.id);
 
     return storesIds;
   }
 
   async delete(id: string): Promise<void> {
-    await this._knex.raw(`DELETE FROM stores WHERE id = :id`, {
-      id: id,
-    });
+    await this._knex.raw(
+      `DELETE FROM
+      stores WHERE id = :id`,
+      {
+        id: id,
+      }
+    );
   }
 }

@@ -27,7 +27,9 @@ export class SqlWarehouseRepository implements WarehouseRepository {
 
   async getById(id: string): Promise<Warehouse> {
     const warehouseModel = await this._knex.raw(
-      `SELECT * FROM warehouses WHERE id = :id`,
+      `SELECT *
+      FROM warehouses
+      WHERE id = :id`,
       {
         id: id,
       }
@@ -40,7 +42,9 @@ export class SqlWarehouseRepository implements WarehouseRepository {
 
   async getByManagerId(managerId: string): Promise<Warehouse> {
     const warehouseModel = await this._knex.raw(
-      `SELECT * FROM warehouses WHERE manager_id = :manager_id`,
+      `SELECT *
+      FROM warehouses
+      WHERE manager_id = :manager_id`,
       {
         manager_id: managerId,
       }
@@ -52,7 +56,10 @@ export class SqlWarehouseRepository implements WarehouseRepository {
   }
 
   async getAllIds(): Promise<string[] | null> {
-    const warehouseIdsColumn = await this._knex.raw<[{ id: string }[], any[]]>(`SELECT id FROM warehouses`);
+    const warehouseIdsColumn = await this._knex.raw<[{ id: string }[], any[]]>(
+      `SELECT id
+      FROM warehouses`
+    );
 
     const warehouseIds = warehouseIdsColumn[0].map((elm) => elm.id)
 
@@ -60,7 +67,10 @@ export class SqlWarehouseRepository implements WarehouseRepository {
   }
 
   async delete(id: string): Promise<void> {
-    await this._knex.raw(`DELETE FROM warehouses WHERE id = :id`, {
+    await this._knex.raw(
+      `DELETE FROM warehouses
+      WHERE id = :id`,
+    {
       id: id,
     });
   }

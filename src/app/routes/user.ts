@@ -211,7 +211,7 @@ userRouter.get("/", async (req: express.Request, res: express.Response) => {
   }
 });
 
-userRouter.delete("/delete", async (req: express.Request, res: express.Response) => {
+userRouter.delete("/", async (req: express.Request, res: express.Response) => {
     try {
       const authRequest = req as RequestAuth;
       const id = authRequest.user.id;  

@@ -255,7 +255,7 @@ describe("E2E - User", () => {
     jest.setTimeout(1000);
   });
 
-  it("DELETE /users/:id", async () => {
+  it("DELETE /users/", async () => {
     await userRepository.save(user);
 
     authorization = sign(
@@ -267,7 +267,7 @@ describe("E2E - User", () => {
     );
 
     const response = await supertest(app)
-      .delete("/users/delete")
+      .delete("/users/")
       .set("authorization", authorization)
       .send({
         id: user.props.id,
@@ -277,7 +277,7 @@ describe("E2E - User", () => {
     jest.setTimeout(1000);
   });
 
-  it("DELETE /users/:id return a status 400", async () => {
+  it("DELETE /users/ return a status 400", async () => {
     authorization = sign(
       {
         id: "",
@@ -285,7 +285,7 @@ describe("E2E - User", () => {
       },
       jwtSecret
     );
-    const response = await supertest(app).delete("/users/delete")
+    const response = await supertest(app).delete("/users/")
     .set("authorization", authorization);
     const responseStatus = response.status;
     expect(responseStatus).toBe(400);

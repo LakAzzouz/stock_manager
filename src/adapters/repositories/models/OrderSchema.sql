@@ -1,7 +1,5 @@
-USE stock_manager;
-
 CREATE TABLE orders (
-  `id` VARCHAR(36),
+  `id` VARCHAR(36) NOT NULL,
   location_id VARCHAR(36) NOT NULL,
   total_price INT,
   order_date TIMESTAMP,

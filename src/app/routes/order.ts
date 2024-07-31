@@ -30,16 +30,12 @@ const validateOrder = new ValidateOrder(sqlOrderRepository);
 orderRouter.use(Auth);
 orderRouter.post("/create", async (req: express.Request, res: express.Response) => {
   try {
-    console.log("=>")
     const { productInfos, locationId } = OrderCreateCommand.validateOrderCreate(req.body);
-
-    console.log("=>")
 
     const order = await createOrder.execute({ 
       locationId, 
       productInfos 
     });
-    console.log("=>")
 
     const result = {
       id: order.props.id,
@@ -51,7 +47,6 @@ orderRouter.post("/create", async (req: express.Request, res: express.Response) 
       expectedArrivalDate: order.props.expectedArrivalDate,
       dateOfArrival: order.props.dateOfArrival,
     };
-    console.log("=>")
 
     return res.status(201).send(result);
   } catch (error) {
@@ -90,6 +85,7 @@ orderRouter.get("/", async (req: express.Request, res: express.Response) => {
     const order = await getOrderById.execute({
       id,
     });
+
 
     const result = {
       id,

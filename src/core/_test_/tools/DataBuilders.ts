@@ -1,16 +1,21 @@
 import { v4 } from "uuid";
 import { faker } from "@faker-js/faker";
-import { Product, ProductType } from "../../entities/Product";
+import { Product } from "../../entities/Product";
 import { Store } from "../../entities/Store";
 import { Order } from "../../entities/Order";
 import { Warehouse } from "../../entities/Warehouse";
 import { ProductInfo } from "../../types/ProductInfo";
 import { Sale } from "../../entities/Sale";
 import { Stock } from "../../entities/Stock";
-import { StockData } from "../../types/StockData";
 import { OrderStatus } from "../../types/OrderStatus";
 import { User } from "../../entities/User";
 import { Location } from "../../types/LocationType";
+import { StockData } from "../../entities/StockData";
+import { Threshold } from "../../types/StockData";
+import { ENTITYTYPE } from "../../types/EntityType";
+import { MIMETYPE } from "../../types/MimeType";
+import { Media } from "../../entities/Media";
+import { ProductType } from "../../types/ProductType";
 
 type GenerateProduct = {
   id?: string;
@@ -84,6 +89,24 @@ type GenerateUser = {
   updatedAt?: Date;
 }
 
+type GenerateStockData = {
+  id?: string;
+  stockId?: string;
+  productId?: string;
+  quantity?: number;
+  threshold?: Threshold;
+}
+
+type GenerateMedia = {
+  id?: string;
+  entityId?: string;
+  url?: string;
+  entityType?: ENTITYTYPE;
+  mimeType?: MIMETYPE;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
 export class DataBuilders {
   static generateProduct(props?: GenerateProduct): Product {
     return new Product({
@@ -151,7 +174,7 @@ export class DataBuilders {
       id: props?.id ? props.id : v4(),
       locationId: props?.locationId ? props.locationId : v4(),
       type: props?.type ? props.type : Location.STORE || Location.WAREHOUSE,
-      stockDatas: props?.stockDatas ? props.stockDatas : [{productId: v4(), quantity: faker.number.int({min: 10000, max: 50000}), threshold: faker.number.int({min: 1000, max: 5000}), stockId: props?.id ? props.id : v4()}],
+      stockDatas: props?.stockDatas ? props.stockDatas : [new StockData ({id: v4(), productId: v4(), quantity: faker.number.int({min: 10000, max: 50000}), threshold: faker.number.int({min: 1000, max: 5000}), stockId: props?.id ? props.id : v4()})],
       createdAt: props?.createdAt ? props.createdAt : new Date(1719152430000),
       updatedAt: props?.updatedAt ? props.updatedAt : new Date(1719152430000)
     })
@@ -167,6 +190,28 @@ export class DataBuilders {
       isVerified: props?.isVerified ? props.isVerified : false,
       resetPasswordCode: props?.resetPasswordCode ? props.resetPasswordCode : "",
       verifyEmailCode: props?.verifyEmailCode ? props.verifyEmailCode : faker.string.uuid(),
+      createdAt: props?.createdAt ? props.createdAt : new Date(1719152430000),
+      updatedAt: props?.updatedAt ? props.updatedAt : new Date(1719152430000)
+    })
+  }
+
+  static generateStockData(props?: GenerateStockData): StockData {
+    return new StockData({
+      id: props?.id ? props.id : v4(),
+      stockId: props?.stockId ? props.stockId : v4(),
+      productId: props?.productId ? props.productId : v4(),
+      quantity: props?.quantity ? props.quantity : faker.number.int({min: 50, max: 200}),
+      threshold: props?.threshold ? props.threshold : faker.number.int({min: 20, max: 50})
+    })
+  }
+
+  static generateMedia(props?: GenerateMedia): Media {
+    return new Media({
+      id: props?.id ? props.id : v4(),
+      entityId: props?.entityId ? props.entityId : "entity_id",
+      url: props?.url ? props.url : "http://toto.com",
+      entityType: props?.entityType ? props.entityType : ENTITYTYPE.PRODUCT || ENTITYTYPE.STORE || ENTITYTYPE.USER || ENTITYTYPE.WAREHOUSE,
+      mimeType: props?.mimeType ? props.mimeType : MIMETYPE.JPEG || MIMETYPE.PNG,
       createdAt: props?.createdAt ? props.createdAt : new Date(1719152430000),
       updatedAt: props?.updatedAt ? props.updatedAt : new Date(1719152430000)
     })

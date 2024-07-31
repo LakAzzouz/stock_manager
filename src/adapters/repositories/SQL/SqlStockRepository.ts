@@ -1,7 +1,7 @@
 import { Knex } from "knex";
 import { StockRepository } from "../../../core/repositories/StockRepository";
-import { SqlStockMapper } from "../mappers/SqlStockMapper";
 import { Stock } from "../../../core/entities/Stock";
+import { SqlStockMapper } from "../mappers/SqlStockMapper";
 
 export class SqlStockRepository implements StockRepository {
   constructor(
@@ -12,15 +12,15 @@ export class SqlStockRepository implements StockRepository {
   async save(stock: Stock): Promise<void> {
     const stockModel = this._stockMapper.fromDomain(stock);
     const tx = await this._knex.transaction();
-    const productId = stockModel.stock_datas.map((elm) => elm.product_id)[0];
-    const quantity = stockModel.stock_datas.map((elm) => elm.quantity)[0];
-    const threshold = stockModel.stock_datas.map((elm) => elm.threshold)[0];
+    const productId = stockModel.stock_datas.map((elm) => elm.product_id)
+    const quantity = stockModel.stock_datas.map((elm) => elm.quantity)
+    const threshold = stockModel.stock_datas.map((elm) => elm.threshold)
     try {
       await tx.raw(
         `INSERT INTO stocks (id, location_id, type, created_at, updated_at)
         VALUES (:id, :location_id, :type, :created_at, :updated_at)`,
         {
-          id: stockModel.id,
+          id: stockModel,
           location_id: stockModel.location_id,
           type: stockModel.type,
           created_at: stockModel.created_at,
@@ -59,7 +59,7 @@ export class SqlStockRepository implements StockRepository {
       MAX(stocks.type) AS type,
       MAX(stocks.created_at) AS created_at,
       MAX(stocks.updated_at) AS updated_at
-      FROM stocks
+      FROM stock_datas
       LEFT JOIN stock_datas ON stocks.id = stock_datas.stock_id
       WHERE stocks.id = ?
       GROUP BY stocks.id`,
@@ -78,13 +78,19 @@ export class SqlStockRepository implements StockRepository {
   }
 
   async delete(id: string): Promise<void> {
-    await this._knex.raw(`DELETE FROM stocks WHERE id = :id`, {
+    await this._knex.raw(
+      `DELETE FROM
+      stocks WHERE id = :id`,
+    {
       id: id,
     });
   }
 
   async getAllIds(): Promise<string[] | null> {
-    const stockIdsColumn = await this._knex.raw<[{ id: string }[], any[]]>(`SELECT id FROM stocks`);
+    const stockIdsColumn = await this._knex.raw<[{ id: string }[], any[]]>(
+      `SELECT id
+      FROM stocks`
+    );
 
     const stockIds = stockIdsColumn[0].map((elm) => elm.id)
 

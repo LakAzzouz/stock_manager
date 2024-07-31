@@ -9,22 +9,15 @@ import { DeleteProduct } from "../../core/usecases/Product/DeleteProduct";
 import { ProductCreateCommand, ProductUpdateCommand } from "../validation/productCommands";
 import { SqlProductRepository } from "../../adapters/repositories/SQL/SqlProductRepository";
 import { SqlProductMapper } from "../../adapters/repositories/mappers/SqlProductMapper";
-import { initFirebase } from "../config/InitFirebase";
-import { FirebaseStorageGateway } from "../../adapters/gateways/FirebaseStorageGateway";
 import { dbTest } from "../../adapters/_test_/tools/dbTest";
 import { Auth, RequestAuth } from "../../adapters/middlewares/auth";
-import { UploadImage } from "../../core/usecases/Product/UploadImage";
 
 export const productRouter = express.Router();
-const firebase = initFirebase();
-
-export const firebaseGateway = new FirebaseStorageGateway(firebase);
 
 const productMapper = new SqlProductMapper();
 const sqlProductRepository = new SqlProductRepository(dbTest, productMapper);
 
 const createProduct = new CreateProduct(sqlProductRepository);
-const uploadImage = new UploadImage(sqlProductRepository, firebaseGateway);
 const getProductById = new GetProductById(sqlProductRepository);
 const getProductByName = new GetProductByName(sqlProductRepository);
 const updateProduct = new UpdateProduct(sqlProductRepository);
@@ -58,33 +51,6 @@ productRouter.post("/create", async (req: express.Request, res: express.Response
       };
 
       return res.status(201).send(result);
-    } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).send(error.message);
-      }
-    }
-  }
-);
-
-productRouter.post("/upload", upload.single("file"), async (req: express.Request, res: express.Response) => {
-    try {
-      const authRequest = req as RequestAuth;
-      const id = authRequest.user.id;  
-      const body = req.body;
-
-      uploadImage.execute({
-        id,
-        image: "",
-        file: req.file?.buffer,
-        fileName: req.file?.originalname,
-        mimetype: "jpg",
-      });
-
-      const msg = {
-        message: "Image upload successfully"
-      }
-
-      return res.status(201).send(msg)
     } catch (error) {
       if (error instanceof Error) {
         return res.status(400).send(error.message);
@@ -181,7 +147,7 @@ productRouter.delete("/delete", async (req: express.Request, res: express.Respon
       const authRequest = req as RequestAuth;
       const id = authRequest.user.id;  
 
-      const product = await deleteProduct.execute({
+      await deleteProduct.execute({
         id,
       });
 

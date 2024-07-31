@@ -1,8 +1,8 @@
 import { Stock } from "../../entities/Stock";
+import { StockData } from "../../entities/StockData";
 import { StockErrors } from "../../errors/StockErrors";
 import { StockDataRepository } from "../../repositories/StockDataRepository";
 import { StockRepository } from "../../repositories/StockRepository";
-import { StockData } from "../../types/StockData";
 import { Usecases } from "../Usecase";
 
 type CreateStockDataInput = {

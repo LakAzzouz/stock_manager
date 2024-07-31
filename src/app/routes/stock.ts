@@ -9,7 +9,7 @@ import { SqlStockMapper } from "../../adapters/repositories/mappers/SqlStockMapp
 import { SqlStockRepository } from "../../adapters/repositories/SQL/SqlStockRepository";
 import { dbTest } from "../../adapters/_test_/tools/dbTest";
 import { InMemoryStockDataRepository } from "../../core/adapters/repositories/InMemoryStockDataRepository";
-import { StockData } from "../../core/types/StockData";
+import { StockData } from "../../core/entities/StockData";
 import { Auth } from "../../adapters/middlewares/auth";
 
 export const stockRouter = express.Router();

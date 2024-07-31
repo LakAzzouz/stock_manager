@@ -1,7 +1,5 @@
 import { Stock } from "../../entities/Stock";
-import { StockErrors } from "../../errors/StockErrors";
 import { StockRepository } from "../../repositories/StockRepository";
-import { StockData } from "../../types/StockData";
 
 export class InMemoryStockRepository implements StockRepository {
   map: Map<string, Stock>;

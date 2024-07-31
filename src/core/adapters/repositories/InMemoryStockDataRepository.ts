@@ -1,5 +1,5 @@
+import { StockData } from "../../entities/StockData";
 import { StockDataRepository } from "../../repositories/StockDataRepository";
-import { StockData } from "../../types/StockData";
 
 export class InMemoryStockDataRepository implements StockDataRepository {
   map: Map<string, StockData>;
@@ -10,7 +10,7 @@ export class InMemoryStockDataRepository implements StockDataRepository {
 
   async saveAll(stockDatas: StockData[]): Promise<void> {
     for (const stockData of stockDatas) {
-      this.map.set(stockData.stockId, stockData);
+      this.map.set(stockData.props.stockId, stockData);
     }
     return;
   }

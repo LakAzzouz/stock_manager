@@ -1,18 +1,5 @@
 import { v4 } from "uuid";
-
-export enum ProductType {
-  SHOES = "shoes",
-  TEE_SHIRT = "tee_shirt",
-}
-
-export enum Size {
-  XS = "xs",
-  S = "s",
-  M = "m",
-  L = "l",
-  XL = "xl",
-  XXL = "xxl",
-}
+import { ProductType } from "../types/ProductType";
 
 export type ProductProperties = {
   id: string;
@@ -42,11 +29,6 @@ export class Product {
       createdAt: new Date(),
     });
     return product;
-  }
-
-  updateImage(image: string): Product {
-    this.props.image = image;
-    return this;
   }
 
   update(newPrice: number): Product {

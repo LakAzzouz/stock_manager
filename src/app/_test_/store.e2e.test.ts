@@ -51,16 +51,14 @@ describe("E2E - Store", () => {
       });
 
     const responseBody = response.body;
-    console.log(response);
     expect(responseBody.id).toBeDefined();
     expect(responseBody.name).toEqual(store.props.name);
     expect(responseBody.city).toEqual(store.props.city);
     expect(responseBody.turnover).toEqual(store.props.turnover);
     expect(responseBody.frequentation).toEqual(store.props.frequentation);
-    expect(responseBody.priceReduction).toEqual(store.props.priceReduction);
     expect(responseBody.createdAt).toBeDefined();
     expect(responseBody.image).toBeDefined();
-    expect(responseBody.status).toBe(201)
+    expect(response.status).toBe(201)
 
     jest.setTimeout(1000);
   });
@@ -80,7 +78,7 @@ describe("E2E - Store", () => {
     jest.setTimeout(1000);
   });
 
-  it("GET /stores/:id", async () => {
+  it("GET /stores/", async () => {
     await storeRepository.save(store);
 
     authorization = sign(
@@ -92,7 +90,7 @@ describe("E2E - Store", () => {
     );
 
     const response = await supertest(app)
-      .get(`/stores/${store.props.id}`)
+      .get(`/stores/`)
       .set("authorization", authorization)
       .send({
         id: store.props.id,
@@ -108,5 +106,6 @@ describe("E2E - Store", () => {
     expect(responseBody.priceReduction).toEqual(store.props.priceReduction);
     expect(responseBody.createdAt).toBeDefined();
     expect(responseBody.status).toBe(200);
+    jest.setTimeout(1000);
   });
 });

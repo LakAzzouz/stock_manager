@@ -24,7 +24,7 @@ describe("Integ - Sql Product Repository", () => {
     price: 10,
   });
   const product3 = DataBuilders.generateProduct({
-    image: undefined
+    image: undefined,
   });
 
   const sale = DataBuilders.generateSale({
@@ -79,11 +79,13 @@ describe("Integ - Sql Product Repository", () => {
   it("Should update product with a first image", async () => {
     await sqlProductRepository.save(product3);
 
-    const productImage = product3.props.image = "first_image";
+    const productImage = (product3.props.image = "first_image");
 
     await sqlProductRepository.update(product3);
 
-    const productUpdated = await sqlProductRepository.getById(product3.props.id);
+    const productUpdated = await sqlProductRepository.getById(
+      product3.props.id
+    );
 
     expect(productUpdated.props.image).toEqual(productImage);
   });
@@ -91,7 +93,7 @@ describe("Integ - Sql Product Repository", () => {
   it("Should update product with a new image", async () => {
     await sqlProductRepository.save(product);
 
-    const productImage = product.props.image = "new_image";
+    const productImage = (product.props.image = "new_image");
 
     await sqlProductRepository.update(product);
 
@@ -110,22 +112,15 @@ describe("Integ - Sql Product Repository", () => {
 
   it("Should get total price by product ids", async () => {
     await sqlProductRepository.save(product);
-    await sqlProductRepository.save(product2);
     await sqlSaleRepository.save(sale);
 
-    const result = await sqlProductRepository.getTotalPriceByProductIds(sale.props.productInfos);
+    const result = await sqlProductRepository.getTotalPriceByProductIds(
+      sale.props.productInfos
+    );
 
-    expect(result).toEqual(product.props.price * sale.props.productInfos[0].quantity);
-  });
-
-  it("Should get total price by product ids", async () => {
-    await sqlProductRepository.save(product);
-    await sqlProductRepository.save(product2);
-    await sqlOrderRepository.save(order);
-
-    const result = await sqlProductRepository.getTotalPriceByProductIds(order.props.productInfos);
-
-    expect(result).toEqual(product.props.price * order.props.productInfos[0].quantity);
+    expect(result).toEqual(
+      product.props.price * sale.props.productInfos[0].quantity
+    );
   });
 
   it("Should delete product", async () => {

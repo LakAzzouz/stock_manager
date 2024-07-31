@@ -6,6 +6,6 @@ import { CreateStockData } from "../../core/usecases/Stock/CreateStockData";
 const stockMapper = new SqlStockMapper()
 
 const stockRepository = new SqlStockRepository(dbTest, stockMapper)
-//const stockDataRepository
+const stockDataRepository = 
 
-//const createStock = new CreateStockData(stockRepository)
+const createStock = new CreateStockData(stockRepository, )

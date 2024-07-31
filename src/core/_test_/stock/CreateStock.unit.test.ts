@@ -4,9 +4,10 @@ import { InMemoryStockRepository } from "../../adapters/repositories/InMemorySto
 import { CreateStockData } from "../../usecases/Stock/CreateStockData";
 import { Location } from "../../types/LocationType";
 import { StockDataRepository } from "../../repositories/StockDataRepository";
-import { StockData } from "../../types/StockData";
 import { InMemoryStockDataRepository } from "../../adapters/repositories/InMemoryStockDataRepository";
 import { StockErrors } from "../../errors/StockErrors";
+import { StockData } from "../../entities/StockData";
+import { DataBuilders } from "../tools/DataBuilders";
 
 describe("Unit - create stock", () => {
   let stockRepository: StockRepository;
@@ -15,10 +16,18 @@ describe("Unit - create stock", () => {
   const stockDb = new Map<string, Stock>();
   const stockDataDb = new Map<string, StockData>();
   const productId = "product_id";
-  const stockId = "stock_id";
-  const quantity = 0;
+  const stockStoreId = "stock_store_id";
+  const stockWarehouseId = "stock_warehouse_id";
   let stock: Stock;
   let stock2: Stock;
+  const stockDataStore = DataBuilders.generateStockData({
+    productId,
+    stockId: stockStoreId,
+  })
+  const stockDataWarehouse = DataBuilders.generateStockData({
+    productId,
+    stockId: stockWarehouseId
+  })
 
   beforeAll(async () => {
     stockRepository = new InMemoryStockRepository(stockDb);
@@ -28,26 +37,14 @@ describe("Unit - create stock", () => {
       id: "id1",
       locationId: "location_id1",
       type: Location.STORE,
-      stockDatas: [
-        {
-          productId,
-          quantity,
-          stockId,
-        },
-      ],
+      stockDatas: [stockDataStore],
       createdAt: new Date(),
     });
     stock2 = new Stock({
       id: "id2",
       locationId: "location_id2",
       type: Location.WAREHOUSE,
-      stockDatas: [
-        {
-          productId,
-          quantity,
-          stockId,
-        },
-      ],
+      stockDatas: [stockDataWarehouse],
       createdAt: new Date(),
     });
   });
@@ -60,7 +57,7 @@ describe("Unit - create stock", () => {
     stockDb.set(stock.props.id, stock);
     stockDb.set(stock2.props.id, stock2);
 
-    const result = await createStock.execute({
+    await createStock.execute({
       productId,
     });
 
