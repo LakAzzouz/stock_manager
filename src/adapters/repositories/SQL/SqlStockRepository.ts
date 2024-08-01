@@ -10,33 +10,33 @@ export class SqlStockRepository implements StockRepository {
   ) {}
 
   async save(stock: Stock): Promise<void> {
-    const stockModel = this._stockMapper.fromDomain(stock);
     const tx = await this._knex.transaction();
-    const productId = stockModel.stock_datas.map((elm) => elm.product_id)
-    const quantity = stockModel.stock_datas.map((elm) => elm.quantity)
-    const threshold = stockModel.stock_datas.map((elm) => elm.threshold)
     try {
+    const stockModel = this._stockMapper.fromDomain(stock);
+    const stock_datas = stockModel.stock_datas
       await tx.raw(
         `INSERT INTO stocks (id, location_id, type, created_at, updated_at)
         VALUES (:id, :location_id, :type, :created_at, :updated_at)`,
         {
-          id: stockModel,
+          id: stockModel.id,
           location_id: stockModel.location_id,
           type: stockModel.type,
           created_at: stockModel.created_at,
           updated_at: stockModel.updated_at ? stockModel.updated_at : null,
         }
       );
-      await tx.raw(
-        `INSERT INTO stock_datas (product_id, quantity, threshold, stock_id)
-        VALUES (:product_id, :quantity, :threshold, :stock_id)`,
-        {
-          product_id: productId,
-          quantity: quantity,
-          threshold: threshold,
-          stock_id: stockModel.id,
-        }
-      );
+      for(const stock_data of stock_datas) {
+        await tx.raw(
+          `INSERT INTO stock_datas (product_id, quantity, threshold, stock_id)
+          VALUES (:product_id, :quantity, :threshold, :stock_id)`,
+          {
+            product_id: stock_data.product_id,
+            quantity: stock_data.quantity,
+            threshold: stock_data.threshold,
+            stock_id: stockModel.id,
+          }
+        );
+      }
       await tx.commit();
     } catch (error) {
       await tx.rollback();
@@ -49,20 +49,20 @@ export class SqlStockRepository implements StockRepository {
       stocks.id AS id,
       JSON_ARRAYAGG(
       JSON_OBJECT(
-        'quantity', stock_datas.quantity,
-        'product_id', stock_datas.product_id,
-        'threshold', stock_datas.threshold,
-        'stock_id', stock_datas.stock_id
+        'quantity', sd.quantity,
+        'product_id', sd.product_id,
+        'threshold', sd.threshold,
+        'stock_id', sd.stock_id
         )
       ) AS stock_datas,
       MAX(stocks.location_id) AS location_id,
       MAX(stocks.type) AS type,
       MAX(stocks.created_at) AS created_at,
       MAX(stocks.updated_at) AS updated_at
-      FROM stock_datas
-      LEFT JOIN stock_datas ON stocks.id = stock_datas.stock_id
+      FROM stock_datas AS sd
+      LEFT JOIN stocks ON stocks.id = sd.stock_id
       WHERE stocks.id = ?
-      GROUP BY stocks.id`,
+      GROUP BY stocks.id;`,
       [id]
     );
 
@@ -91,6 +91,8 @@ export class SqlStockRepository implements StockRepository {
       `SELECT id
       FROM stocks`
     );
+
+    console.log(stockIdsColumn)
 
     const stockIds = stockIdsColumn[0].map((elm) => elm.id)
 

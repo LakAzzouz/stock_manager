@@ -2,7 +2,7 @@ import express from "express";
 import supertest from "supertest";
 
 import { SqlProductRepository } from "../../adapters/repositories/SQL/SqlProductRepository";
-import { firebaseGateway, productRouter, upload } from "../routes/product";
+import { productRouter } from "../routes/product";
 import { SqlProductMapper } from "../../adapters/repositories/mappers/SqlProductMapper";
 import { DataBuilders } from "../../core/_test_/tools/DataBuilders";
 import { dbTest } from "../../adapters/_test_/tools/dbTest";

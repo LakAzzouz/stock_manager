@@ -39,7 +39,7 @@ mediaRouteur.post("/upload/:entityType/:entityId", upload.single("file"), async 
         url,
         mimeType,
         file: req.file?.buffer,
-        fileName: req.file?.originalname,
+        fileName: req.file?.originalname
       });
 
       const msg = {

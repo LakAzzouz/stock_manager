@@ -30,7 +30,6 @@ productRouter.use(Auth);
 productRouter.post("/create", async (req: express.Request, res: express.Response) => {
     try {
       const body = req.body;
-
       const { name, productType, price, size } = ProductCreateCommand.validateProductCreate(body);
 
       const product = await createProduct.execute({
