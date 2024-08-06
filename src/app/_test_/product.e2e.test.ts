@@ -19,15 +19,13 @@ describe("E2E - Product", () => {
   let authorization;
 
   const user = DataBuilders.generateUser();
-  const product = DataBuilders.generateProduct();
+  const product = DataBuilders.generateProduct({
+    name: "Air Jordan"
+  });
 
   beforeAll(async () => {
     app.use(express.json());
     app.use("/products", productRouter);
-    jest
-      .spyOn(firebaseGateway, "upload")
-      .mockReturnValue(Promise.resolve("http://toto.com"));
-
     const productMapper = new SqlProductMapper();
     const userMapper = new SqlUserMapper();
     productRepository = new SqlProductRepository(dbTest, productMapper);
@@ -67,6 +65,7 @@ describe("E2E - Product", () => {
     expect(responseBody.size).toEqual(product.props.size);
     expect(responseBody.createdAt).toBeDefined();
     expect(response.status).toBe(201);
+    jest.setTimeout(1000);
   });
 
   it("POST /products/create should return a status 400", async () => {
@@ -84,11 +83,10 @@ describe("E2E - Product", () => {
     jest.setTimeout(1000);
   });
 
-  it("POST /products/upload", async () => {
+  it("GET /products/:id", async () => {
     await userRepository.save(user);
     await productRepository.save(product);
 
-
     authorization = sign(
       {
         id: user.props.id,
@@ -98,63 +96,164 @@ describe("E2E - Product", () => {
     );
 
     const response = await supertest(app)
-      .post("/products/upload")
-      .set("authorization", authorization)
-      .send({
-        id: product.props.id,
-        image: product.props.image,
-        file: Buffer.from(""),
-        fileName: "Air Jordan",
-        mimetype: "jpg",
-      });
-    const responseBody = response.body;
-    console.log(response)
-    expect(responseBody.message).toEqual("Image upload successfully");
-    expect(response.status).toBe(201);
-    jest.setTimeout(1000);
-  });
-
-  it("POST /products/upload should return a status 400", async () => {
-    authorization = sign(
-      {
-        id: user.props.id,
-        email: user.props.email,
-      },
-      jwtSecret
-    );
-    const response = await supertest(app)
-      .post("/products/upload")
+      .get(`/products/${product.props.id}`)
       .set("authorization", authorization);
-    expect(response.status).toBe(400);
-    jest.setTimeout(1000);
-  });
-
-  it("GET /products/", async () => {
-    await userRepository.save(user);
-    await productRepository.save(product);
-
-    authorization = sign(
-      {
-        id: user.props.id,
-        email: user.props.email,
-      },
-      jwtSecret
-    );
-
-    const response = await supertest(app)
-      .get("/products/")
-      .set("authorization", authorization)
-      .send({
-        id: product.props.id,
-      });
     const responseBody = response.body;
-    //console.log(response)
     expect(responseBody.id).toBeDefined();
     expect(responseBody.name).toEqual(product.props.name);
     expect(responseBody.productType).toEqual(product.props.productType);
     expect(responseBody.price).toEqual(product.props.price);
     expect(responseBody.size).toEqual(product.props.size);
     expect(responseBody.createdAt).toBeDefined();
-    expect(responseBody.status).toBe(200);
+    expect(response.status).toBe(200);
+    jest.setTimeout(1000);
   });
+
+  it("GET /products/ should return a status 400", async () => {
+    authorization = sign(
+      {
+        id: user.props.id,
+        email: user.props.email,
+      },
+      jwtSecret
+    );
+    const response = await supertest(app)
+      .get(`/products/${product.props.id}`)
+      .set("authorization", authorization);
+    expect(response.status).toBe(400);
+    jest.setTimeout(1000);
+  });
+
+  it("GET /products/:name", async () => {
+    await userRepository.save(user);
+    await productRepository.save(product);
+
+    authorization = sign(
+      {
+        id: user.props.id,
+        email: user.props.email,
+      },
+      jwtSecret
+    );
+
+    const response = await supertest(app)
+      .get(`/products/${product.props.name}`)
+      .set("authorization", authorization);
+    const responseBody = response.body;
+    expect(responseBody.id).toBeDefined();
+    expect(responseBody.name).toEqual(product.props.name);
+    expect(responseBody.productType).toEqual(product.props.productType);
+    expect(responseBody.price).toEqual(product.props.price);
+    expect(responseBody.size).toEqual(product.props.size);
+    expect(responseBody.createdAt).toBeDefined();
+    expect(response.status).toBe(200);
+    jest.setTimeout(1000);
+  });
+
+  it("GET /products/:name should return a status 400", async () => {
+    authorization = sign(
+      {
+        id: user.props.id,
+        email: user.props.email,
+      },
+      jwtSecret
+    );
+    const response = await supertest(app)
+      .get(`/products/${product.props.name}`)
+      .set("authorization", authorization);
+    expect(response.status).toBe(400);
+    jest.setTimeout(1000);
+  });
+
+  it("PATCH /products/update/:id", async () => {
+    await userRepository.save(user);
+    await productRepository.save(product);
+
+    authorization = sign(
+      {
+        id: user.props.id,
+        email: user.props.email,
+      },
+      jwtSecret
+    );
+
+    const response = await supertest(app)
+      .patch(`/products/update/${product.props.id}`)
+      .set("authorization", authorization)
+      .send({
+        id: product.props.id,
+        newPrice: product.props.price,
+      });
+    const responseBody = response.body;
+    expect(responseBody.id).toBeDefined();
+    expect(responseBody.name).toEqual(product.props.name);
+    expect(responseBody.productType).toEqual(product.props.productType);
+    expect(responseBody.price).toEqual(product.props.price);
+    expect(responseBody.size).toEqual(product.props.size);
+    expect(responseBody.createdAt).toBeDefined();
+    expect(response.status).toBe(200);
+    jest.setTimeout(1000);
+  });
+
+  it("PATCH /products/update/:id", async () => {
+    authorization = sign(
+      {
+        id: user.props.id,
+        email: user.props.email,
+      },
+      jwtSecret
+    );
+
+    const response = await supertest(app)
+      .patch(`/products/update/${product.props.id}`)
+      .set("authorization", authorization)
+      .send({
+        id: product.props.id,
+        newPrice: product.props.price,
+      });
+    expect(response.status).toBe(400);
+    jest.setTimeout(1000);
+  });
+
+  it("DELETE /products/delete/:id", async () => {
+    await userRepository.save(user);
+    await productRepository.save(product);
+
+    authorization = sign(
+      {
+        id: user.props.id,
+        email: user.props.email,
+      },
+      jwtSecret
+    );
+
+    const response = await supertest(app)
+      .delete(`/products/delete/${product.props.id}`)
+      .set("authorization", authorization)
+      .send({
+        id: product.props.id,
+      });
+    const responseStatus = response.status;
+    expect(responseStatus).toBe(202);
+    jest.setTimeout(1000);
+  });
+
+  it("DELETE /products/delete/:id should return a status 400", async () => {
+    authorization = sign(
+      {
+        id: user.props.id,
+        email: user.props.email,
+      },
+      jwtSecret
+    );
+
+    const response = await supertest(app)
+      .delete(`/products/delete/${product.props.id}`)
+      .set("authorization", authorization)
+      .send({
+        id: product.props.id,
+      });
+      const responseStatus = response.status;
+      expect(responseStatus).toBe(400);  
+  })
 });

@@ -43,7 +43,7 @@ export class CreateUser implements Usecases<CreateUserInput, Promise<User>> {
 
     this._userRepository.save(user);
 
-    const event = new UserCreated ({
+    const event = new UserCreated({
       id: user.props.id,
       email,
       username

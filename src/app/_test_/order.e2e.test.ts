@@ -159,7 +159,6 @@ describe("E2E - order", () => {
         id: order.props.id,
       });
     const responseBody = response.body;
-    console.log(response)
     expect(responseBody.id).toBeDefined();
     expect(responseBody.productInfos).toEqual(order.props.productInfos);
     expect(responseBody.locationId).toEqual(order.props.locationId);
@@ -207,7 +206,6 @@ describe("E2E - order", () => {
         dateOfArrival: order.props.dateOfArrival,
       });
     const responseBody = response.body;
-    console.log(response);
     expect(responseBody.id).toBeDefined();
     expect(responseBody.productInfos).toEqual(order.props.productInfos);
     expect(responseBody.locationId).toEqual(order.props.locationId);
@@ -255,7 +253,6 @@ describe("E2E - order", () => {
     .send({
       id: order.props.id,
     });
-    console.log(response)
     const responseStatus = response.status;
     expect(responseStatus).toBe(200);
     jest.setTimeout(1000);

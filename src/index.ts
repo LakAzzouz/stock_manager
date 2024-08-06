@@ -14,6 +14,7 @@ import knex from "knex";
 
 import "../src/messages/EventEmitter";
 import "../src/app/handlers/userCreatedHandler";
+import "../src/app/handlers/productCreatedHandler";
 import "dotenv/config";
 
 const app = express();
@@ -24,7 +25,6 @@ const limiter = rateLimit({
   max: 100, // limite chaque IP à 100 requêtes par windowMs
   message: 'Trop de requêtes, veuillez réessayer plus tard.'
 });
-
 
 export const db = knex({
   client: "mysql",

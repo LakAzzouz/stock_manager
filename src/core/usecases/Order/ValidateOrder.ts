@@ -13,6 +13,8 @@ export class ValidateOrder implements Usecases<ValidateOrderInput, Promise<Order
   ) {}
 
   async execute(input: ValidateOrderInput): Promise<Order> {
+    const { id } = input;
+
     const order = await this._orderRepository.getById(input.id);
 
     if (!order) {

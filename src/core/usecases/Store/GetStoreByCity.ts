@@ -11,7 +11,9 @@ export class GetStoreByCity implements Usecases<GetStoreByCityInput, Promise<Sto
   constructor(private readonly _storeRepository: StoreRepository) {}
 
   async execute(input: GetStoreByCityInput): Promise<Store> {
-    const store = await this._storeRepository.getByCity(input.city);
+    const { city } = input;
+
+    const store = await this._storeRepository.getByCity(city);
 
     if(!store) {
       throw new StoreErrors.NotFound();

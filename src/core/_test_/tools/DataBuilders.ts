@@ -21,7 +21,6 @@ type GenerateProduct = {
   id?: string;
   name?: string;
   productType?: ProductType;
-  image?: string;
   price?: number;
   size?: number;
   createdAt?: Date;
@@ -113,7 +112,6 @@ export class DataBuilders {
       id: props?.id ? props.id : v4(),
       name: props?.name ? props.name : "Yeezy",
       productType: props?.productType ? props.productType : ProductType.SHOES,
-      image: props?.image ? props.image : faker.internet.url(),
       price: props?.price ? props.price : faker.number.int({ min: 100, max: 500 }),
       size: props?.size ? props.size : faker.number.int({ min: 35, max: 49 }),
       createdAt: props?.createdAt ? props.createdAt : new Date(1719152430000),
@@ -174,7 +172,7 @@ export class DataBuilders {
       id: props?.id ? props.id : v4(),
       locationId: props?.locationId ? props.locationId : v4(),
       type: props?.type ? props.type : Location.STORE || Location.WAREHOUSE,
-      stockDatas: props?.stockDatas ? props.stockDatas : [new StockData ({id: v4(), productId: v4(), quantity: faker.number.int({min: 10000, max: 50000}), threshold: faker.number.int({min: 1000, max: 5000}), stockId: props?.id ? props.id : v4()})],
+      stockDatas: props?.stockDatas ? props.stockDatas : [new StockData ({id: v4(), productId: v4(), quantity: faker.number.int({min: 100, max: 500}), threshold: faker.number.int({min: 10, max: 50}), stockId: props?.id ? props.id : v4()})],
       createdAt: props?.createdAt ? props.createdAt : new Date(1719152430000),
       updatedAt: props?.updatedAt ? props.updatedAt : new Date(1719152430000)
     })

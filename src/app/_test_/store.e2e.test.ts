@@ -97,7 +97,6 @@ describe("E2E - Store", () => {
       });
 
     const responseBody = response.body;
-    console.log(response)
     expect(responseBody.id).toBeDefined();
     expect(responseBody.name).toEqual(store.props.name);
     expect(responseBody.city).toEqual(store.props.city);

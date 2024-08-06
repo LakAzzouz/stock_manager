@@ -13,13 +13,15 @@ export class UpdateProduct implements Usecases<UpdateProductInput, Promise<Produ
     private readonly _productRepository: ProductRepository) {}
 
   async execute(input: UpdateProductInput): Promise<Product> {
-    const product = await this._productRepository.getById(input.id);
+    const { id, price } = input;
+
+    const product = await this._productRepository.getById(id);
 
     if(!product) {
       throw new ProductErrors.NotFound();
     }
 
-    const productUpdated = product.update(input.price);
+    const productUpdated = product.update(price);
 
     return productUpdated;
   }

@@ -11,9 +11,11 @@ export class CreateWarehouse implements Usecases<CreateWarehouseInput, Promise<W
   constructor(private readonly _warehouseRepository: WarehouseRepository) {}
 
   async execute(input: CreateWarehouseInput): Promise<Warehouse> {
+    const { city, numberOfEmployees } = input;
+
     const warehouse = Warehouse.create({
-      city: input.city,
-      numberOfEmployees: input.numberOfEmployees,
+      city,
+      numberOfEmployees
     });
 
     await this._warehouseRepository.save(warehouse);

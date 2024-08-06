@@ -19,28 +19,8 @@ describe("Integ - Sql Product Repository", () => {
     id: "id",
     price: 1,
   });
-  const product2 = DataBuilders.generateProduct({
-    id: "id2",
-    price: 10,
-  });
-  const product3 = DataBuilders.generateProduct({
-    image: undefined,
-  });
 
   const sale = DataBuilders.generateSale({
-    productInfos: [
-      {
-        productId: "id",
-        quantity: 10,
-      },
-      {
-        productId: "id2",
-        quantity: 100,
-      },
-    ],
-  });
-
-  const order = DataBuilders.generateOrder({
     productInfos: [
       {
         productId: "id",
@@ -74,32 +54,6 @@ describe("Integ - Sql Product Repository", () => {
     const result = await sqlProductRepository.getById(product.props.id);
 
     expect(product).toEqual(result);
-  });
-
-  it("Should update product with a first image", async () => {
-    await sqlProductRepository.save(product3);
-
-    const productImage = (product3.props.image = "first_image");
-
-    await sqlProductRepository.update(product3);
-
-    const productUpdated = await sqlProductRepository.getById(
-      product3.props.id
-    );
-
-    expect(productUpdated.props.image).toEqual(productImage);
-  });
-
-  it("Should update product with a new image", async () => {
-    await sqlProductRepository.save(product);
-
-    const productImage = (product.props.image = "new_image");
-
-    await sqlProductRepository.update(product);
-
-    const productUpdated = await sqlProductRepository.getById(product.props.id);
-
-    expect(productUpdated.props.image).toEqual(productImage);
   });
 
   it("Should get product by name", async () => {

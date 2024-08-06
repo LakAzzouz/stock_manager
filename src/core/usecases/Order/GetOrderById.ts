@@ -7,12 +7,12 @@ type GetOrderByIdInput = {
   id: string;
 };
 
-export class GetOrderById
-  implements Usecases<GetOrderByIdInput, Promise<Order>>
-{
+export class GetOrderById implements Usecases<GetOrderByIdInput, Promise<Order>> {
   constructor(private readonly _orderRepository: OrderRepository) {}
 
   async execute(input: GetOrderByIdInput): Promise<Order> {
+    const { id } = input;
+
     const order = await this._orderRepository.getById(input.id);
 
     if (!order) {

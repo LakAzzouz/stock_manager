@@ -17,7 +17,7 @@ export class DeleteWarehouse implements Usecases<DeleteWarehouseInput, Promise<v
     if (!user) {
       throw new WarehouseErrors.NotFound();
     }
-    await this._warehouseRepository.delete(input.id);
+    await this._warehouseRepository.delete(id);
 
     return;
   }

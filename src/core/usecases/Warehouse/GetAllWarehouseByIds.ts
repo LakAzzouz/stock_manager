@@ -2,9 +2,7 @@ import { WarehouseErrors } from "../../errors/WarehouseErrors";
 import { WarehouseRepository } from "../../repositories/WarehouseRepository";
 import { Usecases } from "../Usecase";
 
-type GetAllWarehouseByIdsInput = {
-  ids: string[];
-};
+type GetAllWarehouseByIdsInput = {};
 
 export class GetAllWarehouseByIds implements Usecases<GetAllWarehouseByIdsInput, Promise<string[]>> {
   constructor(private readonly _warehouseRepository: WarehouseRepository) {}

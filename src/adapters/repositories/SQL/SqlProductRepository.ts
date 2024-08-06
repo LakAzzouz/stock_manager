@@ -13,13 +13,12 @@ export class SqlProductRepository implements ProductRepository {
   async save(product: Product): Promise<void> {
     const productModel = this._productMapper.fromDomain(product);
     await this._knex.raw(
-      `INSERT INTO products (id, name, product_type, image, price, size, created_at, updated_at)
-        VALUES (:id, :name, :product_type, :image, :price, :size, :created_at, :updated_at)`,
+      `INSERT INTO products (id, name, product_type, price, size, created_at, updated_at)
+        VALUES (:id, :name, :product_type, :price, :size, :created_at, :updated_at)`,
       {
         id: productModel.id,
         name: productModel.name,
         product_type: productModel.product_type,
-        image: productModel.image || null,
         price: productModel.price,
         size: productModel.size,
         created_at: productModel.created_at,
@@ -28,7 +27,7 @@ export class SqlProductRepository implements ProductRepository {
     );
   }
 
-  async getById(id: string): Promise<Product> {
+  async getById(id: string): Promise<Product | null> {
     const productModel = await this._knex.raw(
       `SELECT * 
       FROM products 
@@ -37,14 +36,18 @@ export class SqlProductRepository implements ProductRepository {
         id: id,
       }
     );
-    console.log(id)
+
+    if(!productModel[0][0]) {
+      return null
+    }
 
     const product = this._productMapper.toDomain(productModel[0][0]);
+
 
     return product;
   }
 
-  async getByName(name: string): Promise<Product> {
+  async getByName(name: string): Promise<Product | null> {
     const productModel = await this._knex.raw(
       `SELECT * 
       FROM products 
@@ -53,12 +56,19 @@ export class SqlProductRepository implements ProductRepository {
         name: name,
       }
     );
+
+    if(!productModel) {
+      return null
+    }
+
     const product = this._productMapper.toDomain(productModel[0][0]);
 
     return product;
   }
 
-  async getTotalPriceByProductIds(productInfos: ProductInfo[]): Promise<number> {
+  async getTotalPriceByProductIds(
+    productInfos: ProductInfo[]
+  ): Promise<number> {
     const productIds = productInfos.map((elm) => elm.productId);
     const priceIdPairModel = await this._knex.raw(
       `SELECT price, id 
@@ -68,7 +78,7 @@ export class SqlProductRepository implements ProductRepository {
       [productIds]
     );
 
-    const pricePair: { 
+    const pricePair: {
       price: number;
       id: string;
     }[] = priceIdPairModel[0].map((elm: { price: number; id: string }) => {
@@ -92,20 +102,6 @@ export class SqlProductRepository implements ProductRepository {
     );
 
     return totalPrice;
-  }
-
-  async update(product: Product): Promise<void> {
-    const productModel = this._productMapper.fromDomain(product);
-    await this._knex.raw(
-      `UPDATE products 
-      SET image = :image
-      WHERE id = :id`,
-      {
-        id: productModel.id,
-        image: productModel.image || null,
-      }
-    );
-    return;
   }
 
   async delete(id: string): Promise<void> {

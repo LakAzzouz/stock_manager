@@ -1,3 +1,5 @@
+import { eventEmitter } from "../../../messages/EventEmitter";
+import { ProductCreated } from "../../../messages/product/ProductCreated";
 import { Product } from "../../entities/Product";
 import { ProductRepository } from "../../repositories/ProductRepository";
 import { ProductType } from "../../types/ProductType";
@@ -17,18 +19,24 @@ export class CreateProduct implements Usecases<CreateProductInput, Promise<Produ
   ) {}
 
   async execute(input: CreateProductInput): Promise<Product> {
+    const { name, productType, price} = input;
+
     const sizeLimit = Size.sizeLength(input.size);
 
     const product = Product.create({
-      name: input.name,
-      productType: input.productType,
-      price: input.price,
+      name,
+      productType,
+      price,
       size: sizeLimit,
     });
 
     await this._productRepository.save(product);
 
-    // event => creation stockData 
+    const event = new ProductCreated({
+      productId: product.props.id
+    });
+
+    eventEmitter.emit("product_created", event);
 
     return product;
   }

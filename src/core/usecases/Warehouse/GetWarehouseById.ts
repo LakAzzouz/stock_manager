@@ -11,7 +11,9 @@ export class GetWarehouseById implements Usecases<GetWarehouseByIdInput, Promise
   constructor(private readonly _warehouseRepository: WarehouseRepository) {}
 
   async execute(input: GetWarehouseByIdInput): Promise<Warehouse> {
-    const warehouse = await this._warehouseRepository.getById(input.id);
+    const { id } = input;
+
+    const warehouse = await this._warehouseRepository.getById(id);
 
     if(!warehouse) {
       throw new WarehouseErrors.NotFound();

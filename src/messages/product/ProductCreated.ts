@@ -1,10 +1,5 @@
-import { ProductType } from "../../core/entities/Product";
-
 export type ProductCreatedProperties = {
-  name: string;
-  productType: ProductType;
-  price: number;
-  size: number;
+  productId: string;
 };
 
 export class ProductCreated {

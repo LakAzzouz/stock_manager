@@ -11,7 +11,9 @@ export class GetSaleById implements Usecases<GetSaleByIdInput, Promise<Sale>> {
   constructor(private readonly _saleRepository: SaleRepository) {}
 
   async execute(input: GetSaleByIdInput): Promise<Sale> {
-    const sale = await this._saleRepository.getById(input.id);
+    const { id } = input;
+
+    const sale = await this._saleRepository.getById(id);
 
     if(!sale) {
       throw new SaleErrors.NotFound();

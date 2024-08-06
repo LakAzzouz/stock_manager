@@ -10,6 +10,7 @@ export class InMemoryStockRepository implements StockRepository {
 
   async save(stock: Stock): Promise<void> {
     this.map.set(stock.props.id, stock);
+    return;
   }
 
   async getById(id: string): Promise<Stock | null> {

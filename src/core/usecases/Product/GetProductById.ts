@@ -11,7 +11,9 @@ export class GetProductById implements Usecases<GetProductByIdInput, Promise<Pro
   constructor(private readonly _productRepository: ProductRepository) {}
 
   async execute(input: GetProductByIdInput): Promise<Product> {
-    const product = await this._productRepository.getById(input.id);
+    const { id } = input;
+
+    const product = await this._productRepository.getById(id);
 
     if(!product) {
       throw new ProductErrors.NotFound();

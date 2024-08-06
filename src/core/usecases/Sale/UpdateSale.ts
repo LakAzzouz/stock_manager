@@ -12,13 +12,15 @@ export class UpdateSale implements Usecases<UpdateSaleInput, Promise<Sale>> {
   constructor(private readonly _saleRepository: SaleRepository) {}
 
   async execute(input: UpdateSaleInput): Promise<Sale> {
-    const sale = await this._saleRepository.getById(input.id);
+    const { id, newTotalPrice } = input;
+
+    const sale = await this._saleRepository.getById(id);
 
     if(!sale) {
       throw new SaleErrors.NotFound();
     }
 
-    const newSale = sale.update(input.newTotalPrice);
+    const newSale = sale.update(newTotalPrice);
 
     return newSale;
   }

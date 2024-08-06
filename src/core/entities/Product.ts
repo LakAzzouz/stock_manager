@@ -7,7 +7,6 @@ export type ProductProperties = {
   productType: ProductType;
   price: number;
   size: number;
-  image?: string;
   createdAt: Date;
   updatedAt?: Date;
 };

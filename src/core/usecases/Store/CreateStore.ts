@@ -13,11 +13,13 @@ export class CreateStore implements Usecases<CreateStoreInput, Promise<Store>> {
   constructor(private readonly _storeRepository: StoreRepository) {}
 
   async execute(input: CreateStoreInput): Promise<Store> {
+    const { name, city, turnover, frequentation} = input;
+
     const store = Store.create({
-      name: input.name,
-      city: input.city,
-      turnover: input.turnover,
-      frequentation: input.frequentation,
+      name,
+      city,
+      turnover,
+      frequentation
     });
 
     await this._storeRepository.save(store);

@@ -10,7 +10,7 @@ import { ProductCreateCommand, ProductUpdateCommand } from "../validation/produc
 import { SqlProductRepository } from "../../adapters/repositories/SQL/SqlProductRepository";
 import { SqlProductMapper } from "../../adapters/repositories/mappers/SqlProductMapper";
 import { dbTest } from "../../adapters/_test_/tools/dbTest";
-import { Auth, RequestAuth } from "../../adapters/middlewares/auth";
+import { Auth } from "../../adapters/middlewares/auth";
 
 export const productRouter = express.Router();
 
@@ -29,8 +29,7 @@ export const upload = multer({ storage: storage });
 productRouter.use(Auth);
 productRouter.post("/create", async (req: express.Request, res: express.Response) => {
     try {
-      const body = req.body;
-      const { name, productType, price, size } = ProductCreateCommand.validateProductCreate(body);
+      const { name, productType, price, size } = ProductCreateCommand.validateProductCreate(req.body);
 
       const product = await createProduct.execute({
         name,
@@ -45,8 +44,7 @@ productRouter.post("/create", async (req: express.Request, res: express.Response
         productType,
         price,
         size,
-        createdAt: product.props.createdAt,
-        image: product.props.image,
+        createdAt: product.props.createdAt
       };
 
       return res.status(201).send(result);
@@ -58,17 +56,14 @@ productRouter.post("/create", async (req: express.Request, res: express.Response
   }
 );
 
-productRouter.get("/", async (req: express.Request, res: express.Response) => {
+productRouter.get("/:id", async (req: express.Request, res: express.Response) => {
     try {
-      const authRequest = req as RequestAuth;
-      const id = authRequest.user.id;  
-
       const product = await getProductById.execute({
-        id,
+        id: req.params.id
       });
 
       const result = {
-        id,
+        id: product.props.id,
         name: product.props.name,
         productType: product.props.productType,
         price: product.props.price,
@@ -87,15 +82,14 @@ productRouter.get("/", async (req: express.Request, res: express.Response) => {
 
 productRouter.get("/:name", async (req: express.Request, res: express.Response) => {
     try {
-      const name = req.params.name;
-
+      console.log("======>")
       const product = await getProductByName.execute({
-        name,
+        name: req.params.name
       });
 
       const result = {
         id: product.props.id,
-        name,
+        name: product.props.name,
         productType: product.props.productType,
         price: product.props.price,
         size: product.props.size,
@@ -111,19 +105,17 @@ productRouter.get("/:name", async (req: express.Request, res: express.Response) 
   }
 );
 
-productRouter.patch("/update", async (req: express.Request, res: express.Response) => {
+productRouter.patch("/update/:id", async (req: express.Request, res: express.Response) => {
     try {
       const { newPrice } = ProductUpdateCommand.updateProduct(req.body);
-      const authRequest = req as RequestAuth;
-      const id = authRequest.user.id;  
 
       const product = await updateProduct.execute({
-        id,
+        id: req.params.id,
         price: newPrice,
       });
 
       const result = {
-        id,
+        id: product.props.id,
         name: product.props.name,
         productType: product.props.productType,
         price: newPrice,
@@ -141,13 +133,10 @@ productRouter.patch("/update", async (req: express.Request, res: express.Respons
   }
 );
 
-productRouter.delete("/delete", async (req: express.Request, res: express.Response) => {
+productRouter.delete("/delete/:id", async (req: express.Request, res: express.Response) => {
     try {
-      const authRequest = req as RequestAuth;
-      const id = authRequest.user.id;  
-
       await deleteProduct.execute({
-        id,
+        id: req.params.id
       });
 
       const result = "PRODUCT_DELETED";

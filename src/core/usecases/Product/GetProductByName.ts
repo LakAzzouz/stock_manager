@@ -11,7 +11,9 @@ export class GetProductByName implements Usecases<GetProductByNameInput, Promise
   constructor(private readonly _productRepository: ProductRepository) {}
 
   async execute(input: GetProductByNameInput): Promise<Product> {
-    const product = await this._productRepository.getByName(input.name);
+    const { name } = input;
+
+    const product = await this._productRepository.getByName(name);
 
     if(!product) {
       throw new ProductErrors.NotFound();

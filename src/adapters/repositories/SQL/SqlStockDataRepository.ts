@@ -14,22 +14,18 @@ export class SqlStockDataRepository implements StockDataRepository {
         this._stockDataMapper.fromDomain(elm)
     );
     for (const stockDataModel of stockDataModels) {
-      this._knex.raw(
-        `
-        INSERT INTO StockDatas (id, product_id, quantity, threshold, stock_id)
-        VALUES (:id, :product_id, :quantity, :threshold, :stock_id)
-        ON CONFLICT (id) DO UPDATE 
-        SET product_id = EXCLUDED.product_id,
-        quantity = EXCLUDED.quantity,
-        threshold = EXCLUDED.threshold,
-        stock_id = EXCLUDED.stock_id`,
+      await this._knex.raw(
+        `INSERT INTO stock_datas (id, product_id, quantity, threshold, stock_id)
+        VALUES (:id, :product_id, :quantity, :threshold, :stock_id)`,
         {
+          id: stockDataModel.id,
           product_id: stockDataModel.product_id,
-          stock_id: stockDataModel.stock_id,
           quantity: stockDataModel.quantity,
-          threshold: stockDataModel.threshold
+          threshold: stockDataModel.threshold,
+          stock_id: stockDataModel.stock_id
         }
       );
     }
+    console.log(stockDataModels[0].threshold)
   }
 }
