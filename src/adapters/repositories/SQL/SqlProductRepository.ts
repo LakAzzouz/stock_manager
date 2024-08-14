@@ -57,7 +57,7 @@ export class SqlProductRepository implements ProductRepository {
       }
     );
 
-    if(!productModel) {
+    if(!productModel[0][0]) {
       return null
     }
 
@@ -77,7 +77,6 @@ export class SqlProductRepository implements ProductRepository {
       `,
       [productIds]
     );
-
     const pricePair: {
       price: number;
       id: string;

@@ -1,5 +1,4 @@
 import express from "express";
-import multer from "multer";
 
 import { CreateStore } from "../../core/usecases/Store/CreateStore";
 import { GetStoreById } from "../../core/usecases/Store/GetStoreById";
@@ -10,8 +9,7 @@ import { StoreCreateCommand, StoreUpdateCommand } from "../validation/storeComma
 import { SqlStoreMapper } from "../../adapters/repositories/mappers/SqlStoreMapper";
 import { SqlStoreRepository } from "../../adapters/repositories/SQL/SqlStoreRepository";
 import { dbTest } from "../../adapters/_test_/tools/dbTest";
-import { GetAllStoreByIds } from "../../core/usecases/Store/GetAllStoreByIds";
-import { Auth, RequestAuth } from "../../adapters/middlewares/auth";
+import { Auth } from "../../adapters/middlewares/auth";
 
 export const storeRouter = express.Router();
 
@@ -20,19 +18,9 @@ const sqlStoreRepository = new SqlStoreRepository(dbTest, storeMapper);
 
 const createStore = new CreateStore(sqlStoreRepository);
 const getStoreById = new GetStoreById(sqlStoreRepository);
-const getAllStoreByIds = new GetAllStoreByIds(sqlStoreRepository);
 const getStoreByCity = new GetStoreByCity(sqlStoreRepository);
 const updateStore = new UpdateStore(sqlStoreRepository);
 const deleteStore = new DeleteStore(sqlStoreRepository);
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname.split(" ").join("_")}`);
-  },
-});
 
 storeRouter.use(Auth);
 storeRouter.post("/create", async (req: express.Request, res: express.Response) => {
@@ -63,10 +51,9 @@ storeRouter.post("/create", async (req: express.Request, res: express.Response) 
     }
 });
 
-storeRouter.get("/", async (req: express.Request, res: express.Response) => {
+storeRouter.get("/:id", async (req: express.Request, res: express.Response) => {
   try {
-    const authRequest = req as RequestAuth;
-    const id = authRequest.user.id;  
+    const id = req.params.id;
 
     const store = await getStoreById.execute({
       id,
@@ -89,22 +76,6 @@ storeRouter.get("/", async (req: express.Request, res: express.Response) => {
     }
   }
 });
-
-// storeRouter.get("/:id", async (req: express.Request, res: express.Response) => {
-//   try {
-//     const id = req.params.id;
-
-//     const result = await getAllStoreByIds.execute({
-//       id
-//     })
-
-//     return res.status(200).send(result);
-//   } catch (error) {
-//     if (error instanceof Error) {
-//       return res.status(400).send(error.message);
-//     }
-//   }
-// });
 
 storeRouter.get("/:city", async (req: express.Request, res: express.Response) => {
     try {
@@ -135,9 +106,7 @@ storeRouter.get("/:city", async (req: express.Request, res: express.Response) =>
 
 storeRouter.patch("/:id", async (req: express.Request, res: express.Response) => {
     try {
-      const { newPriceReduction } = StoreUpdateCommand.validateStoreUpdate(
-        req.body
-      );
+      const { newPriceReduction } = StoreUpdateCommand.validateStoreUpdate(req.body);
       const id = req.params.id;
 
       const store = await updateStore.execute({
@@ -175,7 +144,7 @@ storeRouter.delete("/:id", async (req: express.Request, res: express.Response) =
 
       const result = "STORE_DELETED";
 
-      return res.status(200).send(result);
+      return res.status(202).send(result);
     } catch (error) {
       if (error instanceof Error) {
         return res.status(400).send(error.message);

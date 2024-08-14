@@ -82,7 +82,6 @@ productRouter.get("/:id", async (req: express.Request, res: express.Response) =>
 
 productRouter.get("/:name", async (req: express.Request, res: express.Response) => {
     try {
-      console.log("======>")
       const product = await getProductByName.execute({
         name: req.params.name
       });

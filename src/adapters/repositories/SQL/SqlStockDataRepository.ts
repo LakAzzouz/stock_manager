@@ -26,6 +26,5 @@ export class SqlStockDataRepository implements StockDataRepository {
         }
       );
     }
-    console.log(stockDataModels[0].threshold)
   }
 }

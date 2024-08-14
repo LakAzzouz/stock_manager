@@ -25,6 +25,15 @@ const mediaGateway = firebaseGateway;
 const mediaRepository = new SqlMediaRepository(dbTest, mediaMapper);
 const uploadMedia = new UploadMedia(mediaGateway, mediaRepository);
 
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "uploads/");
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, `${Date.now()}-${file.originalname.split(" ").join("_")}`);
+//   },
+// });
+
 mediaRouteur.use(Auth);
 mediaRouteur.post("/upload/:entityType/:entityId", upload.single("file"), async (req: express.Request, res: express.Response) => {
     try {

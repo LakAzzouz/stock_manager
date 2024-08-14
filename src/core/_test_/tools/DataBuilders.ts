@@ -110,7 +110,7 @@ export class DataBuilders {
   static generateProduct(props?: GenerateProduct): Product {
     return new Product({
       id: props?.id ? props.id : v4(),
-      name: props?.name ? props.name : "Yeezy",
+      name: props?.name ? props.name : "Yeezy" || "Air Jordan",
       productType: props?.productType ? props.productType : ProductType.SHOES,
       price: props?.price ? props.price : faker.number.int({ min: 100, max: 500 }),
       size: props?.size ? props.size : faker.number.int({ min: 35, max: 49 }),

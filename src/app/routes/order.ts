@@ -11,7 +11,7 @@ import { SqlOrderMapper } from "../../adapters/repositories/mappers/SqlOrderMapp
 import { SqlProductMapper } from "../../adapters/repositories/mappers/SqlProductMapper";
 import { SqlProductRepository } from "../../adapters/repositories/SQL/SqlProductRepository";
 import { ValidateOrder } from "../../core/usecases/Order/ValidateOrder";
-import { Auth, RequestAuth } from "../../adapters/middlewares/auth";
+import { Auth } from "../../adapters/middlewares/auth";
 
 export const orderRouter = express.Router();
 
@@ -77,10 +77,9 @@ orderRouter.post("/validate/:id", async (req: express.Request, res: express.Resp
   }
 );
 
-orderRouter.get("/", async (req: express.Request, res: express.Response) => {
+orderRouter.get("/:id", async (req: express.Request, res: express.Response) => {
   try {
-    const authRequest = req as RequestAuth;
-    const id = authRequest.user.id;  
+    const id = req.params.id;
 
     const order = await getOrderById.execute({
       id,
@@ -106,19 +105,18 @@ orderRouter.get("/", async (req: express.Request, res: express.Response) => {
   }
 });
 
-orderRouter.patch("/", async (req: express.Request, res: express.Response) => {
+orderRouter.patch("/:id", async (req: express.Request, res: express.Response) => {
     try {
+      console.log("========>")
       const { newDateOfArrival } = OrderUpdateCommand.validateOrderUpdate(req.body);
-      const authRequest = req as RequestAuth;
-      const id = authRequest.user.id;  
-  
+
       const order = await updateOrder.execute({
-        id,
+        id: req.params.id,
         dateOfArrival: newDateOfArrival,
       });
 
       const result = {
-        id,
+        id: order.props.id,
         productInfos: order.props.productInfos,
         locationId: order.props.locationId,
         totalPrice: order.props.totalPrice,
@@ -138,10 +136,9 @@ orderRouter.patch("/", async (req: express.Request, res: express.Response) => {
   }
 );
 
-orderRouter.delete("/", async (req: express.Request, res: express.Response) => {
+orderRouter.delete("/:id", async (req: express.Request, res: express.Response) => {
     try {
-      const authRequest = req as RequestAuth;
-      const id = authRequest.user.id;  
+      const id = req.params.id;
   
       await deleteOrder.execute({
         id,

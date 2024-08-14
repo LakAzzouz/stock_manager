@@ -19,9 +19,7 @@ describe("E2E - Product", () => {
   let authorization;
 
   const user = DataBuilders.generateUser();
-  const product = DataBuilders.generateProduct({
-    name: "Air Jordan"
-  });
+  const product = DataBuilders.generateProduct();
 
   beforeAll(async () => {
     app.use(express.json());
@@ -140,6 +138,7 @@ describe("E2E - Product", () => {
       .get(`/products/${product.props.name}`)
       .set("authorization", authorization);
     const responseBody = response.body;
+    //console.log(response)
     expect(responseBody.id).toBeDefined();
     expect(responseBody.name).toEqual(product.props.name);
     expect(responseBody.productType).toEqual(product.props.productType);

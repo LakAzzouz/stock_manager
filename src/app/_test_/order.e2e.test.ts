@@ -140,7 +140,7 @@ describe("E2E - order", () => {
     jest.setTimeout(1000);
   });
 
-  it("GET /orders/", async () => {
+  it("GET /orders/:id", async () => {
     await userRepository.save(user)
     await orderRepository.save(order);
 
@@ -153,11 +153,8 @@ describe("E2E - order", () => {
     );
 
     const response = await supertest(app)
-      .get("/orders/")
+      .get(`/orders/${order.props.id}`)
       .set("authorization", authorization)
-      .send({
-        id: order.props.id,
-      });
     const responseBody = response.body;
     expect(responseBody.id).toBeDefined();
     expect(responseBody.productInfos).toEqual(order.props.productInfos);
@@ -166,11 +163,11 @@ describe("E2E - order", () => {
     expect(responseBody.orderDate).toBeDefined();
     expect(responseBody.status).toEqual(order.props.status);
     expect(responseBody.expectedArrivalDate).toBeDefined();
-    expect(response.status).toBe(201);
+    expect(response.status).toBe(200);
     jest.setTimeout(1000);
   });
 
-  it("GET /orders/ should return a status 400", async () => {
+  it("GET /orders/:id should return a status 400", async () => {
     authorization = sign(
       {
         id: user.props.id,
@@ -180,13 +177,13 @@ describe("E2E - order", () => {
     );
 
     const response = await supertest(app)
-      .get("/orders/")
-      .set("authorization", authorization);
+    .get(`/orders/${order.props.id}`)
+    .set("authorization", authorization);
     expect(response.status).toBe(400);
     jest.setTimeout(1000);
   });
 
-  it("PATCH /orders/", async () => {
+  it("PATCH /orders/:id", async () => {
     await productRepository.save(product);
     await orderRepository.save(order);
 
@@ -199,13 +196,14 @@ describe("E2E - order", () => {
     );
 
     const response = await supertest(app)
-      .patch("/orders/")
+    .patch(`/orders/${order.props.id}`)
       .set("authorization", authorization)
       .send({
         id: order.props.id,
-        dateOfArrival: order.props.dateOfArrival,
+        newDateOfArrival: order.props.dateOfArrival,
       });
     const responseBody = response.body;
+    console.log(response)
     expect(responseBody.id).toBeDefined();
     expect(responseBody.productInfos).toEqual(order.props.productInfos);
     expect(responseBody.locationId).toEqual(order.props.locationId);
@@ -219,7 +217,7 @@ describe("E2E - order", () => {
     jest.setTimeout(1000);
   });
 
-  it("PATCH /orders/ should return a status 400", async () => {
+  it("PATCH /orders/:id should return a status 400", async () => {
     authorization = sign(
       {
         id: user.props.id,
@@ -229,13 +227,13 @@ describe("E2E - order", () => {
     );
 
     const response = await supertest(app)
-      .patch("/orders/")
-      .set("authorization", authorization)
+    .patch(`/orders/${order.props.id}`)
+    .set("authorization", authorization)
     expect(response.status).toBe(400);
-      jest.setTimeout(1000);
+    jest.setTimeout(1000);
   });
 
-  it("DELETE /orders/", async () => {
+  it("DELETE /orders/:id", async () => {
     await userRepository.save(user);
     await orderRepository.save(order);
 
@@ -248,17 +246,14 @@ describe("E2E - order", () => {
     );
 
     const response = await supertest(app)
-    .delete("/orders/")
+    .delete(`/orders/${order.props.id}`)
     .set("authorization", authorization)
-    .send({
-      id: order.props.id,
-    });
     const responseStatus = response.status;
     expect(responseStatus).toBe(200);
     jest.setTimeout(1000);
   });
 
-  it("DELETE /orders/ should return a status 400", async () => {
+  it("DELETE /orders/:id should return a status 400", async () => {
     authorization = sign(
       {
         id: user.props.id,
@@ -268,7 +263,7 @@ describe("E2E - order", () => {
     );
 
     const response = await supertest(app)
-      .patch("/orders/")
+      .delete(`/orders/${order.props.id}`)
       .set("authorization", authorization)
     expect(response.status).toBe(400);
       jest.setTimeout(1000);
