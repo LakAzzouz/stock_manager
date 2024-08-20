@@ -56,11 +56,15 @@ stockRouter.post("/create", async (req: express.Request, res: express.Response) 
   try {
     const { productId } = StockCreateCommand.validateStockCreate(req.body);
 
-    const stock = await createStock.execute({
-      productId,
+    await createStock.execute({
+      productId
     });
 
-    return res.status(201).send();
+    const result = {
+      productId,
+    }
+
+    return res.status(201).send(result);
   } catch (error) {
     if (error instanceof Error) {
       return res.status(400).send(error.message);
@@ -70,14 +74,12 @@ stockRouter.post("/create", async (req: express.Request, res: express.Response) 
 
 stockRouter.get("/:id", async (req: express.Request, res: express.Response) => {
   try {
-    const id = req.params.id;
-
     const stock = await getStockById.execute({
-      id,
+      id: req.params.id,
     });
 
     const result = {
-      id,
+      id: stock.props.id,
       productId: stock.props.locationId,
       stockByLocation: stock.props.stockDatas,
       createdAt: stock.props.createdAt,
@@ -93,10 +95,8 @@ stockRouter.get("/:id", async (req: express.Request, res: express.Response) => {
 
 stockRouter.delete("/:id", async (req: express.Request, res: express.Response) => {
     try {
-      const id = req.params.id;
-
-      const stock = await deleteStock.execute({
-        id,
+      await deleteStock.execute({
+        id: req.params.id,
       });
 
       const result = "STOCK_DELETED";

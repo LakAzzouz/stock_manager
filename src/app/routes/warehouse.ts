@@ -51,14 +51,12 @@ warehouseRouter.post("/create", async (req: express.Request, res: express.Respon
 
 warehouseRouter.get("/:id", async (req: express.Request, res: express.Response) => {
     try {
-      const id = req.params.id;
-
       const warehouse = await getWarehouseById.execute({
-        id,
+        id: req.params.id
       });
 
       const result = {
-        id,
+        id: warehouse.props.id,
         city: warehouse.props.city,
         managerId: warehouse.props.managerId,
         numberOfEmployees: warehouse.props.numberOfEmployees,
@@ -76,16 +74,14 @@ warehouseRouter.get("/:id", async (req: express.Request, res: express.Response) 
 
 warehouseRouter.get("/:managerId", async (req: express.Request, res: express.Response) => {
     try {
-      const managerId = req.params.managerId;
-
       const warehouse = await getWarehouseByManagerId.execute({
-        managerId,
+        managerId: req.params.managerId
       });
 
       const result = {
         id: warehouse.props.id,
         city: warehouse.props.city,
-        managerId,
+        managerId: warehouse.props.managerId,
         numberOfEmployees: warehouse.props.numberOfEmployees,
         createdAt: warehouse.props.createdAt,
       };
@@ -102,15 +98,14 @@ warehouseRouter.get("/:managerId", async (req: express.Request, res: express.Res
 warehouseRouter.patch("/:id", async (req: express.Request, res: express.Response) => {
     try {
       const { newNumberOfEmployees } = WarehouseUpdateCommand.validateWarehouseUpdate(req.body);
-      const id = req.params.id;
 
       const warehouse = await updateWarehouse.execute({
-        id,
+        id: req.params.id,
         newNumberOfEmployees,
       });
 
       const result = {
-        id,
+        id: warehouse.props.id,
         city: warehouse.props.city,
         managerId: warehouse.props.managerId,
         numberOfEmployees: newNumberOfEmployees,
@@ -128,15 +123,13 @@ warehouseRouter.patch("/:id", async (req: express.Request, res: express.Response
 
 warehouseRouter.delete("/:id", async (req: express.Request, res: express.Response) => {
     try {
-      const id = req.params.id;
-
       await deleteWarehouse.execute({
-        id,
+        id: req.params.id,
       });
 
       const result = "WAREHOUSE_DELETED";
 
-      return res.status(200).send(result);
+      return res.status(202).send(result);
     } catch (error) {
       if (error instanceof Error) {
         return res.status(400).send(error.message);

@@ -53,14 +53,12 @@ storeRouter.post("/create", async (req: express.Request, res: express.Response) 
 
 storeRouter.get("/:id", async (req: express.Request, res: express.Response) => {
   try {
-    const id = req.params.id;
-
     const store = await getStoreById.execute({
-      id,
+      id: req.params.id,
     });
 
     const result = {
-      id,
+      id: store.props.id,
       name: store.props.name,
       city: store.props.city,
       turnover: store.props.turnover,

@@ -18,11 +18,7 @@ export class CreateStockData implements Usecases<CreateStockDataInput, Promise<S
   async execute(input: CreateStockDataInput): Promise<StockData[]> {
     const { productId } = input;
 
-    console.log("productId", productId)
-
     const stockIds = await this._stockRepository.getAllIds();
-
-    console.log(stockIds)
 
     if(!stockIds) {
       throw new StockErrors.NotFound();
@@ -34,8 +30,6 @@ export class CreateStockData implements Usecases<CreateStockDataInput, Promise<S
     });
 
     await this._stockDataRepository.saveAll(stockDatas);
-
-    console.log(stockDatas)
     
     return stockDatas;
   }

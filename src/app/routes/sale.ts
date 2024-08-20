@@ -101,10 +101,8 @@ saleRouter.patch("/:id", async (req: express.Request, res: express.Response) => 
 
 saleRouter.delete("/:id", async (req: express.Request, res: express.Response) => {
     try {
-      const id = req.params.id;
-
-      const sale = await deleteSale.execute({
-        id,
+      await deleteSale.execute({
+        id: req.params.id
       });
 
       const result = "SALE_DELETED";

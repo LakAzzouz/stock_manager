@@ -56,7 +56,7 @@ export class SqlStockRepository implements StockRepository {
               'product_id', sd.product_id,
               'threshold', sd.threshold,
               'stock_id', sd.stock_id
-          )
+            )
       ) AS stock_datas,
       MAX(stocks.location_id) AS location_id,
       MAX(stocks.type) AS type,
@@ -64,13 +64,13 @@ export class SqlStockRepository implements StockRepository {
       MAX(stocks.updated_at) AS updated_at
   FROM stock_datas AS sd
   LEFT JOIN stocks ON stocks.id = sd.stock_id
-  WHERE stocks.id = 'stock_id'
-  GROUP BY stocks.id;`,
+  WHERE stocks.id = :id
+  GROUP BY stocks.id`,
       {
         id: id,
       }
     );
-    
+
     const rawStock = stockModel[0][0];
 
     if (!rawStock) {

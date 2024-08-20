@@ -50,7 +50,7 @@ describe("E2E - order", () => {
     productRepository = new SqlProductRepository(dbTest, productMapper);
   });
 
-  beforeEach(async () => {
+  afterEach(async () => {
     await dbTest.raw(`TRUNCATE TABLE users`);
     await dbTest.raw(`TRUNCATE TABLE products`);
     await dbTest.raw(`TRUNCATE TABLE orders`);
@@ -186,6 +186,7 @@ describe("E2E - order", () => {
   it("PATCH /orders/:id", async () => {
     await productRepository.save(product);
     await orderRepository.save(order);
+    await userRepository.save(user)
 
     authorization = sign(
       {
@@ -203,7 +204,6 @@ describe("E2E - order", () => {
         newDateOfArrival: order.props.dateOfArrival,
       });
     const responseBody = response.body;
-    console.log(response)
     expect(responseBody.id).toBeDefined();
     expect(responseBody.productInfos).toEqual(order.props.productInfos);
     expect(responseBody.locationId).toEqual(order.props.locationId);

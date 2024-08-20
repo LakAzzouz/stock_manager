@@ -1,42 +1,51 @@
 import express from "express";
 import supertest from "supertest";
 
-import { SqlStoreRepository } from "../../adapters/repositories/SQL/SqlStoreRepository";
-import { DataBuilders } from "../../core/_test_/tools/DataBuilders";
-import { storeRouter } from "../routes/store";
-import { SqlStoreMapper } from "../../adapters/repositories/mappers/SqlStoreMapper";
-import { dbTest } from "../../adapters/_test_/tools/dbTest";
+import { SqlWarehouseRepository } from "../../adapters/repositories/SQL/SqlWarehouseRepository";
+import { SqlProductRepository } from "../../adapters/repositories/SQL/SqlProductRepository";
 import { SqlUserRepository } from "../../adapters/repositories/SQL/SqlUserRepository";
+import { warehouseRouter } from "../routes/warehouse";
+import { dbTest } from "../../adapters/_test_/tools/dbTest";
+import { SqlWarehouseMapper } from "../../adapters/repositories/mappers/SqlWarehouseMapper";
+import { SqlProductMapper } from "../../adapters/repositories/mappers/SqlProductMapper";
 import { SqlUserMapper } from "../../adapters/repositories/mappers/SqlUserMapper";
+import { DataBuilders } from "../../core/_test_/tools/DataBuilders";
 
 const app = express();
 const { sign } = require("jsonwebtoken");
 const jwtSecret = process.env.JWT_SECRET;
 
-describe("E2E - Store", () => {
-  let storeRepository: SqlStoreRepository;
+describe("E2E - Warehouse", () => {
+  let warehouseRepository: SqlWarehouseRepository;
+  let productRepository: SqlProductRepository;
   let userRepository: SqlUserRepository;
   let authorization;
 
   const user = DataBuilders.generateUser();
-  const store = DataBuilders.generateStore();
+  const warehouse = DataBuilders.generateWarehouse({});
+  const product = DataBuilders.generateProduct();
 
   beforeAll(async () => {
     app.use(express.json());
-    app.use("/stores", storeRouter);
+    app.use("/warehouses", warehouseRouter);
 
-    const storeMapper = new SqlStoreMapper();
+    const warehouseMapper = new SqlWarehouseMapper();
+    const productMapper = new SqlProductMapper();
     const userMapper = new SqlUserMapper();
-    storeRepository = new SqlStoreRepository(dbTest, storeMapper);
+
+    warehouseRepository = new SqlWarehouseRepository(dbTest, warehouseMapper);
+    productRepository = new SqlProductRepository(dbTest, productMapper);
     userRepository = new SqlUserRepository(dbTest, userMapper);
   });
 
   afterEach(async () => {
-    await dbTest.raw(`TRUNCATE TABLE stores`);
+    await dbTest.raw(`TRUNCATE TABLE warehouses`);
+    await dbTest.raw(`TRUNCATE TABLE products`);
+    await dbTest.raw(`TRUNCATE TABLE product_infos`);
     await dbTest.raw(`TRUNCATE TABLE users`);
   });
 
-  it("POST /stores/create", async () => {
+  it("POST /warehouses/create", async () => {
     await userRepository.save(user);
 
     authorization = sign(
@@ -48,26 +57,25 @@ describe("E2E - Store", () => {
     );
 
     const response = await supertest(app)
-      .post("/stores/create")
+      .post("/warehouses/create")
       .set("authorization", authorization)
       .send({
-        name: store.props.name,
-        city: store.props.city,
-        turnover: store.props.turnover,
-        frequentation: store.props.frequentation,
+        city: warehouse.props.city,
+        numberOfEmployees: warehouse.props.numberOfEmployees,
       });
     const responseBody = response.body;
     expect(responseBody.id).toBeDefined();
-    expect(responseBody.name).toEqual(store.props.name);
-    expect(responseBody.city).toEqual(store.props.city);
-    expect(responseBody.turnover).toEqual(store.props.turnover);
-    expect(responseBody.frequentation).toEqual(store.props.frequentation);
+    expect(responseBody.city).toEqual(warehouse.props.city);
+    expect(responseBody.managerId).toBeDefined();
+    expect(responseBody.numberOfEmployees).toEqual(
+      warehouse.props.numberOfEmployees
+    );
     expect(responseBody.createdAt).toBeDefined();
     expect(response.status).toBe(201);
     jest.setTimeout(1000);
   });
 
-  it("POST /stores/create should return a status 400", async () => {
+  it("POST /warehouses/create should return a status 400", async () => {
     authorization = sign(
       {
         id: user.props.id,
@@ -75,16 +83,18 @@ describe("E2E - Store", () => {
       },
       jwtSecret
     );
+
     const response = await supertest(app)
-      .post("/stores/create")
+      .post("/warehouses/create")
       .set("authorization", authorization);
     expect(response.status).toBe(400);
     jest.setTimeout(1000);
   });
 
-  it("GET /stores/:id", async () => {
+  it("GET /warehouses/:id", async () => {
     await userRepository.save(user);
-    await storeRepository.save(store);
+    await productRepository.save(product);
+    await warehouseRepository.save(warehouse);
 
     authorization = sign(
       {
@@ -95,21 +105,21 @@ describe("E2E - Store", () => {
     );
 
     const response = await supertest(app)
-      .get(`/stores/${store.props.id}`)
+      .get(`/warehouses/${warehouse.props.id}`)
       .set("authorization", authorization);
     const responseBody = response.body;
     expect(responseBody.id).toBeDefined();
-    expect(responseBody.name).toEqual(store.props.name);
-    expect(responseBody.city).toEqual(store.props.city);
-    expect(responseBody.turnover).toEqual(store.props.turnover);
-    expect(responseBody.frequentation).toEqual(store.props.frequentation);
-    expect(responseBody.priceReduction).toEqual(store.props.priceReduction);
+    expect(responseBody.city).toEqual(warehouse.props.city);
+    expect(responseBody.managerId).toBeDefined();
+    expect(responseBody.numberOfEmployees).toEqual(
+      warehouse.props.numberOfEmployees
+    );
     expect(responseBody.createdAt).toBeDefined();
     expect(response.status).toBe(200);
     jest.setTimeout(1000);
   });
 
-  it("GET /stores/:id should return a status 400", async () => {
+  it("GET /warehouses/:id should return a status 400", async () => {
     authorization = sign(
       {
         id: user.props.id,
@@ -117,16 +127,18 @@ describe("E2E - Store", () => {
       },
       jwtSecret
     );
+
     const response = await supertest(app)
-      .get(`/stores/${store.props.id}`)
+      .get(`/warehouses/${warehouse.props.id}`)
       .set("authorization", authorization);
     expect(response.status).toBe(400);
     jest.setTimeout(1000);
   });
 
-  it("GET /stores/:city", async () => {
+  it("GET /warehouses/:managerId", async () => {
     await userRepository.save(user);
-    await storeRepository.save(store);
+    await productRepository.save(product);
+    await warehouseRepository.save(warehouse);
 
     authorization = sign(
       {
@@ -137,22 +149,22 @@ describe("E2E - Store", () => {
     );
 
     const response = await supertest(app)
-      .get(`/stores/${store.props.city}`)
+      .get(`/warehouses/${warehouse.props.managerId}`)
       .set("authorization", authorization);
     const responseBody = response.body;
-    // console.log(response);
+    // console.log(response)
     expect(responseBody.id).toBeDefined();
-    expect(responseBody.name).toEqual(store.props.name);
-    expect(responseBody.city).toEqual(store.props.city);
-    expect(responseBody.turnover).toEqual(store.props.turnover);
-    expect(responseBody.frequentation).toEqual(store.props.frequentation);
-    expect(responseBody.priceReduction).toEqual(store.props.priceReduction);
+    expect(responseBody.city).toEqual(warehouse.props.city);
+    expect(responseBody.managerId).toBeDefined();
+    expect(responseBody.numberOfEmployees).toEqual(
+      warehouse.props.numberOfEmployees
+    );
     expect(responseBody.createdAt).toBeDefined();
     expect(response.status).toBe(200);
     jest.setTimeout(1000);
   });
 
-  it("GET /stores/:city should return a status 400", async () => {
+  it("GET /warehouses/:managerId should return a status 400", async () => {
     authorization = sign(
       {
         id: user.props.id,
@@ -162,15 +174,16 @@ describe("E2E - Store", () => {
     );
 
     const response = await supertest(app)
-      .get(`/stores/${store.props.city}`)
+      .get(`/warehouses/${warehouse.props.managerId}`)
       .set("authorization", authorization);
     expect(response.status).toBe(400);
     jest.setTimeout(1000);
   });
 
-  it("PATCH /stores/:id", async () => {
+  it("PATCH /warehouses/:id", async () => {
     await userRepository.save(user);
-    await storeRepository.save(store);
+    await productRepository.save(product);
+    await warehouseRepository.save(warehouse);
 
     authorization = sign(
       {
@@ -181,25 +194,25 @@ describe("E2E - Store", () => {
     );
 
     const response = await supertest(app)
-      .patch(`/stores/${store.props.id}`)
+      .patch(`/warehouses/${warehouse.props.id}`)
       .set("authorization", authorization)
       .send({
-        id: store.props.id,
-        newPriceReduction: store.props.priceReduction,
+        id: warehouse.props.id,
+        newNumberOfEmployees: warehouse.props.numberOfEmployees,
       });
     const responseBody = response.body;
     expect(responseBody.id).toBeDefined();
-    expect(responseBody.name).toEqual(store.props.name);
-    expect(responseBody.city).toEqual(store.props.city);
-    expect(responseBody.turnover).toEqual(store.props.turnover);
-    expect(responseBody.frequentation).toEqual(store.props.frequentation);
-    expect(responseBody.priceReduction).toEqual(store.props.priceReduction);
+    expect(responseBody.city).toEqual(warehouse.props.city);
+    expect(responseBody.managerId).toBeDefined();
+    expect(responseBody.numberOfEmployees).toEqual(
+      warehouse.props.numberOfEmployees
+    );
     expect(responseBody.createdAt).toBeDefined();
     expect(response.status).toBe(200);
     jest.setTimeout(1000);
   });
 
-  it("PATCH /stores/:id should return a status 400", async () => {
+  it("PATCH /warehouses/:id should return a status 400", async () => {
     authorization = sign(
       {
         id: user.props.id,
@@ -209,19 +222,20 @@ describe("E2E - Store", () => {
     );
 
     const response = await supertest(app)
-      .patch(`/stores/${store.props.id}`)
+      .patch(`/warehouses/${warehouse.props.id}`)
       .set("authorization", authorization)
       .send({
-        id: store.props.id,
-        newPriceReduction: store.props.priceReduction,
+        id: warehouse.props.id,
+        newNumberOfEmployees: warehouse.props.numberOfEmployees,
       });
     expect(response.status).toBe(400);
     jest.setTimeout(1000);
   });
 
-  it("DELETE /stores/:id", async () => {
+  it("DELETE /warehouses/:id", async () => {
     await userRepository.save(user);
-    await storeRepository.save(store);
+    await productRepository.save(product);
+    await warehouseRepository.save(warehouse);
 
     authorization = sign(
       {
@@ -232,13 +246,16 @@ describe("E2E - Store", () => {
     );
 
     const response = await supertest(app)
-      .delete(`/stores/${store.props.id}`)
-      .set("authorization", authorization);
+      .delete(`/warehouses/${warehouse.props.id}`)
+      .set("authorization", authorization)
+      .send({
+        id: warehouse.props.id,
+      });
     expect(response.status).toBe(202);
     jest.setTimeout(1000);
   });
 
-  it("DELETE /stores/:id should return a status 400", async () => {
+  it("DELETE /warehouses/:id should return a status 400", async () => {
     authorization = sign(
       {
         id: user.props.id,
@@ -248,8 +265,11 @@ describe("E2E - Store", () => {
     );
 
     const response = await supertest(app)
-      .delete(`/stores/${store.props.id}`)
-      .set("authorization", authorization);
+      .delete(`/warehouses/${warehouse.props.id}`)
+      .set("authorization", authorization)
+      .send({
+        id: warehouse.props.id,
+      });
     expect(response.status).toBe(400);
     jest.setTimeout(1000);
   });

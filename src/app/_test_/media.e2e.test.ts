@@ -1,45 +1,28 @@
+import express from "express";
+import supertest from "supertest";
 
+import { MediaRepository } from "../../core/repositories/MediaRepository";
+import { mediaRouteur } from "../routes/media";
+import { SqlMediaRepository } from "../../adapters/repositories/SQL/SqlMediaRepository";
+import { dbTest } from "../../adapters/_test_/tools/dbTest";
+import { SqlMediaMapper } from "../../adapters/repositories/mappers/SqlMediaMapper";
 
-// it("POST /products/upload", async () => {
-//     await userRepository.save(user);
-//     await productRepository.save(product);
+const app = express();
 
+describe("E2E - media", () => {
+  let mediaRepository: MediaRepository;
+  let authorization;
 
-//     authorization = sign(
-//       {
-//         id: user.props.id,
-//         email: user.props.email,
-//       },
-//       jwtSecret
-//     );
+  beforeAll(async () => {
+    app.use(express.json());
+    app.use("/medias", mediaRouteur);
+    
+    const mediaMapper = new SqlMediaMapper()
+    mediaRepository = new SqlMediaRepository(dbTest, mediaMapper)
+  });
 
-//     const response = await supertest(app)
-//       .post("/products/upload")
-//       .set("authorization", authorization)
-//       .send({
-//         id: product.props.id,
-//         image: product.props.image,
-//         file: Buffer.from(""),
-//         fileName: "Air Jordan",
-//         mimetype: "jpg",
-//       });
-//     const responseBody = response.body;
-//     expect(responseBody.message).toEqual("Image upload successfully");
-//     expect(response.status).toBe(201);
-//     jest.setTimeout(1000);
-//   });
+  afterEach(async () => {
+    await dbTest.raw(`TRUNCATE TABLE medias`);
+  });
 
-//   it("POST /products/upload should return a status 400", async () => {
-//     authorization = sign(
-//       {
-//         id: user.props.id,
-//         email: user.props.email,
-//       },
-//       jwtSecret
-//     );
-//     const response = await supertest(app)
-//       .post("/products/upload")
-//       .set("authorization", authorization);
-//     expect(response.status).toBe(400);
-//     jest.setTimeout(1000);
-//   });
+});
