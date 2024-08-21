@@ -12,4 +12,10 @@ export namespace ProductErrors {
       super("SIZE_MUST_BE_BETWEEN_36_AND_49");
     }
   }
+
+  export class QuantityErrors extends DomainErrors {
+    constructor() {
+      super("QUANTITY_NOT_FOUND");
+    }
+  }
 }

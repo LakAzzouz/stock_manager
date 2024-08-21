@@ -18,7 +18,7 @@ export class OrderCreateCommand {
 }
 
 export const orderUpdateSchema = z.object({
-  newDateOfArrival: z.date()
+  newDateOfArrival: z.union([z.date(), z.string().transform((str) => new Date(str))])
 });
 
 type OrderUpdateSchema = z.infer<typeof orderUpdateSchema>;

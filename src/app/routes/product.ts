@@ -82,6 +82,7 @@ productRouter.get("/:id", async (req: express.Request, res: express.Response) =>
 
 productRouter.get("/:name", async (req: express.Request, res: express.Response) => {
     try {
+      console.log("=====>")
       const product = await getProductByName.execute({
         name: req.params.name
       });
@@ -104,9 +105,9 @@ productRouter.get("/:name", async (req: express.Request, res: express.Response) 
   }
 );
 
-productRouter.patch("/update/:id", async (req: express.Request, res: express.Response) => {
+productRouter.patch("/:id", async (req: express.Request, res: express.Response) => {
     try {
-      const { newPrice } = ProductUpdateCommand.updateProduct(req.body);
+      const { newPrice } = ProductUpdateCommand.validateupdateProduct(req.body);
 
       const product = await updateProduct.execute({
         id: req.params.id,
@@ -132,7 +133,7 @@ productRouter.patch("/update/:id", async (req: express.Request, res: express.Res
   }
 );
 
-productRouter.delete("/delete/:id", async (req: express.Request, res: express.Response) => {
+productRouter.delete("/:id", async (req: express.Request, res: express.Response) => {
     try {
       await deleteProduct.execute({
         id: req.params.id

@@ -1,4 +1,5 @@
 import { DataBuilders } from "../../../core/_test_/tools/DataBuilders";
+import { ProductErrors } from "../../../core/errors/ProductErrors";
 import { SqlOderRepository } from "../../repositories/SQL/SqlOrderRepository";
 import { SqlProductRepository } from "../../repositories/SQL/SqlProductRepository";
 import { SqlSaleRepository } from "../../repositories/SQL/SqlSaleRepository";
@@ -12,7 +13,6 @@ describe("Integ - Sql Product Repository", () => {
   let sqlSaleMapper: SqlSaleMapper;
   let sqlProductRepository: SqlProductRepository;
   let sqlSaleRepository: SqlSaleRepository;
-  let sqlOrderRepository: SqlOderRepository;
   let sqlOrderMapper: SqlOrderMapper;
 
   const product = DataBuilders.generateProduct({
@@ -38,8 +38,6 @@ describe("Integ - Sql Product Repository", () => {
     sqlSaleMapper = new SqlSaleMapper();
     sqlProductRepository = new SqlProductRepository(dbTest, sqlProductMapper);
     sqlSaleRepository = new SqlSaleRepository(dbTest, sqlSaleMapper);
-    sqlOrderMapper = new SqlOrderMapper();
-    sqlOrderRepository = new SqlOderRepository(dbTest, sqlOrderMapper);
   });
 
   beforeEach(async () => {
@@ -53,7 +51,15 @@ describe("Integ - Sql Product Repository", () => {
 
     const result = await sqlProductRepository.getById(product.props.id);
 
-    expect(product).toEqual(result);
+    expect(result).toEqual(product);
+  });
+
+  it("Should save a product but return null", async () => {
+    await sqlProductRepository.save(product);
+
+    const result = await sqlProductRepository.getById("");
+
+    expect(result).toEqual(null);
   });
 
   it("Should get product by name", async () => {
@@ -64,17 +70,21 @@ describe("Integ - Sql Product Repository", () => {
     expect(result).toEqual(product);
   });
 
+  it("Should save a product but return null", async () => {
+    await sqlProductRepository.save(product);
+
+    const result = await sqlProductRepository.getByName("");
+
+    expect(result).toEqual(null);
+  });
+
   it("Should get total price by product ids", async () => {
     await sqlProductRepository.save(product);
     await sqlSaleRepository.save(sale);
 
-    const result = await sqlProductRepository.getTotalPriceByProductIds(
-      sale.props.productInfos
-    );
+    const result = await sqlProductRepository.getTotalPriceByProductIds(sale.props.productInfos);
 
-    expect(result).toEqual(
-      product.props.price * sale.props.productInfos[0].quantity
-    );
+    expect(result).toEqual(product.props.price * sale.props.productInfos[0].quantity);
   });
 
   it("Should delete product", async () => {

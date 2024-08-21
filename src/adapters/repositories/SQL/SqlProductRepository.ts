@@ -3,6 +3,7 @@ import { ProductRepository } from "../../../core/repositories/ProductRepository"
 import { SqlProductMapper } from "../mappers/SqlProductMapper";
 import { Product } from "../../../core/entities/Product";
 import { ProductInfo } from "../../../core/types/ProductInfo";
+import { ProductErrors } from "../../../core/errors/ProductErrors";
 
 export class SqlProductRepository implements ProductRepository {
   constructor(
@@ -37,12 +38,11 @@ export class SqlProductRepository implements ProductRepository {
       }
     );
 
-    if(!productModel[0][0]) {
-      return null
+    if (!productModel[0][0]) {
+      return null;
     }
 
     const product = this._productMapper.toDomain(productModel[0][0]);
-
 
     return product;
   }
@@ -57,8 +57,8 @@ export class SqlProductRepository implements ProductRepository {
       }
     );
 
-    if(!productModel[0][0]) {
-      return null
+    if (!productModel[0][0]) {
+      return null;
     }
 
     const product = this._productMapper.toDomain(productModel[0][0]);
@@ -66,9 +66,7 @@ export class SqlProductRepository implements ProductRepository {
     return product;
   }
 
-  async getTotalPriceByProductIds(
-    productInfos: ProductInfo[]
-  ): Promise<number> {
+  async getTotalPriceByProductIds(productInfos: ProductInfo[]): Promise<number> {
     const productIds = productInfos.map((elm) => elm.productId);
     const priceIdPairModel = await this._knex.raw(
       `SELECT price, id 
@@ -77,29 +75,23 @@ export class SqlProductRepository implements ProductRepository {
       `,
       [productIds]
     );
-    const pricePair: {
-      price: number;
-      id: string;
-    }[] = priceIdPairModel[0].map((elm: { price: number; id: string }) => {
+
+    const pricePair: {price: number, id: string}[] = priceIdPairModel[0].map((elm: { price: number; id: string }) => {
       return {
         price: elm.price,
         id: elm.id,
       };
     });
 
-    const totalPrice = pricePair.reduce(
-      (acc: number, pair: { price: number; id: string }): number => {
-        const productInfo = productInfos.find(
-          (elm) => elm.productId === pair.id
-        );
-        if (!productInfo?.quantity) {
-          throw new Error("");
+    const totalPrice = pricePair.reduce((acc: number, pair: { price: number; id: string }): number => {
+        const productInfo = productInfos.find((elm) => elm.productId === pair.id);
+        if (!productInfo) {
+          throw ProductErrors.QuantityErrors;
         }
         return (acc += productInfo.quantity * pair.price);
-      },
+    },
       0
     );
-
     return totalPrice;
   }
 

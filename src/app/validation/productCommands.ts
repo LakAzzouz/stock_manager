@@ -26,7 +26,7 @@ export const productUpdateSchema = z.object({
 type ProductUpdateSchema = z.infer<typeof productUpdateSchema>;
 
 export class ProductUpdateCommand {
-  static updateProduct(body: any): ProductUpdateSchema {
+  static validateupdateProduct(body: any): ProductUpdateSchema {
     const validation = productUpdateSchema.safeParse(body);
     if (!validation.success) {
       throw new Error(validation.error.message);

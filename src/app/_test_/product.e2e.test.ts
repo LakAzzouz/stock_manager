@@ -138,7 +138,7 @@ describe("E2E - Product", () => {
       .get(`/products/${product.props.name}`)
       .set("authorization", authorization);
     const responseBody = response.body;
-    //console.log(response)
+    // console.log(response)
     expect(responseBody.id).toBeDefined();
     expect(responseBody.name).toEqual(product.props.name);
     expect(responseBody.productType).toEqual(product.props.productType);
@@ -164,7 +164,7 @@ describe("E2E - Product", () => {
     jest.setTimeout(1000);
   });
 
-  it("PATCH /products/update/:id", async () => {
+  it("PATCH /products/:id", async () => {
     await userRepository.save(user);
     await productRepository.save(product);
 
@@ -177,7 +177,7 @@ describe("E2E - Product", () => {
     );
 
     const response = await supertest(app)
-      .patch(`/products/update/${product.props.id}`)
+      .patch(`/products/${product.props.id}`)
       .set("authorization", authorization)
       .send({
         id: product.props.id,
@@ -194,7 +194,7 @@ describe("E2E - Product", () => {
     jest.setTimeout(1000);
   });
 
-  it("PATCH /products/update/:id", async () => {
+  it("PATCH /products/:id", async () => {
     authorization = sign(
       {
         id: user.props.id,
@@ -204,7 +204,7 @@ describe("E2E - Product", () => {
     );
 
     const response = await supertest(app)
-      .patch(`/products/update/${product.props.id}`)
+      .patch(`/products/${product.props.id}`)
       .set("authorization", authorization)
       .send({
         id: product.props.id,
@@ -214,7 +214,7 @@ describe("E2E - Product", () => {
     jest.setTimeout(1000);
   });
 
-  it("DELETE /products/delete/:id", async () => {
+  it("DELETE /products/:id", async () => {
     await userRepository.save(user);
     await productRepository.save(product);
 
@@ -227,7 +227,7 @@ describe("E2E - Product", () => {
     );
 
     const response = await supertest(app)
-      .delete(`/products/delete/${product.props.id}`)
+      .delete(`/products/${product.props.id}`)
       .set("authorization", authorization)
       .send({
         id: product.props.id,
@@ -237,7 +237,7 @@ describe("E2E - Product", () => {
     jest.setTimeout(1000);
   });
 
-  it("DELETE /products/delete/:id should return a status 400", async () => {
+  it("DELETE /products/:id should return a status 400", async () => {
     authorization = sign(
       {
         id: user.props.id,
@@ -247,7 +247,7 @@ describe("E2E - Product", () => {
     );
 
     const response = await supertest(app)
-      .delete(`/products/delete/${product.props.id}`)
+      .delete(`/products/${product.props.id}`)
       .set("authorization", authorization)
       .send({
         id: product.props.id,

@@ -140,7 +140,7 @@ describe("E2E - Store", () => {
       .get(`/stores/${store.props.city}`)
       .set("authorization", authorization);
     const responseBody = response.body;
-    // console.log(response);
+    console.log(response)
     expect(responseBody.id).toBeDefined();
     expect(responseBody.name).toEqual(store.props.name);
     expect(responseBody.city).toEqual(store.props.city);

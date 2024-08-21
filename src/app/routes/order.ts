@@ -107,7 +107,6 @@ orderRouter.get("/:id", async (req: express.Request, res: express.Response) => {
 
 orderRouter.patch("/:id", async (req: express.Request, res: express.Response) => {
     try {
-      console.log("========>")
       const { newDateOfArrival } = OrderUpdateCommand.validateOrderUpdate(req.body);
 
       const order = await updateOrder.execute({
