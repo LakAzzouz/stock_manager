@@ -26,8 +26,10 @@ export class GenerateResetPasswordCode implements Usecases<GenerateResetPassword
     }
 
     Email.validate(email);
-    
+
     const userUpdated = user.update(resetPasswordCode);
+
+    // =============> console.log(userUpdated)
 
     await this._userRepository.update(userUpdated);
 

@@ -43,8 +43,9 @@ export class SqlMediaRepository implements MediaRepository {
 
   async delete(id: string): Promise<void> {
     await this._knex.raw(
-      `DELETE FROM
-        stores WHERE id = :id`,
+      `DELETE
+      FROM medias 
+      WHERE id = :id`,
       {
         id: id,
       }

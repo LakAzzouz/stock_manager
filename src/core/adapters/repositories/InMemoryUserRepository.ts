@@ -1,5 +1,4 @@
 import { User } from "../../entities/User";
-import { UserErrors } from "../../errors/UserErrors";
 import { UserRepository } from "../../repositories/UserRepository";
 
 export class InMemoryUserRepository implements UserRepository {

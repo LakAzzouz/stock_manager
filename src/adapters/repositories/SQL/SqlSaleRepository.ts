@@ -13,6 +13,7 @@ export class SqlSaleRepository implements SaleRepository {
   async save(sale: Sale): Promise<void> {
     const saleModel = this._saleMapper.fromDomain(sale);
     const tx = await this._knex.transaction();
+    tx
     const productId = saleModel.product_infos.map((elm) => elm.product_id)[0];
     const quantity = saleModel.product_infos.map((elm) => elm.quantity)[0];
     try {

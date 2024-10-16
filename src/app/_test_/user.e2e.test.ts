@@ -68,12 +68,9 @@ describe("E2E - User", () => {
         username: user.props.username,
       });
     const responseBody = response.body;
-    expect(responseBody.msg).toEqual(
-      `A verification code has been sent to ${user.props.username} via email`
-    );
+    expect(responseBody.msg).toEqual(`A verification code has been sent to ${user.props.username} via email`);
     expect(response.status).toBe(201);
-    jest.setTimeout(1000);
-  });
+  }, 10000);
 
   it("POST /users return a status 400", async () => {
     const response = await supertest(app).post(
@@ -149,12 +146,9 @@ describe("E2E - User", () => {
         resetPasswordCode: user.props.resetPasswordCode,
       });
     const responseBody = response.body;
-    expect(responseBody.msg).toEqual(
-      `A reset code has been sent to ${user.props.username} via email`
-    );
+    expect(responseBody.msg).toEqual(`A reset code has been sent to ${user.props.username} via email`);
     expect(response.status).toBe(201);
-    jest.setTimeout(1000);
-  });
+  }, 10000);
 
   it("POST /users/reset_password_code return a status 400", async () => {
     authorization = sign(

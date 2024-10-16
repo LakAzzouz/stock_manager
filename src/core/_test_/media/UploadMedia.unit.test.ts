@@ -1,4 +1,3 @@
-import { upload } from "../../../app/routes/product";
 import { MockMediaGateway } from "../../adapters/gateways/MockMediaGateway";
 import { InMemoryMediaRepository } from "../../adapters/repositories/InMemoryMediaRepository";
 import { Media } from "../../entities/Media";

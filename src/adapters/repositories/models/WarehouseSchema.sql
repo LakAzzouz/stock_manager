@@ -1,5 +1,3 @@
-USE stock_manager;
-
 CREATE TABLE warehouses (
     `id` VARCHAR(36) PRIMARY KEY NOT NULL,
     city VARCHAR(20),

@@ -1,7 +1,6 @@
 import { DataBuilders } from "../../../core/_test_/tools/DataBuilders";
 import { SqlStockDataRepository } from "../../repositories/SQL/SqlStockDataRepository";
 import { SqlStockDataMapper } from "../../repositories/mappers/SqlStockDataMapper";
-import { StockDataModel } from "../../repositories/models/StockDataModel";
 import { dbTest } from "../tools/dbTest";
 
 describe("Integ - Sql stock data", () => {
@@ -18,7 +17,7 @@ describe("Integ - Sql stock data", () => {
   });
 
   afterEach(async () => {
-    //await dbTest.raw(`TRUNCATE TABLE stock_datas`)
+    await dbTest.raw(`TRUNCATE TABLE stock_datas`)
   });
 
   it("Should save stock_datas", async () => {

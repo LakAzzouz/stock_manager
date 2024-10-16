@@ -1,9 +1,6 @@
 import { DataBuilders } from "../../../core/_test_/tools/DataBuilders";
-import { ProductErrors } from "../../../core/errors/ProductErrors";
-import { SqlOderRepository } from "../../repositories/SQL/SqlOrderRepository";
 import { SqlProductRepository } from "../../repositories/SQL/SqlProductRepository";
 import { SqlSaleRepository } from "../../repositories/SQL/SqlSaleRepository";
-import { SqlOrderMapper } from "../../repositories/mappers/SqlOrderMapper";
 import { SqlProductMapper } from "../../repositories/mappers/SqlProductMapper";
 import { SqlSaleMapper } from "../../repositories/mappers/SqlSaleMapper";
 import { dbTest } from "../tools/dbTest";
@@ -13,7 +10,6 @@ describe("Integ - Sql Product Repository", () => {
   let sqlSaleMapper: SqlSaleMapper;
   let sqlProductRepository: SqlProductRepository;
   let sqlSaleRepository: SqlSaleRepository;
-  let sqlOrderMapper: SqlOrderMapper;
 
   const product = DataBuilders.generateProduct({
     id: "id",

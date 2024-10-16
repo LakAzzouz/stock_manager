@@ -1,5 +1,3 @@
-USE stock_manager;
-
 CREATE TABLE sales (
     `id` VARCHAR(36) PRIMARY KEY NOT NULL,
     total_price INT NOT NULL,

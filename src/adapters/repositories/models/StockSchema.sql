@@ -1,5 +1,3 @@
-USE stock_manager;
-
 CREATE TABLE stocks (
     `id` VARCHAR(36) PRIMARY KEY NOT NULL,
     location_id VARCHAR(36) NOT NULL,

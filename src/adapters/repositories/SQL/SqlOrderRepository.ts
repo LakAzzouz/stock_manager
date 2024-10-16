@@ -29,7 +29,7 @@ export class SqlOderRepository implements OrderRepository {
         }
       );
       const productInfos = orderModel.product_infos.map((elm) => 
-      `("${elm.product_id}", ${elm.quantity}, "${orderModel.id}")`).join(",");
+      `("${elm.product_id}", "${elm.quantity}", "${orderModel.id}")`).join(",");
       await tx.raw(
         `INSERT INTO product_infos (product_id, quantity, order_id)
         VALUES ${productInfos}`

@@ -24,7 +24,7 @@ export class CreateUser implements Usecases<CreateUserInput, Promise<User>> {
 
     const userAlreadyExist = await this._userRepository.getByEmail(email);
 
-    if (userAlreadyExist) {
+    if (userAlreadyExist) { 
       throw new UserErrors.AlreadyExist();
     }
 
@@ -49,7 +49,7 @@ export class CreateUser implements Usecases<CreateUserInput, Promise<User>> {
       username
     });
 
-    eventEmitter.emit("user_created", event);
+    // eventEmitter.emit("user_created", event);
 
     return user;
   }
