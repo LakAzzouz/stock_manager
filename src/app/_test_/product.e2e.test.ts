@@ -122,7 +122,7 @@ describe("E2E - Product", () => {
     jest.setTimeout(1000);
   });
 
-  it("GET /products/:name", async () => {
+  it("GET /products/by_name/:name", async () => {
     await userRepository.save(user);
     await productRepository.save(product);
 
@@ -135,10 +135,9 @@ describe("E2E - Product", () => {
     );
 
     const response = await supertest(app)
-      .get(`/products/${product.props.name}`)
+      .get(`/products/by_name/${product.props.name}`)
       .set("authorization", authorization);
     const responseBody = response.body;
-    // console.log(response)
     expect(responseBody.id).toBeDefined();
     expect(responseBody.name).toEqual(product.props.name);
     expect(responseBody.productType).toEqual(product.props.productType);

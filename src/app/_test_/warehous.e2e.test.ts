@@ -135,7 +135,7 @@ describe("E2E - Warehouse", () => {
     jest.setTimeout(1000);
   });
 
-  it("GET /warehouses/:managerId", async () => {
+  it("GET /warehouses/by_manager_id/:by_managerId", async () => {
     await userRepository.save(user);
     await productRepository.save(product);
     await warehouseRepository.save(warehouse);
@@ -149,16 +149,13 @@ describe("E2E - Warehouse", () => {
     );
 
     const response = await supertest(app)
-      .get(`/warehouses/${warehouse.props.managerId}`)
+      .get(`/warehouses/by_manager_id/${warehouse.props.managerId}`)
       .set("authorization", authorization);
     const responseBody = response.body;
-    // console.log(response)
     expect(responseBody.id).toBeDefined();
     expect(responseBody.city).toEqual(warehouse.props.city);
     expect(responseBody.managerId).toBeDefined();
-    expect(responseBody.numberOfEmployees).toEqual(
-      warehouse.props.numberOfEmployees
-    );
+    expect(responseBody.numberOfEmployees).toEqual(warehouse.props.numberOfEmployees);
     expect(responseBody.createdAt).toBeDefined();
     expect(response.status).toBe(200);
     jest.setTimeout(1000);

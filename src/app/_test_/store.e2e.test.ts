@@ -124,7 +124,7 @@ describe("E2E - Store", () => {
     jest.setTimeout(1000);
   });
 
-  it("GET /stores/:city", async () => {
+  it("GET /stores/by_city/:city", async () => {
     await userRepository.save(user);
     await storeRepository.save(store);
 
@@ -137,10 +137,9 @@ describe("E2E - Store", () => {
     );
 
     const response = await supertest(app)
-      .get(`/stores/${store.props.city}`)
+      .get(`/stores/by_city/${store.props.city}`)
       .set("authorization", authorization);
     const responseBody = response.body;
-    console.log(response)
     expect(responseBody.id).toBeDefined();
     expect(responseBody.name).toEqual(store.props.name);
     expect(responseBody.city).toEqual(store.props.city);

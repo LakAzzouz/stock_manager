@@ -59,7 +59,7 @@ describe("E2E - order", () => {
     await dbTest.raw(`TRUNCATE TABLE product_infos`);
   });
 
-  it("POST /order/create", async () => {
+  it("POST /orders/create", async () => {
     await productRepository.save(product);
 
     authorization = sign(
@@ -81,9 +81,7 @@ describe("E2E - order", () => {
     expect(responseBody.id).toBeDefined();
     expect(responseBody.productInfos).toEqual(order.props.productInfos);
     expect(responseBody.locationId).toEqual(order.props.locationId);
-    expect(responseBody.totalPrice).toEqual(
-      product.props.price * order.props.productInfos[0].quantity
-    );
+    expect(responseBody.totalPrice).toEqual(product.props.price * order.props.productInfos[0].quantity);
     expect(responseBody.orderDate).toBeDefined();
     expect(responseBody.status).toEqual(order.props.status);
     expect(responseBody.expectedArrivalDate).toBeDefined();

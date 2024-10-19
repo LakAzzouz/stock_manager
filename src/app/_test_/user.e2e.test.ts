@@ -67,9 +67,11 @@ describe("E2E - User", () => {
         email: user.props.email,
         username: user.props.username,
       });
+      
     const responseBody = response.body;
     expect(responseBody.msg).toEqual(`A verification code has been sent to ${user.props.username} via email`);
     expect(response.status).toBe(201);
+    jest.setTimeout(1000);
   }, 10000);
 
   it("POST /users return a status 400", async () => {

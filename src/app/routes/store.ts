@@ -75,9 +75,8 @@ storeRouter.get("/:id", async (req: express.Request, res: express.Response) => {
   }
 });
 
-storeRouter.get("/:city", async (req: express.Request, res: express.Response) => {
+storeRouter.get("/by_city/:city", async (req: express.Request, res: express.Response) => {
     try {
-      console.log("=======>")
       const city = req.params.city;
 
       const store = await getStoreByCity.execute({

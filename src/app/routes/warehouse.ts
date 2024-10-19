@@ -72,7 +72,7 @@ warehouseRouter.get("/:id", async (req: express.Request, res: express.Response) 
   }
 );
 
-warehouseRouter.get("/:managerId", async (req: express.Request, res: express.Response) => {
+warehouseRouter.get("/by_manager_id/:managerId", async (req: express.Request, res: express.Response) => {
     try {
       const warehouse = await getWarehouseByManagerId.execute({
         managerId: req.params.managerId

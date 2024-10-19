@@ -35,9 +35,9 @@ const uploadMedia = new UploadMedia(mediaGateway, mediaRepository);
 // });
 
 mediaRouteur.use(Auth);
-mediaRouteur.post("/upload/:entityType/:entityId", upload.single("file"), async (req: express.Request, res: express.Response) => {
+mediaRouteur.post("/medias/upload/:entityType/:entityId", upload.single("file"), async (req: express.Request, res: express.Response) => {
     try {
-      const entityType = req.params.entityType as ENTITYTYPE;
+      const entityType = req.params.entityType as ENTITYTYPE
       const entityId = req.params.entityId;
 
       const { url, mimeType } = MediaUploadCommand.validateMediaUpload(req.body);
@@ -63,3 +63,5 @@ mediaRouteur.post("/upload/:entityType/:entityId", upload.single("file"), async 
     }
   }
 );
+
+mediaRouteur.get("")
